@@ -14,10 +14,11 @@
     </properties>
 
 	<modules>
+    	<module>api</module>
 		<module>mtgox</module>
 		<module>btc-e</module>
 		<module>btcde</module>
-	</modules>
+  </modules>
 
 	<dependencies>
 		<dependency>
