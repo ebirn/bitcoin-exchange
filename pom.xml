@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>at.outdated.bitcoin</groupId>
@@ -14,12 +14,13 @@
     </properties>
 
 	<modules>
-      <module>mtgox</module>
-      <module>btc-e</module>
-    </modules>
+		<module>mtgox</module>
+		<module>btc-e</module>
+		<module>btcde</module>
+	</modules>
 
-	 <dependencies>
-        <dependency>
+	<dependencies>
+		<dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.0.12</version>
@@ -40,6 +41,14 @@
             <artifactId>jersey-json</artifactId>
             <version>1.17.1</version>
         </dependency>
+		
+	
+		<dependency>
+	    	<groupId>junit</groupId>
+	    	<artifactId>junit</artifactId>
+	    	<version>3.8.1</version>
+	    	<scope>test</scope>
+	    </dependency>
 	</dependencies>
 
 	<build>
@@ -58,5 +67,3 @@
 	</build>
 
 </project>
-
-
