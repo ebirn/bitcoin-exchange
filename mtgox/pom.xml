@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-      <groupId>at.outdated.bitcoin</groupId>
-      <artifactId>exchange</artifactId>
+      <groupId>at.outdated.bitcoin.exchange</groupId>
+      <artifactId>parent</artifactId>
       <version>1</version>
 	</parent>
 
@@ -22,6 +22,7 @@
 
     <dependencies>
 	</dependencies>
+
 
     <build>
 	</build>
