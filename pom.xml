@@ -18,6 +18,7 @@
 		<module>mtgox</module>
 		<module>btc-e</module>
 		<module>btcde</module>
+		<module>bitstamp</module>
   </modules>
 
 	<dependencies>
