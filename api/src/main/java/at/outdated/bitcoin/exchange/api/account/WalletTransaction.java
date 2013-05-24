@@ -1,6 +1,6 @@
-package at.outdated.bitcoin.exchange.mtgox.wallet;
+package at.outdated.bitcoin.exchange.api.account;
 
-import at.outdated.bitcoin.exchange.api.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;

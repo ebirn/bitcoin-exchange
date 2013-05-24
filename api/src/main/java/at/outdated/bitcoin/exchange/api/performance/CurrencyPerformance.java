@@ -1,11 +1,11 @@
 package at.outdated.bitcoin.exchange.api.performance;
 
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.btrader.Performance;
-import at.outdated.bitcoin.exchange.mtgox.wallet.TransactionType;
-import at.outdated.bitcoin.exchange.mtgox.wallet.WalletTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

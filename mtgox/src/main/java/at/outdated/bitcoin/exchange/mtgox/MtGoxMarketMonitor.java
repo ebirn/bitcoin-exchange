@@ -1,18 +1,15 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 
-import at.outdated.bitcoin.exchange.api.Currency;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.MarketUpdate;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.Markets;
+import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.btrader.market.ExchangeMarketMonitor;
-import at.outdated.bitcoin.exchange.api.Markets;
-import at.outdated.btrader.mechanics.TickerValue;
 import at.outdated.btrader.mechanics.TickerValueFactory;
 
 import javax.ejb.AsyncResult;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import java.util.concurrent.Future;
 
 /**
@@ -23,14 +20,9 @@ import java.util.concurrent.Future;
  * To change this template use File | Settings | File Templates.
  */
 
-
-@Stateless
-@LocalBean
-
 public class MtGoxMarketMonitor extends ExchangeMarketMonitor {
 
-    @EJB
-    MtGoxClient client;
+    MtGoxClient client = new MtGoxClient();
 
 
     @Override
@@ -52,7 +44,7 @@ public class MtGoxMarketMonitor extends ExchangeMarketMonitor {
             ticker = client.getTicker(currency);
             ticker.setItemCurrency(Currency.BTC);
 
-            TickerValue value = TickerValueFactory.convert(ticker);
+            TickerValue value = ticker.getTickerValue()
 
             ExchangeMarketMonitor.lastTicker.set(currency, value);
 

@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.mtgox.wallet.WalletHistory;
+import at.outdated.bitcoin.exchange.api.account.WalletHistory;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

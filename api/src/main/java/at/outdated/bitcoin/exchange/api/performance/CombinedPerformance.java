@@ -1,12 +1,10 @@
 package at.outdated.bitcoin.exchange.api.performance;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.ExchangeRateCalculator;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.btrader.Performance;
-import at.outdated.btrader.exchangerate.ExchangeRateCalculator;
-import at.outdated.btrader.exchangerate.ExchangeRateClient;
-import at.outdated.bitcoin.exchange.mtgox.wallet.WalletTransaction;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,11 +22,12 @@ public class CombinedPerformance extends Performance {
     public CombinedPerformance(Currency curr, ExchangeRateCalculator calculator) {
         this.currency = curr;
 
-        ExchangeRateClient exClient = new ExchangeRateClient();
-        exClient.update();
+        //ExchangeRateClient exClient = new ExchangeRateClient();
+        //exClient.update();
 
-        this.calculator = exClient.getCurentCalculator();
+        //this.calculator = exClient.getCurentCalculator();
 
+        this.calculator = calculator;
         performances = new CurrencyContainer<>();
 
         for(Currency c : Currency.values()) {

@@ -1,5 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox.wallet;
 
+import at.outdated.bitcoin.exchange.api.account.Wallet;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

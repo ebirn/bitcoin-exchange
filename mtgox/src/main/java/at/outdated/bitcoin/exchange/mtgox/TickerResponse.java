@@ -1,8 +1,9 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 
-import at.outdated.bitcoin.exchange.api.Currency;
-import at.outdated.bitcoin.exchange.api.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -138,5 +139,30 @@ public class TickerResponse {
 
     public double[] getValueArray() {
         return new double[] {getTimestamp().getTime() , last.getValue(), buy.getValue(), sell.getValue(), vol.getValue(), high.getValue(), avg.getValue(), low.getValue(), vwap.getValue()};
+    }
+
+    public TickerValue getTickerValue() {
+        TickerValue value = new TickerValue();
+
+        // TODO this is a stupid workaround
+        TickerResponse ticker = this;
+
+        value.setTimestamp(ticker.getTimestamp());
+
+        value.setLast(ticker.getLast().getValue());
+
+        value.setBuy(ticker.getBuy().getValue());
+        value.setSell(ticker.getSell().getValue());
+
+        value.setLow(ticker.getLow().getValue());
+        value.setAvg(ticker.getAvg().getValue());
+        value.setHigh(ticker.getHigh().getValue());
+
+        value.setVolume(ticker.getVol().getValue());
+
+        value.setVolumeWeightedAvg(ticker.getVwap().getValue());
+        value.setCurrency(ticker.getInCurrency());
+
+        return value;
     }
 }

@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.mtgox.wallet;
+package at.outdated.bitcoin.exchange.api.account;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;

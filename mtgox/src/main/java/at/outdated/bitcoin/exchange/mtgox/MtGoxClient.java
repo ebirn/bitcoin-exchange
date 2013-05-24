@@ -1,11 +1,11 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.Currency;
-import at.outdated.btrader.mechanics.track.NumberValueTrack;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.track.NumberValueTrack;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
-import at.outdated.bitcoin.exchange.mtgox.wallet.WalletHistory;
-import at.outdated.bitcoin.exchange.mtgox.wallet.WalletTransaction;
+import at.outdated.bitcoin.exchange.api.account.WalletHistory;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -37,8 +35,6 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 
-@Stateless
-@LocalBean
 public class MtGoxClient {
 
     private final String API_BASE_URL = "https://data.mtgox.com/api/2/";

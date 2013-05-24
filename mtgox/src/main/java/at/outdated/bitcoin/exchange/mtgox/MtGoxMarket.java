@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.Currency;
 import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,13 +1,13 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.mtgox.wallet.Wallets;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.*;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
