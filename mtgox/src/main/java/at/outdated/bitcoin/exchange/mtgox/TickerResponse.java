@@ -151,8 +151,8 @@ public class TickerResponse {
 
         value.setLast(ticker.getLast().getValue());
 
-        value.setBid(ticker.getSell().getValue());
-        value.setAsk(ticker.getBuy().getValue());
+        value.setAsk(ticker.getSell().getValue());
+        value.setBid(ticker.getBuy().getValue());
 
         value.setLow(ticker.getLow().getValue());
         value.setHigh(ticker.getHigh().getValue());
