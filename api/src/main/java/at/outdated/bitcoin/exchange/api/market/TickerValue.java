@@ -17,7 +17,7 @@ public class TickerValue extends TimedValue<double[]> {
 
     private double last, bid, ask, high, low, volume;
 
-    public static final int DIMENSIONS = 7;
+    public static final int DIMENSIONS = 6;
 
     private Currency currency = Currency.EUR;
 
