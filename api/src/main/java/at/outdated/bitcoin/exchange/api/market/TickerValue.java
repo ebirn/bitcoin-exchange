@@ -15,9 +15,9 @@ public class TickerValue extends TimedValue<double[]> {
 
     private Date timestamp = new Date();
 
-    private double last, buy, sell, high, low, volume, avg, volumeWeightedAvg;
+    private double last, bid, ask, high, low, volume;
 
-    public static final int DIMENSIONS = 8;
+    public static final int DIMENSIONS = 7;
 
     private Currency currency = Currency.EUR;
 
@@ -26,7 +26,7 @@ public class TickerValue extends TimedValue<double[]> {
     }
 
     public static final TickerValue createNanInstance(Currency curr) {
-        TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, curr);
+        TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, curr);
         return ticker;
     }
 
@@ -37,34 +37,30 @@ public class TickerValue extends TimedValue<double[]> {
     public TickerValue(TickerValue other) {
         this.timestamp = other.timestamp;
         this.last = other.last;
-        this.buy = other.buy;
-        this.sell = other.sell;
+        this.bid = other.bid;
+        this.ask = other.ask;
         this.low = other.low;
-        this.avg = other.avg;
         this.high = other.high;
 
         this.volume = other.volume;
-        this.volumeWeightedAvg = other.volumeWeightedAvg;
         this.currency = other.currency;
     }
 
-    public TickerValue(Date timestamp, double last, double buy, double sell, double volume, double high, double avg, double low, double volumeWeightedAvg, Currency curr) {
+    public TickerValue(Date timestamp, double last, double bid, double ask, double volume, double high, double low, Currency curr) {
         this.timestamp = timestamp;
         this.last = last;
-        this.buy = buy;
-        this.sell = sell;
+        this.bid = bid;
+        this.ask = ask;
         this.low = low;
-        this.avg = avg;
         this.high = high;
 
         this.volume = volume;
-        this.volumeWeightedAvg = volumeWeightedAvg;
         this.currency = curr;
     }
 
     @Override
     public double[] getValue() {
-        double[] value = {timestamp.getTime(), last, buy, sell, volume, high, avg, low, volumeWeightedAvg};
+        double[] value = {timestamp.getTime(), last, bid, ask, volume, high, low};
         return value;
     }
 
@@ -85,20 +81,20 @@ public class TickerValue extends TimedValue<double[]> {
         this.last = last;
     }
 
-    public double getBuy() {
-        return buy;
+    public double getBid() {
+        return bid;
     }
 
-    public void setBuy(double buy) {
-        this.buy = buy;
+    public void setBid(double bid) {
+        this.bid = bid;
     }
 
-    public double getSell() {
-        return sell;
+    public double getAsk() {
+        return ask;
     }
 
-    public void setSell(double sell) {
-        this.sell = sell;
+    public void setAsk(double ask) {
+        this.ask = ask;
     }
 
     public double getHigh() {
@@ -123,22 +119,6 @@ public class TickerValue extends TimedValue<double[]> {
 
     public void setVolume(double volume) {
         this.volume = volume;
-    }
-
-    public double getAvg() {
-        return avg;
-    }
-
-    public void setAvg(double avg) {
-        this.avg = avg;
-    }
-
-    public double getVolumeWeightedAvg() {
-        return volumeWeightedAvg;
-    }
-
-    public void setVolumeWeightedAvg(double volumeWeightedAvg) {
-        this.volumeWeightedAvg = volumeWeightedAvg;
     }
 
     public void setCurrency(Currency curr) {

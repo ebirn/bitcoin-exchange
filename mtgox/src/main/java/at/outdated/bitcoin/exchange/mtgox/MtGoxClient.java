@@ -1,21 +1,21 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.track.NumberValueTrack;
-import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
-import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
+import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.WalletHistory;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
+import at.outdated.bitcoin.exchange.api.client.AccountInfo;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
+import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -35,7 +35,7 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 
-public class MtGoxClient {
+public class MtGoxClient extends ExchangeApiClient {
 
     private final String API_BASE_URL = "https://data.mtgox.com/api/2/";
 
@@ -54,19 +54,20 @@ public class MtGoxClient {
     private final String SIGN_HASH_FUNCTION = "HmacSHA512";
     private final String ENCODING = "UTF-8";
 
-    private Client client = new Client();
     private WebResource apiBaseResource;
 
-    private static Logger log = LoggerFactory.getLogger("client.mtgox");
+    static {
+        log = LoggerFactory.getLogger("client.mtgox");
+    }
 
-    @PostConstruct
-    public void startup() {
+    public MtGoxClient() {
 
         KeyStore ks = loadCertificates();
 
-
         String storePass = "h4rdc0r_";
         try(InputStream keyStoreStream = RequestAuth.class.getResourceAsStream("mtgox.jks")) {
+
+            if(keyStoreStream == null) log.error("failed to open Mt.Gox keystore");
 
             ks.load(keyStoreStream, storePass.toCharArray());
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -106,6 +107,7 @@ public class MtGoxClient {
         return ks;
     }
 
+    @Override
     public AccountInfo getAccountInfo() {
 
         Date requestDate = new Date();
@@ -122,61 +124,56 @@ public class MtGoxClient {
 
 
 
-    public TickerResponse getTicker(Currency currency) {
+    @Override
+    public TickerValue getTicker(Currency currency) {
 
-        TickerResponse ticker = null;
+        TickerValue ticker = null;
 
-        try {
-            String uri = "BTC" + currency.name() + "/money/ticker";
-            WebResource webResource = client.resource(API_BASE_URL + uri);
-            ApiTickerResponse tickerResponse = webResource.accept("application/json").get(ApiTickerResponse.class);
+        String uri = "BTC" + currency.name() + "/money/ticker";
+        WebResource webResource = client.resource(API_BASE_URL + uri);
+        ApiTickerResponse tickerResponse = simpleGetRequest(webResource, ApiTickerResponse.class);
 
-            ticker = tickerResponse.getData();
-            ticker.setInCurrency(currency);
+        if(tickerResponse != null && tickerResponse.getData() != null) {
+            tickerResponse.getData().setInCurrency(currency);
+            tickerResponse.getData().setItemCurrency(Currency.BTC);
+            ticker = tickerResponse.getData().getTickerValue();
+
         }
-        catch(UniformInterfaceException uie) {
-            log.warn(currency + " ticker request failed.", uie);
-        }
+
         return ticker;
     }
 
 
-    public TickerResponse getFastTicker(Currency currency) {
+    public TickerValue getFastTicker(Currency currency) {
 
-        TickerResponse tickerResponse = null;
+        TickerValue ticker = null;
+        WebResource webResource = client.resource(API_BASE_URL + API_TICKER_FAST_EUR);
+        ApiTickerResponse res =  simpleGetRequest(webResource, ApiTickerResponse.class);
 
-        try {
-            WebResource webResource = client.resource(API_BASE_URL + API_TICKER_FAST_EUR);
-            tickerResponse = webResource.accept("application/json").get(ApiTickerResponse.class).getData();
-        }
-        catch(UniformInterfaceException uie) {
-            log.warn(currency + " ticker request failed.", uie);
-        }
+        if(res != null) ticker = res.getData().getTickerValue();
 
-        return tickerResponse;
+        return ticker;
     }
 
 
-    public LagResponse getLag() {
+    @Override
+    public Number getLag() {
+
         WebResource webResource = client.resource(API_BASE_URL + API_LAG);
+        ApiLagResponse lagResponse = simpleGetRequest(webResource, ApiLagResponse.class);
 
-
-        try {
-            ApiLagResponse lagResponse = webResource.accept(MediaType.APPLICATION_JSON_TYPE).get(ApiLagResponse.class);
-
-            if(lagResponse == null) {
-                log.warn("no response from api for trading lag");
-                return null;
-            }
-
-            return lagResponse.getData();
+        if(lagResponse == null) {
+            log.warn("no response from api for trading lag");
+            return null;
         }
-        catch (UniformInterfaceException uie) {
-            log.warn("failed to update trading lag");
-        }
-        return null;
+
+        return lagResponse.getData().getSeconds();
     }
 
+    @Override
+    protected WebResource.Builder setupProtectedResource(WebResource res) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     private ClientResponse signedRequest(String path, String data) {
 
@@ -190,12 +187,12 @@ public class MtGoxClient {
             }
 
             RequestAuth auth = new RequestAuth();
-            String signature = auth.hmac(path, payload);
+            String signature = auth.hmac(path, payload, getSecret("mtgox"));
 
             Date requestDate = new Date();
 
             WebResource.Builder builder = apiBaseResource.path(path).accept("application/json");
-            ClientResponse res = builder.header("Rest-Key", RequestAuth.getKey())
+            ClientResponse res = builder.header("Rest-Key", getUserId("mtgox"))
                                         .header("Rest-Sign", signature)
                                         .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
                                         .entity(payload)
@@ -214,19 +211,7 @@ public class MtGoxClient {
     }
 
 
-    private NumberValueTrack apiLagTrack = new NumberValueTrack(5);
-
-    protected void updateApiLag(Date requestDate/*, Date responseDate*/) {
-        Date responseDate = new Date();
-        double apiDiff = (responseDate.getTime()-requestDate.getTime())/1000.0;
-        apiLagTrack.insert(apiDiff);
-    }
-
-    public double getApiLag() {
-        return apiLagTrack.getStatistics().getMean();
-    }
-
-
+    @Override
     public WalletHistory getWalletHistory(Currency currency) {
 
         Date requestDate = new Date();
@@ -249,10 +234,5 @@ public class MtGoxClient {
 
 
 
-    private void handleApiError(UniformInterfaceException uie) {
-        if(uie.getResponse().getClientResponseStatus() == ClientResponse.Status.BAD_GATEWAY) {
 
-            log.error("API error: BAD GATEWAY");
-        }
-    }
 }

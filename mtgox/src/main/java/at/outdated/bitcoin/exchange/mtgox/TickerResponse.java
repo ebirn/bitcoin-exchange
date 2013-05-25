@@ -151,16 +151,14 @@ public class TickerResponse {
 
         value.setLast(ticker.getLast().getValue());
 
-        value.setBuy(ticker.getBuy().getValue());
-        value.setSell(ticker.getSell().getValue());
+        value.setBid(ticker.getSell().getValue());
+        value.setAsk(ticker.getBuy().getValue());
 
         value.setLow(ticker.getLow().getValue());
-        value.setAvg(ticker.getAvg().getValue());
         value.setHigh(ticker.getHigh().getValue());
 
         value.setVolume(ticker.getVol().getValue());
 
-        value.setVolumeWeightedAvg(ticker.getVwap().getValue());
         value.setCurrency(ticker.getInCurrency());
 
         return value;

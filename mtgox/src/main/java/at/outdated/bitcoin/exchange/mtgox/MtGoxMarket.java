@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
+import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 
@@ -21,7 +22,16 @@ public class MtGoxMarket extends Market {
     }
 
     @Override
-    public Currency[] getTradedCurrencies() {
-        return new Currency[] { Currency.BTC, Currency.EUR, Currency.JPY, Currency.USD };
+    public Currency[] getFiatCurrencies() {
+        return new Currency[] { Currency.EUR, Currency.JPY, Currency.USD };
+    }
+
+    public Currency[] getCryptoCurrencies() {
+        return new Currency[] {Currency.BTC };
+    }
+
+    @Override
+    public ExchangeApiClient getApiClient() {
+        return new MtGoxClient();
     }
 }

@@ -1,5 +1,9 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
+import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -7,5 +11,29 @@ package at.outdated.bitcoin.exchange.bitstamp;
  * Time: 15:41
  * To change this template use File | Settings | File Templates.
  */
-public class BitstampMarket {
+public class BitstampMarket extends Market {
+
+
+    public BitstampMarket() {
+        this.url = "https://www.bitstamp.net";
+        this.description = "Bitstamp.net";
+        this.primaryCurrency = Currency.USD;
+        this.key = "bitstamp";
+
+    }
+
+    @Override
+    public Currency[] getFiatCurrencies() {
+        return new Currency[]{ Currency.USD };
+    }
+
+    @Override
+    public Currency[] getCryptoCurrencies() {
+        return new Currency[]{ Currency.BTC };
+    }
+
+    @Override
+    public ExchangeApiClient getApiClient() {
+        return new BitstampClient();  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

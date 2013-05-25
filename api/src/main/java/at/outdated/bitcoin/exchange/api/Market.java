@@ -39,7 +39,15 @@ public abstract class Market {
         return key;
     }
 
-    public abstract Currency[] getTradedCurrencies();
+    public abstract Currency[] getFiatCurrencies();
+
+    public abstract Currency[] getCryptoCurrencies();
+
+    //TODO actually implememt this: also: decide what should be implemented here,
+    // what should be further service discorvery
+    // exchange rate calculaters: service
+    public abstract ExchangeApiClient getApiClient();
+
 
     @Override
     public String toString() {

@@ -1,7 +1,8 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
+import at.outdated.bitcoin.exchange.api.client.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.mtgox.wallet.Wallets;
+import at.outdated.bitcoin.exchange.api.account.Wallets;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +19,7 @@ import java.util.Date;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AccountInfo {
+public class MtGoxAccountInfo implements AccountInfo {
 
     //
     // "data":{
@@ -73,19 +74,22 @@ public class AccountInfo {
     private Wallets wallets;
 
 
-    public String getId() {
-        return id;
-    }
-
-
     public String getLogin() {
         return login;
     }
 
-
     public double getTradeFee() {
         return tradeFee;
     }
+
+    public Wallets getWallets() {
+        return wallets;
+    }
+
+    public String getId() {
+        return id;
+    }
+
 
     public long getIndex() {
         return index;
@@ -111,7 +115,4 @@ public class AccountInfo {
         return monthlyVolume;
     }
 
-    public Wallets getWallets() {
-        return wallets;
     }
-}

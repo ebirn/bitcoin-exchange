@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.mtgox.wallet;
+package at.outdated.bitcoin.exchange.api.account;
 
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 
