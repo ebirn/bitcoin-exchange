@@ -122,4 +122,9 @@ public class TickerValue extends TimedValue<double[]> {
     public Currency getCurrency() {
         return currency;
     }
+
+    @Override
+    public String toString() {
+        return "Ticker: " + last + " " + currency.name();
+    }
 }
