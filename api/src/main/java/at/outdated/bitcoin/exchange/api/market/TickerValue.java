@@ -13,8 +13,6 @@ import java.util.Date;
  */
 public class TickerValue extends TimedValue<double[]> {
 
-    private Date timestamp = new Date();
-
     private double last, bid, ask, high, low, volume;
 
     public static final int DIMENSIONS = 6;
@@ -22,7 +20,7 @@ public class TickerValue extends TimedValue<double[]> {
     private Currency currency = Currency.EUR;
 
     public TickerValue() {
-
+        this.timestamp = new Date();
     }
 
     public static final TickerValue createNanInstance(Currency curr) {
@@ -64,10 +62,6 @@ public class TickerValue extends TimedValue<double[]> {
         return value;
     }
 
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;

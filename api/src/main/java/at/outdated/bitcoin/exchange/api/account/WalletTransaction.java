@@ -28,12 +28,6 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
         "1BitcoinTransaction780gfsd8970fg:9"]
     */
 
-    public class TransactionLink {
-        private String uid;
-        private String name;
-        private String id2;
-    }
-
     @XmlElement(name = "Date")
     private long datestamp;
 

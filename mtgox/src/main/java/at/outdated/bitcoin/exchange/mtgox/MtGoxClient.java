@@ -1,9 +1,9 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.account.WalletHistory;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
@@ -110,7 +110,7 @@ public class MtGoxClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
 
-        Date requestDate = new Date();
+
         ClientResponse res = signedRequest(API_GET_INFO, "");
 
         if(res == null) {
@@ -118,7 +118,19 @@ public class MtGoxClient extends ExchangeApiClient {
             return null;
         }
 
-        AccountInfo accountInfo = res.getEntity(ApiAccountInfo.class).getData();
+        MtGoxAccountInfo accountInfo = res.getEntity(ApiAccountInfo.class).getData();
+
+        // fix up wallte structure, load transaction data
+        MtGoxWallets wallets = accountInfo.getWallets();
+        for(Currency c : wallets.getCurrencies()) {
+            Wallet w = wallets.getWallet(c);
+
+            MtGoxWalletHistory history = this.getWalletHistory(c);
+            w.setTransactions(history.getTransactions());
+
+            accountInfo.setWallet(w);
+        }
+
         return accountInfo;
     }
 
@@ -211,8 +223,7 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
 
-    @Override
-    public WalletHistory getWalletHistory(Currency currency) {
+    public MtGoxWalletHistory getWalletHistory(Currency currency) {
 
         Date requestDate = new Date();
         ClientResponse res = signedRequest(API_GET_WALLET_HISTORY, "currency="+currency.name());
@@ -220,16 +231,16 @@ public class MtGoxClient extends ExchangeApiClient {
 
         if(res == null) return null;
 
-        WalletHistory walletHistory = res.getEntity(ApiWalletHistory.class).getData();
+        MtGoxWalletHistory mtGoxWalletHistory = res.getEntity(ApiWalletHistory.class).getData();
 
         // TODO: fix this somwhere else? remove empty/null Transaction
-        Iterator<WalletTransaction> it = walletHistory.getTransactions().iterator();
+        Iterator<WalletTransaction> it = mtGoxWalletHistory.getTransactions().iterator();
         while(it.hasNext()) {
             WalletTransaction trans = it.next();
             if(trans.getValue() == null) it.remove();
         }
 
-        return walletHistory;
+        return mtGoxWalletHistory;
     }
 
 

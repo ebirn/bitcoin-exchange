@@ -1,9 +1,10 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.account.WalletHistory;
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import com.sun.jersey.api.client.WebResource;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class BitstampClient extends ExchangeApiClient {
 
     @Override
     public AccountInfo getAccountInfo() {
-        WebResource balanceResource = client.resource("https://www.bitstamp.net/api/balance/");
+
 
         StringBuilder payloadBuilder = new StringBuilder();
         payloadBuilder.append("user=");
@@ -37,13 +38,24 @@ public class BitstampClient extends ExchangeApiClient {
         payloadBuilder.append("password=");
         payloadBuilder.append(getSecret("bitstamp"));
 
+        WebResource balanceResource = client.resource("https://www.bitstamp.net/api/balance/");
         BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, payloadBuilder.toString());
 
 
         log.info("bitstamp balance: {}", balance);
 
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        BitstampAccountInfo info = new BitstampAccountInfo();
+
+        Wallet wUSD = new BitstampWallet(Currency.USD);
+        wUSD.setBalance(new CurrencyValue(balance.getUsdBalance().doubleValue(), Currency.USD));
+        info.setWallet(wUSD);
+
+        Wallet wBTC = new BitstampWallet(Currency.BTC);
+        wBTC.setBalance(new CurrencyValue(balance.getBtcBalance().doubleValue(), Currency.BTC));
+        info.setWallet(wBTC);
+
+        return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -60,11 +72,6 @@ public class BitstampClient extends ExchangeApiClient {
     @Override
     public Number getLag() {
         return 1.0;
-    }
-
-    @Override
-    public WalletHistory getWalletHistory(Currency currency) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

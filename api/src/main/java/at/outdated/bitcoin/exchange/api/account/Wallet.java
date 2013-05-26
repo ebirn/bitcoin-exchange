@@ -1,71 +1,71 @@
 package at.outdated.bitcoin.exchange.api.account;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.performance.CurrencyPerformance;
+import at.outdated.bitcoin.exchange.api.performance.Performance;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
- * Date: 03.05.13
- * Time: 14:05
+ * Date: 26.05.13
+ * Time: 14:54
  * To change this template use File | Settings | File Templates.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Wallet {
+public abstract class Wallet {
 
-    @XmlElement(name="Balance")
-    private CurrencyValue balance;
+    protected CurrencyValue balance;
 
+    protected CurrencyValue openOrders;
 
-    @XmlElement(name="Operations")
-    private long transactionCount;
+    protected Currency currency;
 
-
-    @XmlElement(name="Open_Orders")
-    private CurrencyValue openOrders;
-
-    @XmlElement(name="Daily_Withdraw_Limit")
-    private CurrencyValue Daily_Withdraw_Limit;
-
-    @XmlElement(name="Monthly_Withdraw_Limit")
-    private CurrencyValue Monthly_Withdraw_Limit;
-
-    @XmlElement(name="Max_Withdraw")
-    private CurrencyValue Max_Withdraw;
+    protected List<WalletTransaction> transactions = new ArrayList<>();
 
 
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setBalance(CurrencyValue balance) {
+        this.balance = balance;
+    }
 
     public CurrencyValue getBalance() {
         return balance;
     }
 
-
-    public long getTransactionCount() {
-        return transactionCount;
-    }
-
-
     public CurrencyValue getOpenOrders() {
         return openOrders;
     }
 
-    public CurrencyValue getDaily_Withdraw_Limit() {
-        return Daily_Withdraw_Limit;
+    public void setTransactions(List<WalletTransaction> transactions) {
+        this.transactions = transactions;
     }
 
-    public CurrencyValue getMonthly_Withdraw_Limit() {
-        return Monthly_Withdraw_Limit;
+    public List<WalletTransaction> getTransactions() {
+        return transactions;
     }
 
-    public CurrencyValue getMax_Withdraw() {
-        return Max_Withdraw;
+    public Performance getPerformance(Date since) {
+
+        Performance perf = new CurrencyPerformance(getCurrency());
+        for(WalletTransaction trans : getTransactions()) {
+            if(since.before(trans.getTimestamp())) {
+                perf.includeTransaction(trans);
+            }
+        }
+
+        return perf;
     }
+
 
     public String toString() {
-        return "Wallet: balance="+balance;
+        return "Wallet: " + getCurrency() + ": " + getBalance();
     }
-
 }

@@ -106,7 +106,7 @@ public class CurrencyValue {
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
-        nf.setMinimumIntegerDigits(2);
+        nf.setMinimumIntegerDigits(1);
         return nf.format(value) + " " + currency.name();
     }
 }

@@ -34,13 +34,18 @@ public abstract class Performance {
 
         String percentChange = NumberFormat.getPercentInstance().format(getPercent());
 
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-        currencyFormat.setCurrency(java.util.Currency.getInstance(getCurrency().name()));
+        /*
+        NumberFormat currencyFormat = NumberFormat.getInstance();
+        currencyFormat.setMinimumFractionDigits(2);
+        currencyFormat.setMaximumFractionDigits(2);
 
-        String startBalance = currencyFormat.format(getStartBalance());
-        String endBalance = currencyFormat.format(getEndBalance());
-        String diff = currencyFormat.format(getTotalDifference());
+        currencyFormat.setMinimumIntegerDigits(2);
 
-        return "Performance: " + startBalance + " -> " + endBalance + " = " + diff + " (" + percentChange + ")";
+        String startBalance = currencyFormat.format(getStartBalance()) + " " + getCurrency();
+        String endBalance = currencyFormat.format(getEndBalance()) + " " + getCurrency();
+        String diff = currencyFormat.format(getTotalDifference()) + " " + getCurrency();
+        */
+
+        return "Performance: " + getStartBalance() + " -> " + getEndBalance() + " = " + getTotalDifference() + " (" + percentChange + ")";
     }
 }

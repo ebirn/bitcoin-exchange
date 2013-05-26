@@ -1,8 +1,9 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.account.Wallets;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +20,7 @@ import java.util.Date;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MtGoxAccountInfo implements AccountInfo {
+public class MtGoxAccountInfo extends AccountInfo {
 
     //
     // "data":{
@@ -71,19 +72,19 @@ public class MtGoxAccountInfo implements AccountInfo {
     private CurrencyValue monthlyVolume;
 
     @XmlElement(name="Wallets")
-    private Wallets wallets;
+    private MtGoxWallets mtGoxWallets;
 
 
     public String getLogin() {
         return login;
     }
 
-    public double getTradeFee() {
+    public double getTradeFeePercent() {
         return tradeFee;
     }
 
-    public Wallets getWallets() {
-        return wallets;
+    public MtGoxWallets getWallets() {
+        return mtGoxWallets;
     }
 
     public String getId() {
@@ -115,4 +116,10 @@ public class MtGoxAccountInfo implements AccountInfo {
         return monthlyVolume;
     }
 
+
+    @Override
+    public Wallet getWallet(Currency curr) {
+
+        return super.getWallet(curr);    //To change body of overridden methods use File | Settings | File Templates.
     }
+}

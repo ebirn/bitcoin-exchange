@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.performance;
 
-import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 
 import java.util.ArrayList;

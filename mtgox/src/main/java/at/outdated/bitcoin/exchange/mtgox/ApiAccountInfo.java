@@ -1,7 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,7 +19,7 @@ public class ApiAccountInfo extends ApiResponse {
     @XmlElement(name="data")
     protected MtGoxAccountInfo data;
 
-    public AccountInfo getData() {
+    public MtGoxAccountInfo getData() {
         return data;
     }
 }

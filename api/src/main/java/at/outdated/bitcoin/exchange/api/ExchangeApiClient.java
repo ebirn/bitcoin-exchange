@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.api;
 
-import at.outdated.bitcoin.exchange.api.account.WalletHistory;
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberValueTrack;
@@ -38,8 +37,6 @@ public abstract class ExchangeApiClient {
     public abstract TickerValue getTicker(Currency currency);
 
     public abstract Number getLag();
-
-    public abstract WalletHistory getWalletHistory(Currency currency);
 
 
     final public double getApiLag() {
@@ -124,7 +121,7 @@ public abstract class ExchangeApiClient {
 */
 
     protected String getSecret(String market) {
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
+        ResourceBundle bundle = ResourceBundle.getBundle("at.outdated.bitcoin.exchange.api.bitcoin-exchange");
 
         String name = market + ".secret";
         return bundle.getString(name);
@@ -133,10 +130,24 @@ public abstract class ExchangeApiClient {
     }
 
     protected String getUserId(String market) {
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
+        ResourceBundle bundle = ResourceBundle.getBundle("at.outdated.bitcoin.exchange.api.bitcoin-exchange");
         String name = market + ".userid";
         return bundle.getString(name);
 
         //return getProperties().get(name).toString();
     }
+
+
+
+    // transactions in the past -> for calculating performance
+    // https://www.bitstamp.net/api/user_transactions/
+
+
+
+
+
+    // open orders: orders have been sent, but not processed yet
+    // https://www.bitstamp.net/api/open_orders/
+
+
 }

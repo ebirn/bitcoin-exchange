@@ -11,8 +11,8 @@ import java.util.Date;
  */
 public class TimedValue<V> {
 
-    private Date timestamp;
-    private V value;
+    protected Date timestamp = new Date();
+    protected V value;
 
     public TimedValue() {
 

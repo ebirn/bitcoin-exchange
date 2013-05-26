@@ -30,23 +30,26 @@ public class BitstampAccountBalance {
     }
     */
 
-    @XmlElement(name="btc_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number btcReserved;
+    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
+    Number fee;
 
     @XmlElement(name="usd_balance") @XmlJavaTypeAdapter(StringNumberAdapter.class)
     Number usdBalance;
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number fee;
+    @XmlElement(name="usd_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
+    Number usdReserved;
 
     @XmlElement(name="usd_available") @XmlJavaTypeAdapter(StringNumberAdapter.class)
     Number usdAvailable;
 
+
+
     @XmlElement(name="btc_balance") @XmlJavaTypeAdapter(StringNumberAdapter.class)
     Number btcBalance;
 
-    @XmlElement(name="usd_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number usdReserved;
+    @XmlElement(name="btc_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
+    Number btcReserved;
+
 
     @XmlElement(name="btc_available") @XmlJavaTypeAdapter(StringNumberAdapter.class)
     Number btcAvailable;

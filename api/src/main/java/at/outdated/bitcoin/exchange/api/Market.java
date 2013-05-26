@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,6 +43,10 @@ public abstract class Market {
     public abstract Currency[] getFiatCurrencies();
 
     public abstract Currency[] getCryptoCurrencies();
+
+    public Currency[] getAllCurrencies() {
+        return  ArrayUtils.addAll(getFiatCurrencies(), getCryptoCurrencies());
+    }
 
     //TODO actually implememt this: also: decide what should be implemented here,
     // what should be further service discorvery

@@ -25,16 +25,11 @@ public abstract class ExchangeMarketMonitor {
 
     protected static CurrencyContainer<TickerValue> lastTicker = new CurrencyContainer<>();
 
-
-
     protected static Logger log = LoggerFactory.getLogger("MarketMonitor");
 
 
     public abstract Currency[] getTradedCurrencies();
     public abstract Market getMarket();
-
-
-
 
     public abstract double getTradeLagAvg();
 

@@ -1,8 +1,11 @@
-package at.outdated.bitcoin.exchange.api.account;
+package at.outdated.bitcoin.exchange.mtgox;
+
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +18,7 @@ import java.util.List;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class WalletHistory  {
+public class MtGoxWalletHistory {
 
     private int records;
 
@@ -26,7 +29,7 @@ public class WalletHistory  {
     private int max_results;
 
     @XmlElement(name="result")
-    private List<WalletTransaction> transactions;
+    private List<WalletTransaction> transactions = new ArrayList<>();
 
 
     public int getRecords() {

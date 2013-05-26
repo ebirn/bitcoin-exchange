@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
-import at.outdated.bitcoin.exchange.api.client.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.junit.Assert;
@@ -41,6 +41,8 @@ public class ApiClientTest {
     public void testAccountInfo() {
 
         AccountInfo info = bitstampClient.getAccountInfo();
+
+        Assert.assertNotNull(info);
 
     }
 }

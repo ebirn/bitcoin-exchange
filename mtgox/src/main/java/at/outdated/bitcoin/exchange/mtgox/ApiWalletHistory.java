@@ -1,7 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.account.WalletHistory;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -17,9 +15,9 @@ public class ApiWalletHistory extends ApiResponse {
 
 
     @XmlElement(name="data")
-    private WalletHistory walletHistory;
+    private MtGoxWalletHistory walletHistory;
 
-    public WalletHistory getData() {
+    public MtGoxWalletHistory getData() {
         return walletHistory;
     }
 }
