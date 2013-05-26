@@ -63,8 +63,8 @@ public class BtcETickerValue  {
         ticker.setTimestamp(new Date(timestamp*1000));
         ticker.setLast(last);
         ticker.setVolume(vol_cur);
-        ticker.setBid(buy);
-        ticker.setAsk(sell);
+        ticker.setBid(sell);
+        ticker.setAsk(buy);
         ticker.setHigh(high);
         ticker.setLow(low);
 
