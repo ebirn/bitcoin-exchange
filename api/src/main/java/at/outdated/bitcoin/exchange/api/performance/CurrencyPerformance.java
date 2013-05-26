@@ -39,8 +39,12 @@ public class CurrencyPerformance extends Performance {
             throw new IllegalArgumentException("Currency mismatch: only " + currency + " is allowed.");
         }
 
+        transactions.add(transaction);
+
         TransactionType type = transaction.getType();
         //if(ignoredTransactions.contains(type)) return;
+
+
 
         double balance = transaction.getBalance().getValue();
 
@@ -56,9 +60,7 @@ public class CurrencyPerformance extends Performance {
 
     @Override
     public double getPercent() {
-        double onePercent = startBalance / 100.0;
-
-        return 1.0 + (getTotalDifference() / onePercent);
+        return (getTotalDifference() / startBalance);
     }
 
     @Override

@@ -25,6 +25,8 @@ public abstract class AccountInfo {
 
     protected CurrencyContainer<Wallet> wallets = new CurrencyContainer<>();
 
+    protected ExchangeRateCalculator calculator = new ExchangeRateCalculator();
+
     abstract public String getLogin();
 
     public double getTradeFeeOffset() {
@@ -76,7 +78,7 @@ public abstract class AccountInfo {
 
 
     public Performance getOverallPerformance(Currency inCurrency) {
-        CombinedPerformance perf = new CombinedPerformance(inCurrency, new ExchangeRateCalculator());
+        CombinedPerformance perf = new CombinedPerformance(inCurrency, calculator);
 
         for(Wallet w : wallets) {
             List<WalletTransaction> currencyTransactions = w.getTransactions();
@@ -86,6 +88,10 @@ public abstract class AccountInfo {
             }
         }
         return perf;
+    }
+
+    public void setExchangeRateCalculator(ExchangeRateCalculator calculator) {
+        this.calculator = calculator;
     }
 
 }

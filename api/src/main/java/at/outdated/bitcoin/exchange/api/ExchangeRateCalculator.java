@@ -16,6 +16,8 @@ public class ExchangeRateCalculator {
 
     double[][] rates;
 
+
+
     public ExchangeRateCalculator() {
         int currencyCount = Currency.values().length;
 
@@ -27,6 +29,15 @@ public class ExchangeRateCalculator {
             // initialize rates with 0
             Arrays.fill(rates[i], 0.0);
             rates[i][i] = 1.0;
+        }
+    }
+
+    public ExchangeRateCalculator(ExchangeRateCalculator other) {
+
+        this.rates = Arrays.copyOf(other.rates, other.rates.length);
+
+        for(int i=0; i<rates.length; i++) {
+            rates[i] = Arrays.copyOf(other.rates[i], other.rates[i].length);
         }
     }
 
