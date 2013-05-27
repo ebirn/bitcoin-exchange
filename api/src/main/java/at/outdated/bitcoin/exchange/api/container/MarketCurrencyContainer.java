@@ -14,4 +14,13 @@ import at.outdated.bitcoin.exchange.api.market.Markets;
  */
 public class MarketCurrencyContainer<T> extends MarketContainer<CurrencyContainer<T>> {
 
+
+    public T get(Market market, Currency currency) {
+        return this.get(market).get(currency);
+    }
+
+
+    public void set(Market market, Currency currency, T value) {
+        this.get(market).set(currency, value);
+    }
 }
