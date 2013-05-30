@@ -4,11 +4,13 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -79,8 +81,15 @@ public class MtGoxAccountInfo extends AccountInfo {
         return login;
     }
 
-    public double getTradeFeePercent() {
-        return tradeFee;
+    @Override
+    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
+
+        CurrencyValue fee = new CurrencyValue(volume);
+
+        fee.multiply(new BigDecimal(tradeFee));
+
+        return fee;
+
     }
 
     public MtGoxWallets getWallets() {

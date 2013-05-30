@@ -88,6 +88,13 @@ public class CurrencyValue {
         value *= (double) mul;
     }
 
+    public void multiply(BigDecimal mul) {
+        value_int *= mul.longValue();
+        value *= mul.doubleValue();
+    }
+
+
+
 
     public void divide(long div) {
         value_int /= div;

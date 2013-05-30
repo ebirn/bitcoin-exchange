@@ -19,6 +19,7 @@
 		<module>btc-e</module>
 		<module>btcde</module>
 		<module>bitstamp</module>
+		<module>bitcurex</module>
   </modules>
 
 	<dependencies>

@@ -1,6 +1,8 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,8 +18,9 @@ public class BtcEAccountInfo extends AccountInfo {
         return "btce";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
     @Override
-    public double getTradeFeePercent() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

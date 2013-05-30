@@ -26,6 +26,9 @@ public class TrackCollection {
         for(TrackInterval interval : TrackInterval.values()) {
             tracks.put(interval, new TickerValueTrack(interval.numSamples()));
         }
+
+        latest = new TickerValue();
+        latest.setTimestamp(new Date(0L));
     }
 
 

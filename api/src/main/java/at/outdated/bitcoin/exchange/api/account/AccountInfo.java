@@ -33,7 +33,7 @@ public abstract class AccountInfo {
         return 0.0;
     }
 
-    abstract public double getTradeFeePercent();
+    abstract public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade);
 
     public CurrencyValue getFee(TradeDecision direction, CurrencyValue value) {
 
