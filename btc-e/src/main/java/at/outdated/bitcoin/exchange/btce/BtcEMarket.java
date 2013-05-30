@@ -15,11 +15,7 @@ public class BtcEMarket extends Market {
 
 
     public BtcEMarket() {
-
-        this.url = "http://btc-e.com";
-        this.description = "BTC-E";
-        this.primaryCurrency = Currency.EUR;
-        this.key = "btc-e";
+        super("btc-e", "http://btc-e.com", "BTC-E", Currency.EUR);
     }
 
     @Override

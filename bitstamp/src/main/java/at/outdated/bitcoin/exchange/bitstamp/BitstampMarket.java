@@ -15,11 +15,7 @@ public class BitstampMarket extends Market {
 
 
     public BitstampMarket() {
-        this.url = "https://www.bitstamp.net";
-        this.description = "Bitstamp.net";
-        this.primaryCurrency = Currency.USD;
-        this.key = "bitstamp";
-
+        super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net", Currency.USD);
     }
 
     @Override

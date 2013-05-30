@@ -24,6 +24,13 @@ public abstract class Market {
     protected String key;
 
 
+    protected Market(String key, String url, String description, Currency primaryCurrency) {
+        this.key = key;
+        this.url = url;
+        this.description = description;
+        this.primaryCurrency = primaryCurrency;
+    }
+
     public String getUrl() {
         return url;
     }

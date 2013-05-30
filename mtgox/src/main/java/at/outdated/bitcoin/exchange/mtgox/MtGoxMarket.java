@@ -14,11 +14,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 public class MtGoxMarket extends Market {
 
      public MtGoxMarket() {
-        this.url = "http://www.mtgox.com";
-        this.description = "Mt.Gox";
-        this.primaryCurrency = Currency.EUR;
-        this.key = "mtgox";
-
+        super("mtgox", "http://www.mtgox.com", "Mt.Gox", Currency.EUR);
     }
 
     @Override

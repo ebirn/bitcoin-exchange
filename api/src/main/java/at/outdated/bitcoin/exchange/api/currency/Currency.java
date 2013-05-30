@@ -11,10 +11,12 @@ import javax.xml.bind.annotation.XmlEnum;
  */
 @XmlEnum
 public enum Currency {
-    BTC(100000000, 0.00000001),
-    EUR(100000, 0.00001),
-    USD(100000, 0.00001),
-    JPY(1000, 0.001);
+    BTC(100000000, 0.00000001), // Bitcoin
+    EUR(100000, 0.00001), // Euro
+    USD(100000, 0.00001), // US Dollars
+    JPY(1000, 0.001), // Japanese Yen
+    PLN(100000, 0.00001) //Polish Zloty
+;
 
     private int divide = 1;
     private double multiply = 1.0;
