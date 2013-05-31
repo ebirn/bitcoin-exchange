@@ -4,8 +4,6 @@ import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,13 +13,11 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 
-public class TrackCollection {
+public class TickerTrackCollection extends ValueTrackCollection<TickerValue, TickerValueTrack> {
 
-    private Map<TrackInterval,TickerValueTrack> tracks = new HashMap<>(TrackInterval.values().length);
 
-    private TickerValue latest;
 
-    public TrackCollection() {
+    public TickerTrackCollection() {
 
         for(TrackInterval interval : TrackInterval.values()) {
             tracks.put(interval, new TickerValueTrack(interval.numSamples()));
@@ -32,35 +28,10 @@ public class TrackCollection {
     }
 
 
-    public void insert(TickerValue value) {
-        this.latest = value;
-        for(ValueTrack track : tracks.values()) {
-            track.insert(value);
-        }
-    }
-
-    public TickerValue getLatest() {
-        return latest;
-    }
-
 
     // return statistics for a specific window
     public MultivariateSummaryStatistics getStatistics(TrackInterval interval) {
         return tracks.get(interval).getStatistics();
-    }
-
-
-    public TickerValue[] getTrackValues(TrackInterval trackInterval) {
-
-        TickerValueTrack track = getTrack(trackInterval);
-        TickerValue[] values = new TickerValue[track.getTrackLength()];
-
-        return track.valueBuffer.toArray(values);
-    }
-
-    public TickerValueTrack getTrack(TrackInterval interval) {
-        TickerValueTrack track = tracks.get(interval);
-        return track;
     }
 
 

@@ -3,7 +3,7 @@ package at.outdated.bitcoin.exchange.api;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.track.NumberValueTrack;
+import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 public abstract class ExchangeApiClient {
     protected static Logger log = LoggerFactory.getLogger("client");
 
-    protected NumberValueTrack apiLagTrack = new NumberValueTrack(5);
+    protected NumberTrack apiLagTrack = new NumberTrack(5);
 
     protected Client client = new Client();
 

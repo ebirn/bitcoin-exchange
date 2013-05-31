@@ -123,6 +123,11 @@ public class TickerValue extends TimedValue<double[]> {
         return currency;
     }
 
+
+    public double getBidAskSpread() {
+        return bid-ask;
+    }
+
     @Override
     public String toString() {
         return "Ticker: " + last + " " + currency.name();

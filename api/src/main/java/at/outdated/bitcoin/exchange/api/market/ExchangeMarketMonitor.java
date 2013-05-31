@@ -3,7 +3,7 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.track.NumberValueTrack;
+import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ import java.util.concurrent.Future;
 public abstract class ExchangeMarketMonitor {
 
 
-    protected static NumberValueTrack tradeLagTrack = new NumberValueTrack(5);
-    protected static NumberValueTrack apiLagTrack = new NumberValueTrack(5);
+    protected static NumberTrack tradeLagTrack = new NumberTrack(5);
+    protected static NumberTrack apiLagTrack = new NumberTrack(5);
 
     protected static CurrencyContainer<TickerValue> lastTicker = new CurrencyContainer<>();
 

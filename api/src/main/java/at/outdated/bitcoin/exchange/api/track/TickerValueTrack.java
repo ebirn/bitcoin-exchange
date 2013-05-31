@@ -12,11 +12,14 @@ import org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics;
  */
 public class TickerValueTrack extends ValueTrack<TickerValue> {
 
-
     public TickerValueTrack(int length) {
         super(length);
     }
 
+    @Override
+    public void insert(TickerValue value) {
+        super.insert(value);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
     public MultivariateSummaryStatistics getStatistics() {
 
