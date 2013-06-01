@@ -15,7 +15,7 @@ import java.util.Iterator;
  * Time: 21:16
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ValueTrack<D> implements Iterable<D> {
+public class ValueTrack<D> implements Iterable<D> {
 
     // assuming values every minute: track 1 hours
     private static final int LENGTH = 60;

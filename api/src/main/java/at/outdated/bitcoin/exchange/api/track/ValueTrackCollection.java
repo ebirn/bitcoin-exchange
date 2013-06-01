@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.track;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Map;
  * Time: 21:59
  * To change this template use File | Settings | File Templates.
  */
-public class ValueTrackCollection<V, T extends ValueTrack<V>> {
+public class ValueTrackCollection<V, T extends ValueTrack<V>> implements Iterable<T> {
 
     protected Map<TrackInterval,T> tracks = new HashMap<>(TrackInterval.values().length);
 
@@ -35,12 +35,13 @@ public class ValueTrackCollection<V, T extends ValueTrack<V>> {
         return track;
     }
 
-    public V[] getTrackValues(TrackInterval trackInterval) {
 
-        ValueTrack<V> track = getTrack(trackInterval);
+    @Override
+    public Iterator<T> iterator() {
+        return tracks.values().iterator();
+    }
 
-        V[] values = (V[]) new ArrayList<V>(track.getTrackLength()).toArray();
-
-        return track.valueBuffer.toArray(values);
+    public void setTrack(TrackInterval ti, T track) {
+        tracks.put(ti, track);
     }
 }
