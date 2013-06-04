@@ -61,38 +61,7 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
     public MtGoxClient() {
-
-        KeyStore ks = loadCertificates();
-
-        String storePass = "h4rdc0r_";
-        try(InputStream keyStoreStream = RequestAuth.class.getResourceAsStream("mtgox.jks")) {
-
-            if(keyStoreStream == null) log.error("failed to open Mt.Gox keystore");
-
-            ks.load(keyStoreStream, storePass.toCharArray());
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(ks);
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(ks, storePass.toCharArray());
-
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-            SSLContext.setDefault(ctx);
-
-            HTTPSProperties httpsProperties = new HTTPSProperties(null, ctx);
-
-            DefaultClientConfig dcc = new DefaultClientConfig();
-            dcc.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, httpsProperties);
-
-            client = Client.create(dcc);
-
-            apiBaseResource = client.resource(API_BASE_URL);
-
-        }
-        catch(Exception e) {
-            log.error("failed to load certificates");
-            e.printStackTrace();
-        }
+        apiBaseResource = client.resource(API_BASE_URL);
     }
 
     private KeyStore loadCertificates() {

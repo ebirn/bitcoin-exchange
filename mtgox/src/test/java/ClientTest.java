@@ -1,5 +1,7 @@
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.mtgox.MtGoxClient;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,6 +17,15 @@ public class ClientTest {
 
 
     ExchangeApiClient client = new MtGoxClient();
+
+
+    @Test
+    public void testTicker() {
+        TickerValue ticker = client.getTicker(Currency.EUR);
+
+        Assert.assertNotNull(ticker);
+
+    }
 
     @Test
     public void testAccountInfo() {
