@@ -15,7 +15,7 @@ public class TickerValue extends TimedValue<double[]> {
 
     private double last, bid, ask, high, low, volume;
 
-    public static final int DIMENSIONS = 6;
+    public static final int DIMENSIONS = 4;
 
     private Currency currency = Currency.EUR;
 
@@ -58,7 +58,7 @@ public class TickerValue extends TimedValue<double[]> {
 
     @Override
     public double[] getValue() {
-        double[] value = {timestamp.getTime(), last, bid, ask, volume, high, low};
+        double[] value = {timestamp.getTime(), last, bid, ask, volume};
         return value;
     }
 
