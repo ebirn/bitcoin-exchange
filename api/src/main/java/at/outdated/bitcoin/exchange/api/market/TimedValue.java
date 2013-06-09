@@ -9,7 +9,7 @@ import java.util.Date;
  * Time: 18:18
  * To change this template use File | Settings | File Templates.
  */
-public class TimedValue<V> {
+public class TimedValue<V> implements Comparable<TimedValue<V>> {
 
     protected Date timestamp = new Date();
     protected V value;
@@ -18,10 +18,16 @@ public class TimedValue<V> {
 
     }
 
+    public TimedValue(V value) {
+        this.timestamp = new Date();
+        this.value = value;
+    }
+
     public TimedValue(V value, Date timestamp) {
         this.timestamp = timestamp;
         this.value = value;
     }
+
 
     public V getValue() {
         return value;
@@ -29,5 +35,10 @@ public class TimedValue<V> {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public int compareTo(TimedValue<V> o) {
+        return this.getTimestamp().compareTo(o.getTimestamp());
     }
 }

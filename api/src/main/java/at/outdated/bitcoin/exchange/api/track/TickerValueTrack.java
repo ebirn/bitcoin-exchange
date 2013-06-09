@@ -3,6 +3,11 @@ package at.outdated.bitcoin.exchange.api.track;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -11,6 +16,10 @@ import org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics;
  * To change this template use File | Settings | File Templates.
  */
 public class TickerValueTrack extends ValueTrack<TickerValue> {
+
+    public TickerValueTrack(Collection c) {
+        super(c);
+    }
 
     public TickerValueTrack(int length) {
         super(length);
@@ -30,6 +39,17 @@ public class TickerValueTrack extends ValueTrack<TickerValue> {
         }
 
         return stats;
+    }
+
+    public TickerValueTrack until(final Date date) {
+        List<TickerValue> selected = new ArrayList<>();
+
+        for(TickerValue ticker : valueBuffer) {
+            if(ticker.getTimestamp().before(date))
+                selected.add(ticker);
+        }
+
+        return new TickerValueTrack(selected);
     }
 
 }

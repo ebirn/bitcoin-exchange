@@ -60,7 +60,6 @@ public abstract class Market {
     // exchange rate calculaters: service
     public abstract ExchangeApiClient getApiClient();
 
-
     @Override
     public String toString() {
         return getKey().toUpperCase();

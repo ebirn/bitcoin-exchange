@@ -6,6 +6,7 @@ import at.outdated.bitcoin.exchange.api.market.TimedValue;
 import org.apache.commons.math3.stat.regression.MillerUpdatingRegression;
 import org.apache.commons.math3.stat.regression.RegressionResults;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -30,6 +31,11 @@ public class ValueTrack<D> implements Iterable<D> {
 
     public ValueTrack(int length) {
         init(length);
+    }
+
+    public ValueTrack(Collection collection) {
+        init(collection.size());
+        valueBuffer.addAll(collection);
     }
 
     protected void init(int length) {
