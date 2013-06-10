@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.api.performance;
 
 import at.outdated.bitcoin.exchange.api.ExchangeRateCalculator;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -40,6 +41,14 @@ public class CombinedPerformance extends Performance {
         Currency c = transaction.getValue().getCurrency();
         performances.get(c).includeTransaction(transaction);
     }
+
+
+    public void includeWallet(Wallet wallet) {
+        for(WalletTransaction t : wallet.getTransactions()) {
+            includeTransaction(t);
+        }
+    }
+
 
     @Override
     public double getPercent() {

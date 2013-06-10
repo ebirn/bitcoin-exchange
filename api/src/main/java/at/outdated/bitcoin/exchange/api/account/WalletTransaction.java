@@ -45,6 +45,10 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
     private CurrencyValue balance;
 
 
+    public WalletTransaction() {
+        this.datestamp = (new Date()).getTime()/1000L;
+    }
+
     public Date getTimestamp() {
         Date ts = new Date();
         ts.setTime(this.datestamp * 1000L);
@@ -73,9 +77,28 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
         return type + ": " + getInfo();
     }
 
+    public void setValue(CurrencyValue value) {
+        this.value = value;
+    }
+
+    public void setBalance(CurrencyValue balance) {
+        this.balance = balance;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
+    public void setDatestamp(Date datestamp) {
+        this.datestamp = datestamp.getTime()/1000L;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @Override
     public int compareTo(WalletTransaction other) {
-
         return getTimestamp().compareTo(other.getTimestamp());
     }
 }

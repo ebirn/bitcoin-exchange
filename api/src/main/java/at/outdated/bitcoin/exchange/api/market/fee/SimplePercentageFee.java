@@ -20,6 +20,14 @@ public class SimplePercentageFee extends Fee {
 
     }
 
+    public SimplePercentageFee(BigDecimal percentage) {
+       this.percentage = percentage;
+    }
+
+    public SimplePercentageFee(double percentage) {
+        this.percentage = new BigDecimal(percentage);
+    }
+
     @Override
     public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
 

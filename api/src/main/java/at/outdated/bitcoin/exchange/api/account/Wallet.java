@@ -44,6 +44,35 @@ public abstract class Wallet {
         return openOrders;
     }
 
+    public void addTransaction(WalletTransaction trans) {
+
+        switch(trans.getType()) {
+            case DEPOSIT:
+                break;
+
+            case WITHDRAW:
+                break;
+
+            case FEE:
+                break;
+
+            case IN:
+                break;
+
+            case OUT:
+                break;
+
+            case SPENT:
+                break;
+
+            default:
+                throw new IllegalArgumentException("transaction type not implemented in wallet");
+        }
+
+        this.balance = new CurrencyValue(trans.getValue());
+        transactions.add(trans);
+    }
+
     public void setTransactions(List<WalletTransaction> transactions) {
         this.transactions = transactions;
     }

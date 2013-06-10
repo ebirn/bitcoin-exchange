@@ -83,6 +83,11 @@ public class CurrencyValue {
         this.value_int += other.value_int;
     }
 
+    public void subtract(CurrencyValue other) {
+        this.value -= other.value;
+        this.value_int -= other.value_int;
+    }
+
     public void multiply(long mul) {
         value_int *= mul;
         value *= (double) mul;
