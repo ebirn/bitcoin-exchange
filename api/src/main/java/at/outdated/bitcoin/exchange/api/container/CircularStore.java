@@ -1,9 +1,6 @@
 package at.outdated.bitcoin.exchange.api.container;
 
-import org.apache.commons.collections.BoundedCollection;
-import org.apache.commons.collections.BufferOverflowException;
 import org.apache.commons.collections.BufferUnderflowException;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -213,7 +210,16 @@ public class CircularStore<T> extends AbstractCollection<T> {
     }
 
     public T getTail() {
-        return elements.get(end);
+        int last = end-1;
+
+        if(last < 0) {
+            if(full)
+                last = maxElements-1;
+            else
+                last = 0;
+        }
+
+        return elements.get(last);
     }
 
     /**

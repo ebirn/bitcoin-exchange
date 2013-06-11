@@ -10,7 +10,7 @@ package at.outdated.bitcoin.exchange.api.market;
 public enum TradeDecision {
     BUY,
     SELL,
-    WAIT,
+    HOLD,
     GETHELP,
     EMERGENCY
 }

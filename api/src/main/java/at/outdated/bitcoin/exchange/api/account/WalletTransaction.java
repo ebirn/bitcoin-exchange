@@ -49,6 +49,14 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
         this.datestamp = (new Date()).getTime()/1000L;
     }
 
+    public WalletTransaction(TransactionType type, CurrencyValue volume) {
+        this.datestamp = (new Date()).getTime()/1000L;
+
+        this.type = type;
+        this.value = volume;
+
+    }
+
     public Date getTimestamp() {
         Date ts = new Date();
         ts.setTime(this.datestamp * 1000L);

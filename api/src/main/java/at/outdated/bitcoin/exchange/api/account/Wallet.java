@@ -81,6 +81,10 @@ public abstract class Wallet {
         return transactions;
     }
 
+    public Performance getPerformance() {
+        return getPerformance(new Date(0L));
+    }
+
     public Performance getPerformance(Date since) {
 
         Performance perf = new CurrencyPerformance(getCurrency());
