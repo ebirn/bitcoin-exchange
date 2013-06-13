@@ -27,6 +27,8 @@ public abstract class Wallet {
     protected List<WalletTransaction> transactions = new ArrayList<>();
 
 
+    public Wallet() {
+    }
 
     public Currency getCurrency() {
         return currency;
@@ -46,30 +48,31 @@ public abstract class Wallet {
 
     public void addTransaction(WalletTransaction trans) {
 
+
+
         switch(trans.getType()) {
             case DEPOSIT:
-                break;
-
-            case WITHDRAW:
-                break;
-
             case FEE:
-                break;
-
             case IN:
+                balance.subtract(trans.getValue());
                 break;
 
             case OUT:
-                break;
-
+            case WITHDRAW:
             case SPENT:
+                balance.add(trans.getValue());
                 break;
 
             default:
                 throw new IllegalArgumentException("transaction type not implemented in wallet");
         }
 
-        this.balance = new CurrencyValue(trans.getValue());
+        if(trans.getBalance() != null)
+            this.balance = new CurrencyValue(trans.getBalance());
+        else
+            trans.setBalance(this.balance);
+
+
         transactions.add(trans);
     }
 

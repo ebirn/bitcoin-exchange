@@ -10,5 +10,6 @@ package at.outdated.bitcoin.exchange.api.market;
 public enum MarketParameter {
     LAST,
     BID,
-    ASK
+    ASK,
+    VOLUME
 }

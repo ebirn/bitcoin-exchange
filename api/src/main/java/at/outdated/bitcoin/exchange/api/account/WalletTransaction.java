@@ -82,7 +82,7 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
 
     @Override
     public String toString() {
-        return type + ": " + getInfo();
+        return type + ": " + value;
     }
 
     public void setValue(CurrencyValue value) {

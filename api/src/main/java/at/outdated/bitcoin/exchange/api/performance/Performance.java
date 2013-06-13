@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.api.performance;
 
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import java.text.NumberFormat;
 
@@ -46,6 +47,8 @@ public abstract class Performance {
         String diff = currencyFormat.format(getTotalDifference()) + " " + getCurrency();
         */
 
-        return "Performance: " + getStartBalance() + " -> " + getEndBalance() + " = " + getTotalDifference() + " (" + percentChange + ")";
+        Currency c = getCurrency();
+
+        return "Performance: " + new CurrencyValue(getStartBalance(), c) + " -> " + new CurrencyValue(getEndBalance(), c) + " = " + new CurrencyValue(getTotalDifference(), c) + " (" + percentChange + ")";
     }
 }

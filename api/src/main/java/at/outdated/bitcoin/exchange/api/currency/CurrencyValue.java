@@ -41,7 +41,7 @@ public class CurrencyValue {
 
     public CurrencyValue(double value, Currency curr) {
         this.value = value;
-        this.value_int = (long)(value / curr.getDivide());
+        this.value_int = (long)(value * curr.getDivide());
         currency = curr;
     }
 
@@ -52,6 +52,7 @@ public class CurrencyValue {
     }
 
     public CurrencyValue(CurrencyValue value) {
+        this.currency = value.currency;
         this.value_int = value.value_int;
         this.value = value.value;
         this.display_short = value.display_short;
@@ -112,6 +113,14 @@ public class CurrencyValue {
         number = number.divide(new BigDecimal(currency.getDivide()));
 
         return number;
+    }
+
+    public boolean isMoreThan(CurrencyValue other) {
+        return this.value > other.value;
+    }
+
+    public boolean isLessThan(CurrencyValue other) {
+        return this.value < other.value;
     }
 
     public String toString() {
