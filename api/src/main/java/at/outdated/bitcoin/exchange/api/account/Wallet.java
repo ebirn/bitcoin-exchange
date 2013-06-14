@@ -52,15 +52,15 @@ public abstract class Wallet {
 
         switch(trans.getType()) {
             case DEPOSIT:
-            case FEE:
             case IN:
-                balance.subtract(trans.getValue());
+                balance.add(trans.getValue());
                 break;
 
+            case FEE:
             case OUT:
             case WITHDRAW:
             case SPENT:
-                balance.add(trans.getValue());
+                balance.subtract(trans.getValue());
                 break;
 
             default:
