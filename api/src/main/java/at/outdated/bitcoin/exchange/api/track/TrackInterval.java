@@ -11,6 +11,7 @@ public enum TrackInterval {
 
     MIN1(1000L * 60L),
     MIN5(1000L * 60L * 5L),
+    MIN10(1000L * 60L * 10L),
     MIN15(1000L * 60L * 15L),
     MIN20(1000L * 60L* 20L),
     MIN30(1000L * 60L* 30L),
