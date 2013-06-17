@@ -30,11 +30,6 @@ public class MtGoxWallet extends Wallet {
     @XmlElement(name="Max_Withdraw")
     private CurrencyValue Max_Withdraw;
 
-    @XmlElement(name="Balance")
-    protected CurrencyValue balance;
-
-    @XmlElement(name="Open_Orders")
-    private CurrencyValue openOrders;
 
 
     @Override

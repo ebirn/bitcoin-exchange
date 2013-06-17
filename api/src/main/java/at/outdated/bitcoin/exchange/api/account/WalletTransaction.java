@@ -2,6 +2,8 @@ package at.outdated.bitcoin.exchange.api.account;
 
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
@@ -12,6 +14,7 @@ import java.util.Date;
  * Time: 20:23
  * To change this template use File | Settings | File Templates.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class WalletTransaction implements Comparable<WalletTransaction> {
 
 
