@@ -14,6 +14,7 @@ public class BalanceComparator implements Comparator<Performance> {
 
     @Override
     public int compare(Performance o1, Performance o2) {
-        return Math.round((float) (o1.getEndBalance()-o2.getEndBalance())*100.0f);
+        return Double.compare(o1.getEndBalance(), o2.getEndBalance());
+        //return Math.round((float) (o1.getEndBalance()-o2.getEndBalance())*100.0f);
     }
 }
