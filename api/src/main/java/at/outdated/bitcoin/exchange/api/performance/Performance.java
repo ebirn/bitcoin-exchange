@@ -51,4 +51,6 @@ public abstract class Performance {
 
         return "Performance: " + new CurrencyValue(getStartBalance(), c) + " -> " + new CurrencyValue(getEndBalance(), c) + " = " + new CurrencyValue(getTotalDifference(), c) + " (" + percentChange + ")";
     }
+
+
 }
