@@ -17,6 +17,10 @@ import java.util.List;
  */
 public class TickerValueTrack extends ValueTrack<TickerValue> {
 
+    public TickerValueTrack(TickerValueTrack track) {
+        super(track.valueBuffer);
+    }
+
     public TickerValueTrack(Collection c) {
         super(c);
     }
