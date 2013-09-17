@@ -20,7 +20,8 @@
 		<module>btcde</module>
 		<module>bitstamp</module>
 		<module>bitcurex</module>
-  </modules>
+        <module>kraken</module>
+    </modules>
 
 	<dependencies>
 		<dependency>

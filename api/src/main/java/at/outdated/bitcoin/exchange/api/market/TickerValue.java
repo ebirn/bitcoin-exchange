@@ -130,6 +130,6 @@ public class TickerValue extends TimedValue<double[]> {
 
     @Override
     public String toString() {
-        return "Ticker: " + last + " " + currency.name();
+        return "Ticker: " + (bid+ask)/2.0 + " " + currency.name();
     }
 }
