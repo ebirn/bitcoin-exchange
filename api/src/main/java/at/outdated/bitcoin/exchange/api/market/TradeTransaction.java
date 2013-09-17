@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import java.util.Date;
 

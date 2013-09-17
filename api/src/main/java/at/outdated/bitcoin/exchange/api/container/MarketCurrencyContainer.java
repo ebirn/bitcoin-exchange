@@ -3,7 +3,6 @@ package at.outdated.bitcoin.exchange.api.container;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketContainer;
-import at.outdated.bitcoin.exchange.api.market.Markets;
 
 /**
  * Created with IntelliJ IDEA.

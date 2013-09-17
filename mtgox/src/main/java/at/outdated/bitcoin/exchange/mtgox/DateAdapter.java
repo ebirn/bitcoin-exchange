@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import javax.ws.rs.ext.Provider;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;

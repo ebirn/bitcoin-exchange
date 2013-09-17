@@ -36,6 +36,7 @@ public class TickerResponse {
 
         KrakenTickerValue kv = result.getXXBTZEUR();
 
+        value.setLast(Double.parseDouble(kv.l[0]));
 
         value.setAsk(Double.parseDouble(kv.a[0]));
         value.setBid(Double.parseDouble(kv.b[0]));

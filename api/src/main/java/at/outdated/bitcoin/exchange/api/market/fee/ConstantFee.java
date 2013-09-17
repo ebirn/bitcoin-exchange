@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
