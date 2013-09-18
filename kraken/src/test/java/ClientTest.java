@@ -27,6 +27,7 @@ public class ClientTest {
         Assert.assertNotNull(ticker.getAsk());
         Assert.assertNotNull(ticker.getCurrency());
 
+        Assert.assertNotNull(ticker.getCurrency());
 
         System.out.println(ticker);
 

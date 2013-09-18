@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.kraken;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -36,12 +37,13 @@ public class TickerResponse {
 
         KrakenTickerValue kv = result.getXXBTZEUR();
 
+        value.setCurrency(Currency.EUR);
         value.setLast(Double.parseDouble(kv.l[0]));
 
         value.setAsk(Double.parseDouble(kv.a[0]));
         value.setBid(Double.parseDouble(kv.b[0]));
 
-        value.setVolume(kv.v[0]);
+        value.setVolume(Double.parseDouble(kv.v[0]));
 
         value.setHigh(Double.parseDouble(kv.h[0]));
         value.setLow(Double.parseDouble(kv.l[0]));

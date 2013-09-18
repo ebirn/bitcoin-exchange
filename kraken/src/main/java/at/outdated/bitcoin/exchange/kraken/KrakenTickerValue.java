@@ -22,14 +22,13 @@ public class KrakenTickerValue {
 
 
     @XmlElement
-    double v[];
+    String v[];
 
     @XmlElement
-    double p[];
-
+    String p[];
 
     @XmlElement
-    double t[];
+    int t[];
 
     @XmlElement
     String l[];
@@ -37,6 +36,7 @@ public class KrakenTickerValue {
     @XmlElement
     String h[];
 
-    double o;
+    @XmlElement
+    String o;
 
 }
