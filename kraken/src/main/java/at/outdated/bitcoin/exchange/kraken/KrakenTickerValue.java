@@ -1,6 +1,9 @@
 package at.outdated.bitcoin.exchange.kraken;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,6 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
  * Time: 18:37
  * To change this template use File | Settings | File Templates.
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class KrakenTickerValue {
 
     @XmlElement

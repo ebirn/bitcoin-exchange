@@ -36,11 +36,8 @@ public class BtcEJSONResolver implements ContextResolver<JSONJAXBContext> {
     protected static final Class<?>[] cTypes = { TickerResponse.class };
 
     public BtcEJSONResolver() throws JAXBException {
-
         this.types = new HashSet<>(Arrays.asList(cTypes));
         this.context = new JSONJAXBContext(JSONConfiguration.natural().build(), cTypes);
-
-
     }
 
     @Override
@@ -58,9 +55,7 @@ public class BtcEJSONResolver implements ContextResolver<JSONJAXBContext> {
             JSONUnmarshaller um = jc.createJSONUnmarshaller();
 
             StringReader reader = new StringReader(jsonString);
-
             result = um.unmarshalFromJSON(reader, target);
-
         }
         catch (JAXBException je ) {
             return null;

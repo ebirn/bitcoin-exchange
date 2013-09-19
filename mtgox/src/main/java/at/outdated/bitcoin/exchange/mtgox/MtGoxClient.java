@@ -111,7 +111,6 @@ public class MtGoxClient extends ExchangeApiClient {
             tickerResponse.getData().setInCurrency(currency);
             tickerResponse.getData().setItemCurrency(Currency.BTC);
             ticker = tickerResponse.getData().getTickerValue();
-
         }
 
         return ticker;

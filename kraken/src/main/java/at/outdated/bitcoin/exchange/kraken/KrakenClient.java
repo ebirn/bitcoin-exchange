@@ -16,8 +16,6 @@ import com.sun.jersey.api.client.WebResource;
 public class KrakenClient extends ExchangeApiClient {
 
 
-
-
     @Override
     public AccountInfo getAccountInfo() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -28,14 +26,22 @@ public class KrakenClient extends ExchangeApiClient {
 
 
         WebResource webResource = client.resource("https://api.kraken.com/0/public/Ticker?pair=XBTEUR");
-        TickerResponse tickerResponse = simpleGetRequest(webResource, TickerResponse.class);
+        String rawTicker = simpleGetRequest(webResource, String.class);
+        log.info("raw KRAKEN " + rawTicker);
 
-        return tickerResponse.getValue();
+        KrakenTickerResponse tickerResponse = simpleGetRequest(webResource, KrakenTickerResponse.class);
+
+        TickerValue value = null;
+
+        if(tickerResponse != null)
+            value = tickerResponse.getValue();
+
+        return value;
     }
 
     @Override
     public Number getLag() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
