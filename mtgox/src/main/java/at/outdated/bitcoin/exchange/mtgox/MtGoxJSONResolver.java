@@ -1,21 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.api.json.JSONJAXBContext;
-
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -23,8 +7,8 @@ import java.util.logging.Logger;
  * Time: 20:32
  * To change this template use File | Settings | File Templates.
  */
-@Provider
-public class MtGoxJSONResolver implements ContextResolver<JSONJAXBContext> {
+//@Provider
+public class MtGoxJSONResolver  { }/*implements ContextResolver<JSONJAXBContext> {
 
     private final JSONJAXBContext context;
     private final Set<Class<?>> types;
@@ -71,3 +55,4 @@ public class MtGoxJSONResolver implements ContextResolver<JSONJAXBContext> {
         return result;
     }
 }
+*/

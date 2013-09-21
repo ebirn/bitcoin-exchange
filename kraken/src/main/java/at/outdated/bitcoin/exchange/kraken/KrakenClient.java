@@ -4,7 +4,10 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import com.sun.jersey.api.client.WebResource;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,9 +28,7 @@ public class KrakenClient extends ExchangeApiClient {
     public TickerValue getTicker(Currency currency) {
 
 
-        WebResource webResource = client.resource("https://api.kraken.com/0/public/Ticker?pair=XBTEUR");
-        String rawTicker = simpleGetRequest(webResource, String.class);
-        log.info("raw KRAKEN " + rawTicker);
+        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=XBTEUR");
 
         KrakenTickerResponse tickerResponse = simpleGetRequest(webResource, KrakenTickerResponse.class);
 
@@ -45,7 +46,7 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
     @Override
-    protected WebResource.Builder setupProtectedResource(WebResource res) {
+    protected Invocation.Builder setupProtectedResource(WebTarget tgt) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

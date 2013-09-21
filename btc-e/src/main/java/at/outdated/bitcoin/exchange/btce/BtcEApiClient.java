@@ -4,7 +4,9 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import com.sun.jersey.api.client.WebResource;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,18 +19,16 @@ public class BtcEApiClient extends ExchangeApiClient {
 
     @Override
     public AccountInfo getAccountInfo() {
-
-
-
         return new BtcEAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    protected <R> R simpleRequest(WebResource resource, Class<R> resultClass, String httpMethod, Object payload) {
+    protected <R> R simpleRequest(WebTarget target, Class<R> resultClass, String httpMethod, Object payload) {
 
         R result = null;
 
-        String resultStr = super.simpleRequest(resource, String.class, httpMethod, payload);
+        String resultStr = super.simpleRequest(target, String.class, httpMethod, payload);
+
         result = BtcEJSONResolver.convertFromJson(resultStr, resultClass);
 
         return result;
@@ -39,7 +39,7 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         // https://btc-e.com/api/2/btc_usd/ticker
 
-        WebResource tickerResource = client.resource("https://btc-e.com/api/2/btc_"+currency.name().toLowerCase()+"/ticker");
+        WebTarget tickerResource = client.target("https://btc-e.com/api/2/btc_" + currency.name().toLowerCase() + "/ticker");
 
         TickerResponse response = simpleGetRequest(tickerResource, TickerResponse.class);
 
@@ -57,7 +57,7 @@ public class BtcEApiClient extends ExchangeApiClient {
     }
 
     @Override
-    protected WebResource.Builder setupProtectedResource(WebResource res) {
+    protected Invocation.Builder setupProtectedResource(WebTarget res) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

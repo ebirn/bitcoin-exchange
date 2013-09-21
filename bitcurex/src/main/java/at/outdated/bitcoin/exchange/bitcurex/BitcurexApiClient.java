@@ -4,7 +4,9 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import com.sun.jersey.api.client.WebResource;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,18 +22,17 @@ public class BitcurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    protected <R> R simpleGetRequest(WebResource resource, Class<R> resultClass) {
+    protected <R> R simpleGetRequest(WebTarget resource, Class<R> resultClass) {
         String str =  super.simpleGetRequest(resource, String.class);
-
         return BitcurexJsonResolver.convertFromJson(str, resultClass);
     }
+
 
     @Override
     public TickerValue getTicker(Currency currency) {
 
 
-        WebResource tickerResource = client.resource("https://"+currency.name().toLowerCase() + ".bitcurex.com/data/ticker.json");
-
+        WebTarget tickerResource = client.target("https://" + currency.name().toLowerCase() + ".bitcurex.com/data/ticker.json");
 
         BitcurexTickerValue bTicker = simpleGetRequest(tickerResource, BitcurexTickerValue.class);
 
@@ -50,7 +51,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    protected WebResource.Builder setupProtectedResource(WebResource res) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+        return res.request();  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

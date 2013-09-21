@@ -1,8 +1,10 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.api.json.JSONJAXBContext;
-import com.sun.jersey.api.json.JSONUnmarshaller;
+import org.glassfish.jersey.jettison.JettisonConfig;
+import org.glassfish.jersey.jettison.JettisonJaxbContext;
+import org.glassfish.jersey.jettison.JettisonUnmarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -15,7 +17,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,11 +28,12 @@ import java.util.logging.Level;
 
 
 @Provider
-public class BitcurexJsonResolver implements ContextResolver<JSONJAXBContext> {
+public class BitcurexJsonResolver implements ContextResolver<JettisonJaxbContext> {
 
-    private final JSONJAXBContext context;
+
+    private final JettisonJaxbContext context;
     private final Set<Class<?>> types;
-    protected static final java.util.logging.Logger log = java.util.logging.Logger.getLogger("BtcEContextResolver");
+    protected static final Logger log = LoggerFactory.getLogger("BtcEContextResolver");
 
     // does not contain InfoMessage, which is only returned in case of error and should throw exception
     protected static final Class<?>[] cTypes = { BitcurexTickerValue.class };
@@ -39,14 +41,14 @@ public class BitcurexJsonResolver implements ContextResolver<JSONJAXBContext> {
     public BitcurexJsonResolver() throws JAXBException {
 
         this.types = new HashSet<>(Arrays.asList(cTypes));
-        this.context = new JSONJAXBContext(JSONConfiguration.natural().build(), cTypes);
+        this.context = new JettisonJaxbContext(JettisonConfig.DEFAULT, cTypes);
 
 
     }
 
     @Override
-    public JSONJAXBContext getContext(Class<?> objectType) {
-        log.log(Level.INFO, "resolving json {0}", objectType);
+    public JettisonJaxbContext getContext(Class<?> objectType) {
+        log.info("resolving json {0}", objectType);
         return (types.contains(objectType)) ? context : null;
     }
 
@@ -55,8 +57,8 @@ public class BitcurexJsonResolver implements ContextResolver<JSONJAXBContext> {
         T result = null;
 
         try {
-            JSONJAXBContext jc = new JSONJAXBContext(JSONConfiguration.natural().build(), cTypes);
-            JSONUnmarshaller um = jc.createJSONUnmarshaller();
+            JettisonJaxbContext jc = new JettisonJaxbContext(JettisonConfig.DEFAULT, cTypes);
+            JettisonUnmarshaller um = jc.createJsonUnmarshaller();
 
             StringReader reader = new StringReader(jsonString);
 
@@ -76,7 +78,7 @@ public class BitcurexJsonResolver implements ContextResolver<JSONJAXBContext> {
 
         try(StringWriter writer = new StringWriter()) {
 
-            JAXBContext jc = JSONJAXBContext.newInstance(obj.getClass());
+            JAXBContext jc = JettisonJaxbContext.newInstance(obj.getClass());
             Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(obj, writer);
@@ -94,3 +96,4 @@ public class BitcurexJsonResolver implements ContextResolver<JSONJAXBContext> {
     }
 
 }
+

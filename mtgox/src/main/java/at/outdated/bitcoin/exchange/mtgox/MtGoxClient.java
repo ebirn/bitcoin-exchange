@@ -8,11 +8,11 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.security.KeyStore;
@@ -47,14 +47,14 @@ public class MtGoxClient extends ExchangeApiClient {
     private final String SIGN_HASH_FUNCTION = "HmacSHA512";
     private final String ENCODING = "UTF-8";
 
-    private WebResource apiBaseResource;
+    private WebTarget apiBaseResource;
 
     static {
         log = LoggerFactory.getLogger("client.mtgox");
     }
 
     public MtGoxClient() {
-        apiBaseResource = client.resource(API_BASE_URL);
+        apiBaseResource = client.target(API_BASE_URL);
     }
 
     private KeyStore loadCertificates() {
@@ -73,14 +73,14 @@ public class MtGoxClient extends ExchangeApiClient {
     public AccountInfo getAccountInfo() {
 
 
-        ClientResponse res = signedRequest(API_GET_INFO, "");
+        Response res = signedRequest(API_GET_INFO, "");
 
         if(res == null) {
             log.warn("failed to get account info");
             return null;
         }
 
-        MtGoxAccountInfo accountInfo = res.getEntity(ApiAccountInfo.class).getData();
+        MtGoxAccountInfo accountInfo = res.readEntity(ApiAccountInfo.class).getData();
 
         // fix up wallte structure, load transaction data
         MtGoxWallets wallets = accountInfo.getWallets();
@@ -104,7 +104,7 @@ public class MtGoxClient extends ExchangeApiClient {
         TickerValue ticker = null;
 
         String uri = "BTC" + currency.name() + "/money/ticker";
-        WebResource webResource = client.resource(API_BASE_URL + uri);
+        WebTarget webResource = client.target(API_BASE_URL + uri);
         ApiTickerResponse tickerResponse = simpleGetRequest(webResource, ApiTickerResponse.class);
 
         if(tickerResponse != null && tickerResponse.getData() != null) {
@@ -120,7 +120,7 @@ public class MtGoxClient extends ExchangeApiClient {
     public TickerValue getFastTicker(Currency currency) {
 
         TickerValue ticker = null;
-        WebResource webResource = client.resource(API_BASE_URL + API_TICKER_FAST_EUR);
+        WebTarget webResource = client.target(API_BASE_URL + API_TICKER_FAST_EUR);
         ApiTickerResponse res =  simpleGetRequest(webResource, ApiTickerResponse.class);
 
         if(res != null) ticker = res.getData().getTickerValue();
@@ -132,7 +132,7 @@ public class MtGoxClient extends ExchangeApiClient {
     @Override
     public Number getLag() {
 
-        WebResource webResource = client.resource(API_BASE_URL + API_LAG);
+        WebTarget webResource = client.target(API_BASE_URL + API_LAG);
         ApiLagResponse lagResponse = simpleGetRequest(webResource, ApiLagResponse.class);
 
         if(lagResponse == null) {
@@ -144,11 +144,11 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
     @Override
-    protected WebResource.Builder setupProtectedResource(WebResource res) {
+    protected Invocation.Builder setupProtectedResource(WebTarget res) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private ClientResponse signedRequest(String path, String data) {
+    private Response signedRequest(String path, String data) {
 
         try {
             long nonce = Nonce.next()*1000;
@@ -164,20 +164,23 @@ public class MtGoxClient extends ExchangeApiClient {
 
             Date requestDate = new Date();
 
-            WebResource.Builder builder = apiBaseResource.path(path).accept("application/json");
-            ClientResponse res = builder.header("Rest-Key", getUserId("mtgox"))
+            Invocation.Builder builder = apiBaseResource.path(path).request("application/json");
+            Response res = builder.header("Rest-Key", getUserId("mtgox"))
                                         .header("Rest-Sign", signature)
-                                        .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
-                                        .entity(payload)
-                                        .post(ClientResponse.class);
+                                        .post(Entity.entity(payload, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+
 
             updateApiLag(requestDate);
 
-            if(res.getClientResponseStatus().getFamily() == Response.Status.Family.SUCCESSFUL)
+            if(res.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL)
                 return res;
         }
-        catch(UniformInterfaceException  e) {
-            handleApiError(e);
+        //catch(UniformInterfaceException  e) {
+        //    handleApiError(e);
+        //}
+        catch(Exception e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -187,12 +190,12 @@ public class MtGoxClient extends ExchangeApiClient {
     public MtGoxWalletHistory getWalletHistory(Currency currency) {
 
         Date requestDate = new Date();
-        ClientResponse res = signedRequest(API_GET_WALLET_HISTORY, "currency="+currency.name());
+        Response res = signedRequest(API_GET_WALLET_HISTORY, "currency="+currency.name());
         updateApiLag(requestDate);
 
         if(res == null) return null;
 
-        MtGoxWalletHistory mtGoxWalletHistory = res.getEntity(ApiWalletHistory.class).getData();
+        MtGoxWalletHistory mtGoxWalletHistory = res.readEntity(ApiWalletHistory.class).getData();
 
         // TODO: fix this somwhere else? remove empty/null Transaction
         Iterator<WalletTransaction> it = mtGoxWalletHistory.getTransactions().iterator();

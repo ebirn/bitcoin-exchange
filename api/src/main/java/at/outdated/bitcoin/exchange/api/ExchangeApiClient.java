@@ -4,14 +4,11 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -28,7 +25,7 @@ public abstract class ExchangeApiClient {
 
     protected NumberTrack apiLagTrack = new NumberTrack(5);
 
-    protected Client client = new Client();
+    protected Client client = ClientBuilder.newClient();
 
     protected final String userAgent = "ExchangeApiClient/1.0-Snapshot";
 
@@ -44,36 +41,37 @@ public abstract class ExchangeApiClient {
     }
 
 
-    protected <R> R simpleGetRequest(WebResource resource, Class<R> resultClass) {
+    protected <R> R simpleGetRequest(WebTarget resource, Class<R> resultClass) {
         return simpleRequest(resource, resultClass, HttpMethod.GET, null);
     }
 
-    protected <R> R simplePostRequest(WebResource resource, Class<R> resultClass, Object payload) {
+    protected <R> R simplePostRequest(WebTarget resource, Class<R> resultClass, Object payload) {
         return simpleRequest(resource, resultClass, HttpMethod.POST, payload);
     }
 
-    protected <R> R simplePutRequest(WebResource resource, Class<R> resultClass, Object payload) {
+    protected <R> R simplePutRequest(WebTarget resource, Class<R> resultClass, Object payload) {
         return simpleRequest(resource, resultClass, HttpMethod.PUT, payload);
     }
 
 
-    protected WebResource.Builder setupResource(WebResource res) {
-        return res.header("User-Agent", userAgent).accept(MediaType.APPLICATION_JSON_TYPE);
+    protected Invocation.Builder setupResource(WebTarget res) {
+        return res.request().header("User-Agent", userAgent).accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    protected abstract WebResource.Builder setupProtectedResource(WebResource res);
+    protected abstract Invocation.Builder setupProtectedResource(WebTarget res);
 
-    protected <R> R simpleRequest(WebResource resource, Class<R> resultClass, String httpMethod, Object payload) {
+    protected <R> R simpleRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Object payload) {
 
         R result = null;
 
         Date requestDate = new Date();
         try {
-            result = setupResource(resource).entity(payload).method(httpMethod, resultClass);
+            result = setupResource(resource).build(httpMethod, Entity.json(payload)).invoke(resultClass);
         }
-        catch (UniformInterfaceException uie) {
-            handleApiError(uie);
-        }
+        // FIXME: replace that!
+        //catch ( uie) {
+        //    handleApiError(uie);
+       // }
         catch(Exception e) {
             log.error("unexpected exception: {}", e);
         }
@@ -86,13 +84,14 @@ public abstract class ExchangeApiClient {
     }
 
 
+    /*
     protected void handleApiError(UniformInterfaceException uie) {
         if(uie.getResponse().getClientResponseStatus() == ClientResponse.Status.BAD_GATEWAY) {
 
             log.error("API error: BAD GATEWAY");
         }
     }
-
+*/
 
     protected void updateApiLag(Date requestDate/*, Date responseDate*/) {
         Date responseDate = new Date();
@@ -101,24 +100,6 @@ public abstract class ExchangeApiClient {
     }
 
 
-    /*
-    private Properties getProperties()  {
-        // loading xmlProfileGen.properties from the classpath
-        Properties props = new Properties();
-
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange.properties");
-
-        /*
-        try(InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("bitcoin-exchange.properties")) {
-            props.load(inputStream);
-        }
-        catch(IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return props;
-    }
-*/
 
     protected String getSecret(String market) {
         ResourceBundle bundle = ResourceBundle.getBundle("at.outdated.bitcoin.exchange.api.bitcoin-exchange");

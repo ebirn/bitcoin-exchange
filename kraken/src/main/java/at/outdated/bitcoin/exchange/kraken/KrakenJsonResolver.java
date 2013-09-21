@@ -1,20 +1,6 @@
 package at.outdated.bitcoin.exchange.kraken;
 
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.api.json.JSONJAXBContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,8 +12,7 @@ import java.util.Set;
 
 
 @Provider
-public class KrakenJsonResolver implements ContextResolver<JSONJAXBContext> {
-
+public class KrakenJsonResolver {} /*implements ContextResolver<JSONJAXBContext> {
 
     protected static final Logger log = LoggerFactory.getLogger("KrakenJsonResolver");
     protected final Class<?>[] cTypes = {KrakenTickerResponse.class};
@@ -69,3 +54,4 @@ public class KrakenJsonResolver implements ContextResolver<JSONJAXBContext> {
 
 
 }
+*/

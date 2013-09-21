@@ -6,8 +6,10 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import com.sun.jersey.api.client.WebResource;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,8 +25,8 @@ public class BitstampClient extends ExchangeApiClient {
     }
 
     @Override
-    protected WebResource.Builder setupProtectedResource(WebResource res) {
-        return res.getRequestBuilder();
+    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+        return res.request();
     }
 
     @Override
@@ -38,7 +40,7 @@ public class BitstampClient extends ExchangeApiClient {
         payloadBuilder.append("password=");
         payloadBuilder.append(getSecret("bitstamp"));
 
-        WebResource balanceResource = client.resource("https://www.bitstamp.net/api/balance/");
+        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
         BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, payloadBuilder.toString());
 
 
@@ -61,7 +63,7 @@ public class BitstampClient extends ExchangeApiClient {
     @Override
     public TickerValue getTicker(Currency currency) {
 
-        WebResource tickerResource = client.resource("https://www.bitstamp.net/api/ticker/");
+        WebTarget tickerResource = client.target("https://www.bitstamp.net/api/ticker/");
         BitstampTickerValue bticker = simpleGetRequest(tickerResource, BitstampTickerValue.class);
 
         TickerValue ticker = null;
