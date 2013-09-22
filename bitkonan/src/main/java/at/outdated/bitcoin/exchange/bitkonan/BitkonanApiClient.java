@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.btce;
+package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -15,21 +15,22 @@ import javax.ws.rs.client.WebTarget;
  * Time: 23:43
  * To change this template use File | Settings | File Templates.
  */
-public class BtcEApiClient extends ExchangeApiClient {
+public class BitkonanApiClient extends ExchangeApiClient {
 
     @Override
     public AccountInfo getAccountInfo() {
-        return new BtcEAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
+        return new BitkonanAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
     @Override
-    protected <R> R simpleRequest(WebTarget target, Class<R> resultClass, String httpMethod, Object payload) {
+    protected <R> R simpleGetRequest(WebTarget target, Class<R> resultClass) {
 
         R result = null;
 
-        String resultStr = super.simpleRequest(target, String.class, httpMethod, payload);
+        String resultStr = super.simpleGetRequest(target, String.class);
 
-        result = BtcEJSONResolver.convertFromJson(resultStr, resultClass);
+        result = BitkonanJsonResolver.convertFromJson(resultStr, resultClass);
 
         return result;
     }
@@ -39,13 +40,12 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         // https://btc-e.com/api/2/btc_usd/ticker
 
-        WebTarget tickerResource = client.target("https://btc-e.com/api/2/btc_" + currency.name().toLowerCase() + "/ticker");
+        WebTarget tickerResource = client.target("https://bitkonan.com/api/ticker/");
 
-        TickerResponse response = simpleGetRequest(tickerResource, TickerResponse.class);
+        BitkonanTickerValue response = simpleGetRequest(tickerResource, BitkonanTickerValue.class);
 
-        BtcETickerValue btcETickerValue = response.getTicker();
 
-        TickerValue value = btcETickerValue.getTickerValue();
+        TickerValue value = response.getTickerValue();
         value.setCurrency(currency);
 
         return value;

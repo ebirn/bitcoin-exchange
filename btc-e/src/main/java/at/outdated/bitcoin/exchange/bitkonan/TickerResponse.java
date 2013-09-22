@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.btce;
+package at.outdated.bitcoin.exchange.bitkonan;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

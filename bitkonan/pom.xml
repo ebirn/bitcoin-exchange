@@ -8,11 +8,11 @@
       <version>1</version>
 	</parent>
  
-  <artifactId>btc-e</artifactId>
+  <artifactId>bitkonan</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>btc-e client API</name>
+  <name>Bitkonan.com client API</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

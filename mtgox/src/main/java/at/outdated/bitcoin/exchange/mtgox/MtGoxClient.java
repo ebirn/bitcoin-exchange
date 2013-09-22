@@ -10,13 +10,12 @@ import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -54,19 +53,8 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
     public MtGoxClient() {
+        client= ClientBuilder.newBuilder().register(MtGoxJSONResolver.class).build();
         apiBaseResource = client.target(API_BASE_URL);
-    }
-
-    private KeyStore loadCertificates() {
-        KeyStore ks = null;
-        try {
-            ks = KeyStore.getInstance("JKS");
-        }
-        catch (KeyStoreException kse) {
-            log.error("failed to initialize certificate keystore");
-        }
-
-        return ks;
     }
 
     @Override

@@ -1,6 +1,6 @@
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.bitkonan.BtcEApiClient;
+import at.outdated.bitcoin.exchange.bitkonan.BitkonanApiClient;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,23 +11,16 @@ import org.junit.Test;
  * Time: 00:00
  * To change this template use File | Settings | File Templates.
  */
-public class ClientTest {
+public class BitkonanTest {
 
 
-    BtcEApiClient client = new BtcEApiClient();
+    BitkonanApiClient client = new BitkonanApiClient();
 
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.EUR);
 
-        Assert.assertNotNull(ticker);
-        Assert.assertNotNull(ticker.getTimestamp());
-
-        System.out.println("ticker: "+ ticker.getTimestamp() +"  " + ticker);
-
-
-        ticker = client.getTicker(Currency.USD);
+        TickerValue ticker = client.getTicker(Currency.USD);
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());

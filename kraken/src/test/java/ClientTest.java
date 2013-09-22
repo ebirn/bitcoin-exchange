@@ -17,8 +17,6 @@ public class ClientTest {
 
     @Test
     public void testclient() {
-
-
         KrakenClient client = new KrakenClient();
 
         TickerValue ticker = client.getTicker(Currency.EUR);

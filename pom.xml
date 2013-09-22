@@ -21,6 +21,7 @@
 		<module>bitstamp</module>
 		<module>bitcurex</module>
         <module>kraken</module>
+        <module>bitkonan</module>
     </modules>
 
 	<dependencies>
@@ -42,17 +43,19 @@
             <scope>provided</scope>
         </dependency>
 
+
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
+            <version>2.0</version>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jettison</artifactId>
-            <version>2.2</version>
-
+            <artifactId>jersey-media-moxy</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -65,7 +68,7 @@
 		<dependency>
 	    	<groupId>junit</groupId>
 	    	<artifactId>junit</artifactId>
-	    	<version>3.8.1</version>
+	    	<version>4.11</version>
 	    	<scope>test</scope>
 	    </dependency>
 	</dependencies>

@@ -66,7 +66,7 @@ public abstract class ExchangeApiClient {
 
         Date requestDate = new Date();
         try {
-            result = setupResource(resource).build(httpMethod, Entity.json(payload)).invoke(resultClass);
+            result = setupResource(resource).method(httpMethod, Entity.json(payload), resultClass); //invoke(resultClass);
         }
         // FIXME: replace that!
         //catch ( uie) {

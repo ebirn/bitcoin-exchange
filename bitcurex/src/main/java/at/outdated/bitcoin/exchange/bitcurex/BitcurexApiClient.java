@@ -23,10 +23,16 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
     @Override
     protected <R> R simpleGetRequest(WebTarget resource, Class<R> resultClass) {
-        String str =  super.simpleGetRequest(resource, String.class);
-        return BitcurexJsonResolver.convertFromJson(str, resultClass);
-    }
+        String resultStr =  super.simpleGetRequest(resource, String.class);
 
+        log.debug("BITCUREX raw: " + resultStr);
+
+        R result = null;
+
+        result = BitcurexJsonResolver.convertFromJson(resultStr, resultClass);
+
+        return result;
+    }
 
     @Override
     public TickerValue getTicker(Currency currency) {

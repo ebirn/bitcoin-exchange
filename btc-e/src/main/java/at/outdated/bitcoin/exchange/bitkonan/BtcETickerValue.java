@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.btce;
+package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
@@ -56,11 +56,14 @@ public class BtcETickerValue  {
     @XmlElement(name="server_time")
     protected long timestamp;
 
+    @XmlElement
+    protected long updated;
+
     public TickerValue getTickerValue() {
 
         TickerValue ticker = new TickerValue();
 
-        ticker.setTimestamp(new Date(timestamp*1000));
+        ticker.setTimestamp(new Date(updated*1000));
         ticker.setLast(last);
         ticker.setVolume(vol_cur);
         ticker.setBid(sell);

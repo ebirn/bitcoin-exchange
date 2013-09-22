@@ -1,5 +1,21 @@
 package at.outdated.bitcoin.exchange.api.jaxb;
 
+import org.eclipse.persistence.jaxb.rs.MOXyJsonProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+import javax.xml.bind.JAXBElement;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -7,71 +23,67 @@ package at.outdated.bitcoin.exchange.api.jaxb;
  * Time: 13:32
  * To change this template use File | Settings | File Templates.
  */
-public abstract class JSONResolver {
-
-}
-
-        /*implements ContextResolver<JSONJAXBContext> {
-    protected static final Logger log = Logger.getLogger("BtcEContextResolver");
+@Provider
+public abstract class JSONResolver implements ContextResolver<MOXyJsonProvider> {
+    protected static final Logger log = LoggerFactory.getLogger("JsonContextResolver");
     // does not contain InfoMessage, which is only returned in case of error and should throw exception
 
-    protected JSONJAXBContext context;
+    protected MOXyJsonProvider context;
     protected Set<Class<?>> types;
 
-    private static Class<?>[] cTypes = {};
-
-    public JSONResolver() throws JAXBException {
-        this.types = new HashSet<>(Arrays.asList(cTypes));
-        this.context = new JSONJAXBContext(JSONConfiguration.natural().build(), cTypes);
+    public JSONResolver() {
+        this.types = new HashSet<>(Arrays.asList(getTypes()));
+        try {
+            this.context = new MOXyJsonProvider();
+        }
+        catch(Exception je) {
+            log.error("failed to init JSON resolver for: " + getTypes(), je);
+        }
     }
+
+    protected abstract Class<?>[] getTypes();
 
     public static <T> T convertFromJson(String jsonString, Class<T> target) {
 
         T result = null;
 
+
         try {
-            JSONJAXBContext jc = new JSONJAXBContext(JSONConfiguration.natural().build(), cTypes);
-            JSONUnmarshaller um = jc.createJSONUnmarshaller();
-
-            StringReader reader = new StringReader(jsonString);
-
-            result = um.unmarshalFromJSON(reader, target);
-
-        }
-        catch (JAXBException je ) {
-            return null;
+            MOXyJsonProvider jacksonJAXBProvider = new MOXyJsonProvider();
+            InputStream is = new ByteArrayInputStream(jsonString.getBytes());
+            result = ((JAXBElement<T>) jacksonJAXBProvider.readFrom(Object.class, target, null, MediaType.APPLICATION_JSON_TYPE, null, is)).getValue();
+        }catch (IOException ioe) {
+            ioe.printStackTrace();
         }
 
         return result;
     }
 
-    public static String convert2Json(Object obj) {
+    public static <S> String convert2Json(Object obj) {
 
         String result = null;
 
         try(StringWriter writer = new StringWriter()) {
 
-            JAXBContext jc = JSONJAXBContext.newInstance(obj.getClass());
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(obj, writer);
+            MOXyJsonProvider jacksonJAXBProvider = new MOXyJsonProvider();
+            ///FIXME
 
             writer.flush();
 
             result = writer.getBuffer().toString();
 
         }
-        catch (IOException | JAXBException e) {
+        catch (IOException /*| JAXBException */ e) {
             e.printStackTrace();
         }
 
         return result;
     }
 
+
     @Override
-    public JSONJAXBContext getContext(Class<?> objectType) {
-        log.log(Level.INFO, "resolving json {0}", objectType);
+    public MOXyJsonProvider getContext(Class<?> objectType) {
+        log.info("resolving json {0}", objectType);
         return (types.contains(objectType)) ? context : null;
     }
 }
-*/
