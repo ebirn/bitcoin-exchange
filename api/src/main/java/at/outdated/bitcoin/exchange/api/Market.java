@@ -13,7 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public abstract class Market {
     /*
     MTGOX("http://www.mtgox.com/", "Mt.Gox", Currency.EUR, "mtgox"),
-    BTCE("http://btc-e.com", "BTC-E Bitcoin Exchange", Currency.EUR, "bitkonan"),
+    BTCE("http://btc-e.com", "BTC-E Bitcoin Exchange", Currency.EUR, "btce"),
     BTCDE("https://www.bitcoin.de/", "bitcoin.de", Currency.EUR, "btcde"),
     BITSTAMP("https://www.bitstamp.net/", "Bitstamp", Currency.USD, "bitstamp");
 */

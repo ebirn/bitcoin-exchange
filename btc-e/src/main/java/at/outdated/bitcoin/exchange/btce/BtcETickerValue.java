@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.bitkonan;
+package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 

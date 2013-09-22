@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.bitkonan;
+package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -15,7 +15,7 @@ public class BtcEAccountInfo extends AccountInfo {
 
     @Override
     public String getLogin() {
-        return "bitkonan";  //To change body of implemented methods use File | Settings | File Templates.
+        return "btce";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 
