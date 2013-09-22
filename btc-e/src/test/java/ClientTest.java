@@ -1,6 +1,6 @@
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.bitkonan.BtcEApiClient;
+import at.outdated.bitcoin.exchange.btce.BtcEApiClient;
 import org.junit.Assert;
 import org.junit.Test;
 
