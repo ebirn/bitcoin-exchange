@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
@@ -85,6 +86,10 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
 
+    @Override
+    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+        return null;
+    }
 
     @Override
     public TickerValue getTicker(Currency currency) {

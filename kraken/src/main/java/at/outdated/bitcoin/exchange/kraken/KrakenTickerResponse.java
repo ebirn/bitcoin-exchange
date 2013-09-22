@@ -18,21 +18,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KrakenTickerResponse {
+public class KrakenTickerResponse extends KrakenResponse<KrakenTickerValue> {
 
 
     // {"error":[],"result":{"XXBTZEUR":{"a":["95.00000","2"],"b":["90.00000","1"],"c":["95.00000","0.00000000"],"v":["0.10526000","4.46315000"],"p":["95.00000","94.43984"],"t":[1,6],"l":["90.00000","90.00000"],"h":["95.00000","95.00000"],"o":"90.00000"}}}%
     // {"error":[],"result":{"XXBTZEUR":{"a":["94.00000","1"],"b":["90.00000","1"],"c":["93.20000","2.00000000"],"v":["2.50000000","2.50000000"],"p":["93.28000","93.28000"],"t":[2,2],"l":["93.20000","93.20000"],"h":["94.50000","93.60000"],"o":"94.50000"}}}
-    @XmlElement
-    private Object[] error;
 
-    @XmlElement
-    private TickerResponseResult result;
-
-
-    public Object[] getError() {
-        return error;
-    }
 
     public TickerValue getValue() {
         TickerValue value = new TickerValue();

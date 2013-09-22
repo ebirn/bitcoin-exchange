@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange.bitcurex;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.ws.rs.client.Invocation;
@@ -19,6 +20,11 @@ public class BitcurexApiClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+        return null;
     }
 
     @Override

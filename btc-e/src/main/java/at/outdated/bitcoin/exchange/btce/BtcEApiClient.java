@@ -3,10 +3,17 @@ package at.outdated.bitcoin.exchange.btce;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-
+import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import java.io.StringReader;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +29,35 @@ public class BtcEApiClient extends ExchangeApiClient {
         return new BtcEAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+        // (price, volume)
+
+        WebTarget resource = client.target("https://btc-e.com/api/2/"+base.name().toLowerCase()+"_" + quote.name().toLowerCase() + "/depth");
+
+        String response = simpleGetRequest(resource, String.class);
+
+        JsonReader reader = Json.createReader(new StringReader(response));
+        JsonArray asksArr = reader.readObject().getJsonArray("asks");
+        JsonArray bidsArr = reader.readObject().getJsonArray("bids");
+
+        MarketDepth depth = new MarketDepth();
+        depth.setBaseCurrency(base);
+
+
+        for(int i=0; i<asksArr.size(); i++ ) {
+            float price = (float) asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
+            float volume = (float) asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            depth.getAsks().add(new MarketOrder(volume, base, new CurrencyValue(price, quote)));
+        }
+        for(int i=0; i<bidsArr.size(); i++ ) {
+            float price = (float) asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
+            float volume = (float) asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            depth.getBids().add(new MarketOrder(volume, base, new CurrencyValue(price, quote)));
+        }
+
+        return depth;
+    }
 
     @Override
     protected <R> R simpleGetRequest(WebTarget target, Class<R> resultClass) {
@@ -53,6 +89,8 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         return value;
     }
+
+
 
     @Override
     public Number getLag() {

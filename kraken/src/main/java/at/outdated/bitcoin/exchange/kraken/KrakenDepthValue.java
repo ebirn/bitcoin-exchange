@@ -6,21 +6,23 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ebirn
- * Date: 17.09.13
- * Time: 18:36
- * To change this template use File | Settings | File Templates.
+ * Created by ebirn on 22.09.13.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TickerResponseResult {
+public class KrakenDepthValue {
 
     @XmlElement
-    private KrakenTickerValue XXBTZEUR;
+    float[][] asks;
 
+    @XmlElement
+    float[][] bids;
 
-    public KrakenTickerValue getXXBTZEUR() {
-        return XXBTZEUR;
+    public float[][] getAsks() {
+        return asks;
+    }
+
+    public float[][] getBids() {
+        return bids;
     }
 }

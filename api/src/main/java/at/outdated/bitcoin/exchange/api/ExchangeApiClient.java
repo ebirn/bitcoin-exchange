@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public abstract class ExchangeApiClient {
 
     public abstract Number getLag();
 
+    public abstract MarketDepth getMarketDepth(Currency base, Currency quote);
 
     final public double getApiLag() {
         return apiLagTrack.getStatistics().getGeometricMean();  //To change body of implemented methods use File | Settings | File Templates.

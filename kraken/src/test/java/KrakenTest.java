@@ -1,4 +1,5 @@
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.kraken.KrakenClient;
 import org.junit.Assert;
@@ -11,13 +12,13 @@ import org.junit.Test;
  * Time: 18:46
  * To change this template use File | Settings | File Templates.
  */
-public class ClientTest {
+public class KrakenTest {
 
-
+    KrakenClient client = new KrakenClient();
 
     @Test
-    public void testclient() {
-        KrakenClient client = new KrakenClient();
+    public void testTickerclient() {
+
 
         TickerValue ticker = client.getTicker(Currency.EUR);
 
@@ -29,5 +30,18 @@ public class ClientTest {
 
         System.out.println(ticker);
 
+    }
+
+    @Test
+    public void testDepthClient() {
+
+
+        MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
+
+        Assert.assertNotNull(depth);
+        Assert.assertNotNull(depth.getBaseCurrency());
+
+        Assert.assertFalse(depth.getAsks().isEmpty());
+        Assert.assertFalse(depth.getBids().isEmpty());
     }
 }
