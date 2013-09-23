@@ -14,14 +14,15 @@
     </properties>
 
 	<modules>
-    	<module>api</module>
+    		<module>api</module>
 		<module>mtgox</module>
 		<module>btc-e</module>
 		<module>btcde</module>
 		<module>bitstamp</module>
 		<module>bitcurex</module>
-        <module>kraken</module>
-        <module>bitkonan</module>
+        	<module>kraken</module>
+        	<module>bitkonan</module>
+		<module>campbx</module>
     </modules>
 
 	<dependencies>
