@@ -14,12 +14,14 @@ public class MarketOrder {
 
     protected float volume;
 
+    protected TradeDecision decision;
 
     public MarketOrder() {
 
     }
 
-    public MarketOrder(float volume, Currency base,  CurrencyValue price) {
+    public MarketOrder(TradeDecision decision, float volume, Currency base,  CurrencyValue price) {
+        this.decision = decision;
         this.volume = volume;
         this.baseCurrency = base;
         this.price = price;
@@ -47,5 +49,10 @@ public class MarketOrder {
 
     public void setVolume(float volume) {
         this.volume = volume;
+    }
+
+    @Override
+    public String toString() {
+        return "Order: " + decision + " " + volume + " " + baseCurrency + " @ " + price;
     }
 }

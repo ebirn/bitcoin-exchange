@@ -7,9 +7,12 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -35,11 +38,13 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         WebTarget resource = client.target("https://btc-e.com/api/2/"+base.name().toLowerCase()+"_" + quote.name().toLowerCase() + "/depth");
 
-        String response = simpleGetRequest(resource, String.class);
+        String response = super.simpleGetRequest(resource, String.class);
 
         JsonReader reader = Json.createReader(new StringReader(response));
-        JsonArray asksArr = reader.readObject().getJsonArray("asks");
-        JsonArray bidsArr = reader.readObject().getJsonArray("bids");
+
+        JsonObject root = reader.readObject();
+        JsonArray asksArr = root.getJsonArray("asks");
+        JsonArray bidsArr = root.getJsonArray("bids");
 
         MarketDepth depth = new MarketDepth();
         depth.setBaseCurrency(base);
@@ -48,12 +53,12 @@ public class BtcEApiClient extends ExchangeApiClient {
         for(int i=0; i<asksArr.size(); i++ ) {
             float price = (float) asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
             float volume = (float) asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getAsks().add(new MarketOrder(volume, base, new CurrencyValue(price, quote)));
+            depth.getAsks().add(new MarketOrder(TradeDecision.BUY, volume, base, new CurrencyValue(price, quote)));
         }
         for(int i=0; i<bidsArr.size(); i++ ) {
-            float price = (float) asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
-            float volume = (float) asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getBids().add(new MarketOrder(volume, base, new CurrencyValue(price, quote)));
+            float price = (float) bidsArr.getJsonArray(i).getJsonNumber(0).doubleValue();
+            float volume = (float) bidsArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            depth.getBids().add(new MarketOrder(TradeDecision.SELL, volume, base, new CurrencyValue(price, quote)));
         }
 
         return depth;
