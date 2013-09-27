@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.kraken;
+package at.outdated.bitcoin.exchange.kraken.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

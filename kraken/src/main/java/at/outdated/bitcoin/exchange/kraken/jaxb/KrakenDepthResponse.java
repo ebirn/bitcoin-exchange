@@ -1,6 +1,5 @@
-package at.outdated.bitcoin.exchange.kraken;
+package at.outdated.bitcoin.exchange.kraken.jaxb;
 
-import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
@@ -15,24 +14,26 @@ import java.util.List;
 /**
  * Created by ebirn on 22.09.13.
  */
-@XmlRootElement
+@XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class KrakenDepthResponse extends KrakenResponse<KrakenDepthValue> {
 
 
     public MarketDepth getDepthValue() {
+        MarketDepth depth = new MarketDepth();
 
+        /*
         KrakenDepthValue krakenDepth = result.getXXBTZEUR();
 
         Currency base = Currency.BTC;
         Currency quote = Currency.EUR;
 
-        MarketDepth depth = new MarketDepth();
+
         depth.setBaseCurrency(base);
 
         addOrders(TradeDecision.BUY, krakenDepth.asks, depth.getAsks(), base, quote);
         addOrders(TradeDecision.SELL, krakenDepth.bids, depth.getBids(), base, quote);
-
+*/
         return depth;
     }
 

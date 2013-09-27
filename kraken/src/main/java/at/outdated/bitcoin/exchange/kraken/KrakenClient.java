@@ -5,6 +5,8 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenDepthResponse;
+import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenTickerResponse;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;

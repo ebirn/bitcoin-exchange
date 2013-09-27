@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.kraken;
+package at.outdated.bitcoin.exchange.kraken.jaxb;
 
 import javax.xml.bind.annotation.*;
 
@@ -9,11 +9,8 @@ import javax.xml.bind.annotation.*;
  * Time: 18:36
  * To change this template use File | Settings | File Templates.
  */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "result")
 @XmlSeeAlso({KrakenTickerValue.class, KrakenDepthValue.class})
-
 public class KrakenResponseResult<T> {
 
     @XmlElementRefs({
@@ -25,5 +22,9 @@ public class KrakenResponseResult<T> {
 
     public T getXXBTZEUR() {
         return XXBTZEUR;
+    }
+
+    public void setXXBTZEUR(T XXBTZEUR) {
+        this.XXBTZEUR = XXBTZEUR;
     }
 }
