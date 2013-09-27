@@ -27,7 +27,7 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     public TickerValue getTicker(Currency currency) {
 
-        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=XBTEUR");
+        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=XBT"+currency.name());
         KrakenTickerResponse tickerResponse = simpleGetRequest(webResource, KrakenTickerResponse.class);
 
         TickerValue value = null;
@@ -46,7 +46,7 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
 
-        WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=XBTEUR");
+        WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=XBT"+quote.name());
         KrakenDepthResponse depthResponse = simpleGetRequest(webResource, KrakenDepthResponse.class);
 
         MarketDepth depth = null;

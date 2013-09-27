@@ -19,7 +19,7 @@ public class KrakenMarket extends Market {
 
     @Override
     public Currency[] getFiatCurrencies() {
-        return new Currency[] { Currency.EUR };  //
+        return new Currency[] { Currency.EUR, Currency.USD };  //
     }
 
     @Override
