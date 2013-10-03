@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import org.junit.Test;
  * Time: 14:03
  * To change this template use File | Settings | File Templates.
  */
-public class ApiClientTest {
+public class BitstampTest {
 
     BitstampClient bitstampClient = new BitstampClient();
 
@@ -43,6 +44,16 @@ public class ApiClientTest {
         AccountInfo info = bitstampClient.getAccountInfo();
 
         Assert.assertNotNull(info);
+
+    }
+
+
+    @Test
+    public void testMarketDepth() {
+
+        MarketDepth d = bitstampClient.getMarketDepth(Currency.BTC, Currency.USD);
+
+        Assert.assertNotNull(d);
 
     }
 }

@@ -8,11 +8,9 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
  */
 public class MarketOrder {
 
-    protected Currency baseCurrency;
 
     protected CurrencyValue price;
-
-    protected float volume;
+    protected CurrencyValue volume;
 
     protected TradeDecision decision;
 
@@ -20,20 +18,12 @@ public class MarketOrder {
 
     }
 
-    public MarketOrder(TradeDecision decision, float volume, Currency base,  CurrencyValue price) {
+    public MarketOrder(TradeDecision decision, CurrencyValue volume,  CurrencyValue price) {
         this.decision = decision;
         this.volume = volume;
-        this.baseCurrency = base;
         this.price = price;
     }
 
-    public Currency getBaseCurrency() {
-        return baseCurrency;
-    }
-
-    public void setBaseCurrency(Currency baseCurrency) {
-        this.baseCurrency = baseCurrency;
-    }
 
     public CurrencyValue getPrice() {
         return price;
@@ -43,16 +33,16 @@ public class MarketOrder {
         this.price = price;
     }
 
-    public float getVolume() {
+    public CurrencyValue getVolume() {
         return volume;
     }
 
-    public void setVolume(float volume) {
+    public void setVolume(CurrencyValue volume) {
         this.volume = volume;
     }
 
     @Override
     public String toString() {
-        return "Order: " + decision + " " + volume + " " + baseCurrency + " @ " + price;
+        return "Order: " + decision + " " + volume  + " @ " + price;
     }
 }

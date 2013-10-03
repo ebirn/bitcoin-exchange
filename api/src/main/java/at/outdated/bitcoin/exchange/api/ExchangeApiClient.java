@@ -8,9 +8,13 @@ import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import java.io.StringReader;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -35,6 +39,33 @@ public abstract class ExchangeApiClient {
     public abstract TickerValue getTicker(Currency currency);
 
     public abstract Number getLag();
+
+
+    protected JsonObject jsonFromString(String s) {
+        return Json.createReader(new StringReader(s)).readObject();
+    }
+
+    protected double[][] parseNestedArray(JsonArray jsonArray) {
+
+
+        int len = jsonArray.size();
+        double[][] resultArray = new double[len][];
+
+        for(int i=0; i<len; i++) {
+
+
+            JsonArray innerJsonArray = jsonArray.getJsonArray(i);
+            int innerLen = innerJsonArray.size();
+            double[] inner = new double[innerLen];
+
+            for(int j=0; j<innerLen; j++) {
+                inner[j] = Float.parseFloat(innerJsonArray.get(j).toString());
+            }
+            resultArray[i] = inner;
+        }
+
+        return resultArray;
+    }
 
     public abstract MarketDepth getMarketDepth(Currency base, Currency quote);
 

@@ -51,14 +51,14 @@ public class BtcEApiClient extends ExchangeApiClient {
 
 
         for(int i=0; i<asksArr.size(); i++ ) {
-            float price = (float) asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
-            float volume = (float) asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getAsks().add(new MarketOrder(TradeDecision.BUY, volume, base, new CurrencyValue(price, quote)));
+            double price = asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
+            double volume = asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            depth.getAsks().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
         }
         for(int i=0; i<bidsArr.size(); i++ ) {
-            float price = (float) bidsArr.getJsonArray(i).getJsonNumber(0).doubleValue();
-            float volume = (float) bidsArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getBids().add(new MarketOrder(TradeDecision.SELL, volume, base, new CurrencyValue(price, quote)));
+            double price = bidsArr.getJsonArray(i).getJsonNumber(0).doubleValue();
+            double volume = bidsArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            depth.getBids().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
         }
 
         return depth;

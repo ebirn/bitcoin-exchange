@@ -6,19 +6,16 @@ import javax.xml.bind.annotation.*;
  * Created by ebirn on 22.09.13.
  */
 
-
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KrakenResponse<T> {
+public class KrakenResponse {
 
     @XmlElement
     protected Object[] error;
 
 
-    @XmlElementRefs({
-        @XmlElementRef(type=KrakenDepthResponse.class),
-        @XmlElementRef(type=KrakenTickerResponse.class)
-    })
-    protected KrakenResponseResult<T> result;
+    @XmlElement
+    protected KrakenResponseResult result;
 
 
     public Object[] getError() {
@@ -26,11 +23,11 @@ public class KrakenResponse<T> {
     }
 
 
-    public void setResult(KrakenResponseResult<T> result) {
-        this.result = result;
-    }
-
     public void setError(Object[] error) {
         this.error = error;
+    }
+
+    public KrakenResponseResult getResult() {
+        return result;
     }
 }

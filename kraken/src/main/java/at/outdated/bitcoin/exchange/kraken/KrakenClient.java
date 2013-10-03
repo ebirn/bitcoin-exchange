@@ -5,8 +5,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenDepthResponse;
-import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenTickerResponse;
+import at.outdated.bitcoin.exchange.kraken.jaxb.*;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -30,9 +29,13 @@ public class KrakenClient extends ExchangeApiClient {
     public TickerValue getTicker(Currency currency) {
 
         WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=XBT"+currency.name());
-        KrakenTickerResponse tickerResponse = simpleGetRequest(webResource, KrakenTickerResponse.class);
+        //KrakenTickerResponse tickerResponse =
 
         TickerValue value = null;
+
+        KrakenTickerResponse response = simpleGetRequest(webResource, KrakenTickerResponse.class);
+
+        KrakenTickerValue tickerResponse = ( response.getResult().getXXBTZEUR());
 
         if(tickerResponse != null)
             value = tickerResponse.getValue();
@@ -49,12 +52,14 @@ public class KrakenClient extends ExchangeApiClient {
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
 
         WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=XBT"+quote.name());
-        KrakenDepthResponse depthResponse = simpleGetRequest(webResource, KrakenDepthResponse.class);
+        KrakenResponse response = simpleGetRequest(webResource, KrakenResponse.class);
+
+        KrakenDepthValue depthResponse = (KrakenDepthValue) response.getResult().getXXBTZEUR();
 
         MarketDepth depth = null;
 
         if(depthResponse != null)
-            depth = depthResponse.getDepthValue();
+            depth = depthResponse.getValue();
 
         return depth;
     }

@@ -12,7 +12,7 @@ import org.junit.Test;
  * Time: 00:00
  * To change this template use File | Settings | File Templates.
  */
-public class ClientTest {
+public class BtceTest {
 
 
     BtcEApiClient client = new BtcEApiClient();

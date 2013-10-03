@@ -3,11 +3,16 @@ package at.outdated.bitcoin.exchange.bitcurex;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
+import javax.json.*;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import java.io.StringReader;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +29,36 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
     @Override
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
-        return null;
+
+        WebTarget depthTarget = client.target("https://" + quote.name().toLowerCase() + ".bitcurex.com/data/trades.json");
+
+        String raw = super.simpleGetRequest(depthTarget, String.class);
+
+        JsonArray rawDepth =  Json.createReader(new StringReader(raw)).readArray();
+
+        MarketDepth depth = new MarketDepth();
+        depth.setBaseCurrency(base);
+        for(JsonValue v : rawDepth) {
+            JsonObject trade = (JsonObject) v;
+
+            double price = trade.getJsonNumber("price").doubleValue();
+            double volume = trade.getJsonNumber("amount").doubleValue();
+            int type = trade.getJsonNumber("type").intValue();
+            //trade.getJsonNumber("date");
+            //trade.getJsonNumber("tid");
+
+            // sell
+            if(type == 1) {
+                depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+            }
+            // buy
+            else {
+                depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+            }
+        }
+
+
+        return depth;
     }
 
     @Override

@@ -1,36 +1,42 @@
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.mtgox.MtGoxClient;
+import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
- * Date: 26.05.13
- * Time: 17:24
+ * Date: 30.05.13
+ * Time: 13:11
  * To change this template use File | Settings | File Templates.
  */
-public class ClientTest {
+public class BitcurexTest {
 
-
-    ExchangeApiClient client = new MtGoxClient();
-
+    ExchangeApiClient client = new  BitcurexApiClient();
 
     @Test
     public void testTicker() {
+
+
+
+
         TickerValue ticker = client.getTicker(Currency.EUR);
 
-        Assert.assertNotNull(ticker);
+        Assert.assertNotNull("ticker value", ticker);
 
     }
 
     @Test
-    public void testAccountInfo() {
+    public void testDepth() {
 
-        AccountInfo info = client.getAccountInfo();
-        Assert.assertNotNull(info);
+        MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
+
+        Assert.assertNotNull(depth);
+
     }
+
+
 }

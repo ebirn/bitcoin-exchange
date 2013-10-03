@@ -3,9 +3,13 @@ package at.outdated.bitcoin.exchange.bitkonan;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
+import javax.json.JsonObject;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 
@@ -26,7 +30,36 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
     @Override
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
-        return null;
+
+        // https://bitkonan.com/api/orderbook/?group=0
+
+        WebTarget orderbook = client.target("https://bitkonan.com/api/orderbook/");
+
+        String obString = super.simpleGetRequest(orderbook, String.class);
+
+        JsonObject konanDepth = jsonFromString(obString);
+
+        double[][] asks = parseNestedArray(konanDepth.getJsonArray("asks"));
+        double[][] bids = parseNestedArray(konanDepth.getJsonArray("bids"));
+
+
+        MarketDepth depth = new MarketDepth();
+
+        depth.setBaseCurrency(base);
+
+        for(double[] bid : bids) {
+            double price = bid[0];
+            double volume = bid[1];
+            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+        }
+
+        for(double[] ask : asks) {
+            double price = ask[0];
+            double volume = ask[1];
+            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+        }
+
+        return depth;
     }
 
     @Override

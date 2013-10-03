@@ -1,4 +1,5 @@
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitkonan.BitkonanApiClient;
 import org.junit.Assert;
@@ -28,6 +29,15 @@ public class BitkonanTest {
         System.out.println("ticker: "+ ticker.getTimestamp() +"  "  + ticker);
 
 
+    }
+
+    @Test
+    public void testDepth() {
+
+        MarketDepth d = client.getMarketDepth(Currency.BTC, Currency.USD);
+
+
+        Assert.assertNotNull(d);
     }
 
 }

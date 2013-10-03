@@ -9,13 +9,15 @@ import javax.xml.bind.annotation.*;
  * Time: 18:36
  * To change this template use File | Settings | File Templates.
  */
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({KrakenTickerValue.class, KrakenDepthValue.class})
 public class KrakenResponseResult<T> {
 
+
     @XmlElementRefs({
-            @XmlElementRef(type=KrakenTickerValue.class),
-            @XmlElementRef(type=KrakenDepthValue.class)
+            @XmlElementRef(type = KrakenTickerValue.class),
+            @XmlElementRef(type = KrakenDepthValue.class)
     })
     private T XXBTZEUR;
 

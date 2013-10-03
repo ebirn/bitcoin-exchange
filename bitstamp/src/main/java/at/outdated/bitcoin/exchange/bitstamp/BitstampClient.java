@@ -6,11 +6,17 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import org.slf4j.LoggerFactory;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import java.io.StringReader;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,9 +67,34 @@ public class BitstampClient extends ExchangeApiClient {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
     @Override
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
-        return null;
+
+        // https://www.bitstamp.net/api/order_book/
+
+        WebTarget depthTarget = client.target("https://www.bitstamp.net/api/order_book/");
+
+        String depthString = simpleGetRequest(depthTarget, String.class);
+
+        JsonObject depthData = Json.createReader(new StringReader(depthString)).readObject();
+
+        MarketDepth depth = new MarketDepth();
+        depth.setBaseCurrency(base);
+
+        double[][] asks = parseNestedArray(depthData.getJsonArray("asks"));
+        double[][] bids = parseNestedArray(depthData.getJsonArray("bids"));
+
+
+        for(double[] bid : bids) {
+            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(bid[1], base), new CurrencyValue(bid[0], quote)));
+        }
+
+        for(double[] ask : asks) {
+            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(ask[1], base), new CurrencyValue(ask[0], quote)));
+        }
+
+        return depth;
     }
 
     @Override

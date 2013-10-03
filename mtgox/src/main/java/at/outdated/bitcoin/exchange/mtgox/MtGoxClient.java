@@ -5,8 +5,11 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import org.slf4j.LoggerFactory;
@@ -88,7 +91,27 @@ public class MtGoxClient extends ExchangeApiClient {
 
     @Override
     public MarketDepth getMarketDepth(Currency base, Currency quote) {
-        return null;
+
+
+        WebTarget depthTarget = client.target(API_BASE_URL + base.name() + quote.name() + "/money/depth/fetch");
+
+        //String raw = simpleGetRequest(depthTarget, String.class);
+
+        ApiDepthResponse res = simpleGetRequest(depthTarget, ApiDepthResponse.class);
+
+        DepthResponse rawDepth = res.data;
+
+        MarketDepth depth = new MarketDepth(base);
+
+        for(DepthEntry e : rawDepth.getAsks()) {
+            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(e.amount, base), new CurrencyValue(e.price, quote)));
+        }
+
+        for(DepthEntry e : rawDepth.getBids()) {
+            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(e.amount, base), new CurrencyValue(e.price, quote)));
+        }
+
+        return depth;
     }
 
     @Override

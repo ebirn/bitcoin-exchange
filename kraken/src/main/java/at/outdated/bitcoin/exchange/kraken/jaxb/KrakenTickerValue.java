@@ -1,9 +1,9 @@
 package at.outdated.bitcoin.exchange.kraken.jaxb;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.TickerValue;
+
+import javax.xml.bind.annotation.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KrakenTickerValue {
+public class KrakenTickerValue extends KrakenResultValue {
 
     @XmlElement
     String a[];
@@ -79,5 +79,23 @@ public class KrakenTickerValue {
 
     public void setO(String o) {
         this.o = o;
+    }
+
+    public TickerValue getValue() {
+        TickerValue value = new TickerValue();
+
+
+        value.setCurrency(Currency.EUR);
+        value.setLast(Double.parseDouble(l[0]));
+
+        value.setAsk(Double.parseDouble(a[0]));
+        value.setBid(Double.parseDouble(b[0]));
+
+        value.setVolume(Double.parseDouble(v[0]));
+
+        value.setHigh(Double.parseDouble(h[0]));
+        value.setLow(Double.parseDouble(l[0]));
+
+        return value;
     }
 }
