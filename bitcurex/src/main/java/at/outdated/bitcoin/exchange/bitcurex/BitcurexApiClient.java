@@ -24,6 +24,15 @@ import java.io.StringReader;
 public class BitcurexApiClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
+
+        /// see https://bitcurex.com/en-pages,eurapi.html
+
+        // getOrders
+        // getFunds
+        // getTransactions
+
+
+
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

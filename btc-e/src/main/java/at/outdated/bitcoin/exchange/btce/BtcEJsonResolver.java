@@ -16,6 +16,6 @@ public class BtcEJsonResolver extends JSONResolver {
 
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[] { TickerResponse.class };
+        return new Class<?>[] { TickerResponse.class, InfoResponse.class };
     }
 }

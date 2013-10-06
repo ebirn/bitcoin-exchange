@@ -51,7 +51,7 @@ public class BitstampClient extends ExchangeApiClient {
         BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, payloadBuilder.toString());
 
 
-        log.info("bitstamp balance: {}", balance);
+        log.debug("bitstamp balance: {}", balance);
 
 
         BitstampAccountInfo info = new BitstampAccountInfo();

@@ -1,9 +1,22 @@
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.btce.BtcEApiClient;
+import com.sun.deploy.net.HttpUtils;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,4 +62,12 @@ public class BtceTest {
 
     }
 
+
+    @Test
+    public void testAccountInfo() {
+
+        AccountInfo info = client.getAccountInfo();
+        Assert.assertNotNull(info);
+
+    }
 }
