@@ -47,7 +47,6 @@ public class BitkonanTest {
         AccountInfo info = client.getAccountInfo();
 
         Assert.assertNotNull(info);
-
     }
 
 }

@@ -11,8 +11,10 @@ import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.concurrent.Future;
@@ -31,18 +33,65 @@ public class KrakenClient extends ExchangeApiClient {
     public AccountInfo getAccountInfo() {
 
 
-        WebTarget balanceTarget = client.target("https://api.kraken.com/0/private/TradeBalance");
+        WebTarget balanceTarget = client.target("https://api.kraken.com/0/private/Balance");
 
-        Future<String> rawBalance = setupProtectedResource(balanceTarget).async().get(String.class);
+        long apiTimestamp = (new Date()).getTime()*1000L;
+
+        String postPayload = "nonce="+apiTimestamp;
+        String signature = null;
+
         try {
-            log.debug("rawBalance: {}", rawBalance.get());
+            Mac mac = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(getSecret("kraken")), "HmacSHA512");
+            mac.init(secret_spec);
+
+            // path + NUL + POST (incl. nonce)
+
+
+            String signatureData = apiTimestamp + postPayload;
+
+            log.info("payload: {}", postPayload);
+            log.info("sign payload: {}", signatureData);
+
+            String path = balanceTarget.getUri().getPath();
+            log.info("path: {}", path);
+
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            digest.update(signatureData.getBytes());
+
+
+            mac.update(path.getBytes("UTF-8"));
+
+            byte[] rawSignature = mac.doFinal(digest.digest());
+
+            // need exactly this function, otherwise might add linebreaks after 76 characters
+            signature = new String(Base64.encodeBase64(rawSignature, false));
+            log.info("signature: {}", signature);
+
+            // POST data:
+            // nonce = always increasing unsigned 64 bit integer
+            // otp = two-factor password (if two-factor enabled, otherwise not required)
+
+
+            String key = getUserId("kraken");
+            log.info("key: {}", key);
+
+            Invocation.Builder builder = balanceTarget.request();
+            builder.header("API-Key", key);
+            builder.header("API-Sign", signature);
+
+            String rawBalance = builder.post(Entity.entity(postPayload, MediaType.APPLICATION_FORM_URLENCODED_TYPE), String.class);
+
+            log.debug("rawBalance: {}", rawBalance);
 
 
         }
         catch(Exception e) {
             log.error("failed to get account info", e);
         }
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new KrakenAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -92,7 +141,9 @@ public class KrakenClient extends ExchangeApiClient {
         // API-Key = API key
         // API-Sign = Message signature using HMAC-SHA512 of (URI path + SHA256(nonce + POST data)) and base64 decoded secret API key
 
-        long apiTimestamp = (new Date()).getTime();
+        // 1381172423349903L; //
+        //
+        long apiTimestamp = 1381173303029257L; //(new Date()).getTime();
         String signature = null;
 
         try {
@@ -102,16 +153,26 @@ public class KrakenClient extends ExchangeApiClient {
 
             // path + NUL + POST (incl. nonce)
 
-            String payload = "nonce="+apiTimestamp+"&otp=553834";
+            String postPayload = "nonce="+apiTimestamp;
+            String signatureData = apiTimestamp + postPayload;
+
+            log.info("payload: {}", postPayload);
+            log.info("sign payload: {}", signatureData);
+
             String path = tgt.getUri().getPath();
+            log.info("path: {}", path);
+
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.update(payload.getBytes());
+
+            digest.update(signatureData.getBytes());
             mac.update(path.getBytes("UTF-8"));
 
             byte[] rawSignature = mac.doFinal(digest.digest());
 
-            signature = Base64.encodeBase64URLSafeString(rawSignature);
+            // need exactly this function, otherwise might add linebreaks after 76 characters
+            signature = new String(Base64.encodeBase64(rawSignature, false));
+            log.info("signatur: {}", signature);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -122,9 +183,14 @@ public class KrakenClient extends ExchangeApiClient {
         // otp = two-factor password (if two-factor enabled, otherwise not required)
 
 
+        String key = getUserId("kraken");
+        log.info("key: {}", key);
+
         Invocation.Builder builder = tgt.request();
-        builder.header("API-Key", getUserId("kraken"));
+        builder.header("API-Key", key);
         builder.header("API-Sign", signature);
+
+
 
         return builder;  //To change body of implemented methods use File | Settings | File Templates.
     }

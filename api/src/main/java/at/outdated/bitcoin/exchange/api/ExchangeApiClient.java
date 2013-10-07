@@ -59,7 +59,16 @@ public abstract class ExchangeApiClient {
             double[] inner = new double[innerLen];
 
             for(int j=0; j<innerLen; j++) {
-                inner[j] = Float.parseFloat(innerJsonArray.get(j).toString());
+
+                switch(innerJsonArray.getValueType()) {
+                    case STRING:
+                        inner[j] = Double.parseDouble(innerJsonArray.getString(j));
+                        break;
+
+                    case NUMBER:
+                        inner[j] = innerJsonArray.getJsonNumber(j).doubleValue();
+                        break;
+                }
             }
             resultArray[i] = inner;
         }

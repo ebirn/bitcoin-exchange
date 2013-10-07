@@ -50,8 +50,8 @@ public class BitcurexApiClient extends ExchangeApiClient {
         for(JsonValue v : rawDepth) {
             JsonObject trade = (JsonObject) v;
 
-            double price = trade.getJsonNumber("price").doubleValue();
-            double volume = trade.getJsonNumber("amount").doubleValue();
+            double price = Double.parseDouble(trade.getString("price"));
+            double volume = Double.parseDouble(trade.getString("amount"));
             int type = trade.getJsonNumber("type").intValue();
             //trade.getJsonNumber("date");
             //trade.getJsonNumber("tid");
