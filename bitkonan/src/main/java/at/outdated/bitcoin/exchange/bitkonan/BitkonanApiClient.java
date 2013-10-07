@@ -17,6 +17,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import java.util.Date;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,10 +37,18 @@ public class BitkonanApiClient extends ExchangeApiClient {
         WebTarget balanceTarget = client.target("https://bitkonan.com/api/balance/");
         WebTarget ordersTarget = client.target("https://bitkonan.com/api/open_orders");
 
-        Invocation.Builder b = setupProtectedResource(balanceTarget);
-        String raw = b.get(String.class);
 
-        log.info("raw: " + raw);
+        Future<String> rawBalance = setupProtectedResource(balanceTarget).async().get(String.class);
+        Future<String> rawOrders = setupProtectedResource(ordersTarget).async().get(String.class);
+
+        try {
+            log.info("rawBalance: " + rawBalance.get());
+            log.info("rawOrders: " + rawOrders.get());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
 
         BitkonanAccountInfo info = new BitkonanAccountInfo();
@@ -131,14 +140,14 @@ public class BitkonanApiClient extends ExchangeApiClient {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
 
-            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(apiSecret), "HmacSHA256");
+            SecretKeySpec secret_spec = new SecretKeySpec(apiSecret.getBytes("UTF-8"), "HmacSHA256");
             mac.init(secret_spec);
 
             // path + NUL + POST (incl. nonce)
 
             String content = "";
 
-            String payload = "" + apiTimestamp;
+            String payload = content + ":" + apiTimestamp;
 
             byte[] rawSignature = mac.doFinal(payload.getBytes());
 
