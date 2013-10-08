@@ -51,4 +51,21 @@ public class MarketDepth {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    private String orderSummary(List<MarketOrder> orders) {
+        if(orders == null || orders.isEmpty()) return "none";
+
+        for(MarketOrder order : orders) {
+        }
+
+        return orders.size() + " orders";
+    }
+
+    @Override
+    public String toString() {
+        String bidSummary = orderSummary(bids);
+        String askSummary = orderSummary(asks);
+
+        return "Depth: bids: " + bidSummary + ", asks: " + askSummary;
+    }
 }

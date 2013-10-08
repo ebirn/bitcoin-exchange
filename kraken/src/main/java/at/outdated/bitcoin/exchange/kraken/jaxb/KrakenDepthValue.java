@@ -17,7 +17,7 @@ import java.util.List;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KrakenDepthValue extends KrakenResultValue {
+public class KrakenDepthValue {
 
     @XmlElement
     float[][] asks;

@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.*;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KrakenTickerValue extends KrakenResultValue {
+public class KrakenTickerValue {
 
     @XmlElement
     String a[];

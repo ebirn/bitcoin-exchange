@@ -60,7 +60,8 @@ public abstract class ExchangeApiClient {
 
             for(int j=0; j<innerLen; j++) {
 
-                switch(innerJsonArray.getValueType()) {
+                // parse crappy
+                switch(innerJsonArray.get(j).getValueType()) {
                     case STRING:
                         inner[j] = Double.parseDouble(innerJsonArray.getString(j));
                         break;
