@@ -143,28 +143,18 @@ public class BtcEApiClient extends ExchangeApiClient {
             long nonce = (new Date()).getTime()/1000L; //max:2.147.483.647
 
             Entity<Form> e = (Entity<Form>) entity;
+            e.getEntity().param("nonce", Long.toString(nonce));
 
-            e.getEntity().param("nonce", "" + nonce);
-
-            String method = e.getEntity().asMap().getFirst("method");
-
-
-            // TODO: the order of paramaters may become unstable. try to serialize with message body writer?
-            String payload = "nonce="+nonce + "&method=" + method;
-
-            //MessageBodyWriter<Form> formWriter;
-
+            String payload = formData2String(e.getEntity());
             log.debug("encoded payload: {}", payload);
 
             byte[] rawSignature = mac.doFinal(payload.getBytes("UTF-8"));
-
             String signature = new String(Hex.encodeHex(rawSignature));
 
             builder = tgt.request();
 
             builder.header("Key", apiKey);
             log.debug("Key: {}", apiKey);
-
 
             builder.header("Sign", signature);
             log.debug("Sign: {}", signature);

@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +15,16 @@ import javax.json.JsonObject;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.Future;
 
@@ -205,5 +213,29 @@ public abstract class ExchangeApiClient {
     }
 
 
+    // this is taken from Form MessageBodyWriter in Glassfish, should produce same output
+    // necessary for API Sign headers
+    protected String formData2String(Form form) {
+        final StringBuilder sb = new StringBuilder();
 
+        try {
+            for (Map.Entry<String, List<String>> e : form.asMap().entrySet()) {
+                for (String value : e.getValue()) {
+                    if (sb.length() > 0) {
+                        sb.append('&');
+                    }
+                    sb.append(URLEncoder.encode(e.getKey(), "UTF-8"));
+                    if (value != null) {
+                        sb.append('=');
+                        sb.append(URLEncoder.encode(value, "UTF-8"));
+                    }
+                }
+            }
+        }
+        catch(Exception e) {
+            log.error("faild to convert form", e);
+        }
+
+        return sb.toString();
+    }
 }
