@@ -74,7 +74,6 @@ public class BitstampClient extends ExchangeApiClient {
     public AccountInfo getAccountInfo() {
 
         WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
-
         BitstampAccountBalance balance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(new Form()));
 
         log.debug("bitstamp balance: {}", balance);

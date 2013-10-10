@@ -140,7 +140,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
         String apiKey = getUserId("bitkonan");
         String apiSecret = getSecret("bitkonan");
-        long apiTimestamp = 12345678L; //(new Date()).getTime()/1000L;
+        long apiTimestamp = (new Date()).getTime()/1000L;
 
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
@@ -149,23 +149,22 @@ public class BitkonanApiClient extends ExchangeApiClient {
             mac.init(secret_spec);
 
             // path + NUL + POST (incl. nonce)
-
-
-
             String content = entity == null ? "" : entity.getEntity().toString();
 
-            String payload = content + ":" + apiTimestamp;
+            String payload = content + ":" + Long.toString(apiTimestamp);
 
             byte[] rawSignature = mac.doFinal(payload.getBytes());
 
             String signature = new String(Hex.encodeHex(rawSignature, true));
 
-            builder.header("Api-Sign", signature);
-            builder.header("Api-Signature", signature);
-            builder.header("Api-Secret", signature);
-
             builder.header("Api-Key", apiKey);
+            //log.debug("Api-Key: {}", apiKey);
+
+            builder.header("Api-Sign", signature);
+            //log.debug("Api-Sign: {}", signature);
+
             builder.header("Api-Timestamp", apiTimestamp);
+            //log.debug("Api-Timestamp: {}", apiTimestamp);
         }
         catch(Exception e) {
             e.printStackTrace();
