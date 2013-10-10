@@ -14,11 +14,13 @@ import org.apache.commons.codec.binary.Hex;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.JsonObject;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
+import java.net.HttpCookie;
 import java.util.Date;
 import java.util.concurrent.Future;
 
@@ -41,8 +43,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
         WebTarget ordersTarget = client.target("https://bitkonan.com/api/open_orders");
 
 
-        Future<String> rawBalance = setupProtectedResource(balanceTarget, Entity.form(new MultivaluedHashMap<String,String>())).async().get(String.class);
-        Future<String> rawOrders = setupProtectedResource(ordersTarget, Entity.form(new MultivaluedHashMap<String,String>())).async().get(String.class);
+        Future<String> rawBalance =  asyncRequest(balanceTarget, String.class, "GET", null, true);
+        Future<String> rawOrders = asyncRequest(ordersTarget, String.class , "GET", null, true);
 
         try {
             log.info("rawBalance: " + rawBalance.get());
@@ -150,7 +152,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
 
 
-            String content = entity.getEntity().toString();
+            String content = entity == null ? "" : entity.getEntity().toString();
 
             String payload = content + ":" + apiTimestamp;
 
