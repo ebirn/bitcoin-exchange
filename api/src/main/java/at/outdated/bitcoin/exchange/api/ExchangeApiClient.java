@@ -12,11 +12,13 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -84,37 +86,84 @@ public abstract class ExchangeApiClient {
     }
 
 
+    // simplified public api
     protected <R> R simpleGetRequest(WebTarget resource, Class<R> resultClass) {
-        return simpleRequest(resource, resultClass, HttpMethod.GET, null);
+        return syncRequest(resource, resultClass, HttpMethod.GET, null);
     }
 
-    protected <R> R simplePostRequest(WebTarget resource, Class<R> resultClass, Object payload) {
-        return simpleRequest(resource, resultClass, HttpMethod.POST, payload);
+    protected <R> R simplePostRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
+        return syncRequest(resource, resultClass, HttpMethod.POST, payload);
     }
 
-    protected <R> R simplePutRequest(WebTarget resource, Class<R> resultClass, Object payload) {
-        return simpleRequest(resource, resultClass, HttpMethod.PUT, payload);
+    protected <R> R simplePutRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
+        return syncRequest(resource, resultClass, HttpMethod.PUT, payload);
     }
 
 
-    protected Invocation.Builder setupResource(WebTarget res) {
-        return res.request().header("User-Agent", userAgent).accept(MediaType.APPLICATION_JSON_TYPE);
+    // simplified protected api
+    protected <R> R protectedGetRequest(WebTarget resource, Class<R> resultClass) {
+        return syncRequest(resource, resultClass, HttpMethod.GET, null, true);
     }
 
-    protected abstract Invocation.Builder setupProtectedResource(WebTarget res);
+    protected <R> R protectedPostRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
+        return syncRequest(resource, resultClass, HttpMethod.POST, payload, true);
+    }
 
-    protected <R> R simpleRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Object payload) {
+    protected <R> R protectedPutRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
+        return syncRequest(resource, resultClass, HttpMethod.PUT, payload, true);
+    }
+
+    protected <T> Invocation.Builder setupResource(WebTarget res, Entity<T> e) {
+        return res.request().header("User-Agent", userAgent);
+    }
+
+    protected abstract <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity);
+
+    protected <R> Future<R> asyncRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Entity payload) {
+        return asyncRequest(resource, resultClass, httpMethod, payload, false);
+    }
+
+    protected <R> Future<R> asyncRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Entity payload, boolean secure) {
+
+        Future<R> result = null;
+
+        Invocation.Builder builder = null;
+        if(secure) {
+            builder = setupProtectedResource(resource, payload);
+        }
+        else {
+            builder = setupResource(resource, payload);
+        }
+
+        result = builder.async().method(httpMethod, payload, resultClass);
+
+        return result;
+    }
+
+    protected <R> R syncRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Entity payload) {
+        return syncRequest(resource, resultClass, httpMethod, payload, false);
+    }
+
+    protected <R> R syncRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Entity payload, boolean secure) {
 
         R result = null;
-
         Date requestDate = new Date();
         try {
-            result = setupResource(resource).method(httpMethod, Entity.json(payload), resultClass); //invoke(resultClass);
+            Invocation.Builder builder = null;
+
+            if(secure) {
+                builder = setupProtectedResource(resource, payload);
+            }
+            else {
+                builder = setupResource(resource, payload);
+            }
+
+            result = builder.header("User-Agent", userAgent).method(httpMethod, payload, resultClass);
         }
-        // FIXME: replace that!
-        //catch ( uie) {
-        //    handleApiError(uie);
-       // }
+        //
+        catch (WebApplicationException wae) {
+            handleApiError(wae);
+        }
         catch(Exception e) {
             log.error("unexpected exception: {}", e);
         }
@@ -122,19 +171,16 @@ public abstract class ExchangeApiClient {
             updateApiLag(requestDate);
         }
 
-
         return result;
     }
 
 
-    /*
-    protected void handleApiError(UniformInterfaceException uie) {
-        if(uie.getResponse().getClientResponseStatus() == ClientResponse.Status.BAD_GATEWAY) {
-
-            log.error("API error: BAD GATEWAY");
-        }
+    // very basic request error handling: log it!
+    protected void handleApiError(javax.ws.rs.WebApplicationException wae) {
+        log.error("failed request: {}", wae.getResponse().getStatusInfo());
+        log.error(wae.getMessage());
     }
-*/
+
 
     protected void updateApiLag(Date requestDate/*, Date responseDate*/) {
         Date responseDate = new Date();
@@ -145,33 +191,19 @@ public abstract class ExchangeApiClient {
 
 
     protected String getSecret(String market) {
-        ResourceBundle bundle = ResourceBundle.getBundle("at.outdated.bitcoin.exchange.api.bitcoin-exchange");
+        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
 
         String name = market + ".secret";
         return bundle.getString(name);
-
-        //return getProperties().get(name).toString();
     }
 
     protected String getUserId(String market) {
-        ResourceBundle bundle = ResourceBundle.getBundle("at.outdated.bitcoin.exchange.api.bitcoin-exchange");
+        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
+
         String name = market + ".userid";
         return bundle.getString(name);
-
-        //return getProperties().get(name).toString();
     }
 
-
-
-    // transactions in the past -> for calculating performance
-    // https://www.bitstamp.net/api/user_transactions/
-
-
-
-
-
-    // open orders: orders have been sent, but not processed yet
-    // https://www.bitstamp.net/api/open_orders/
 
 
 }

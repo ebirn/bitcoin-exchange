@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.mtgox.auth;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -22,12 +21,12 @@ public class RequestAuth {
         try {
             // args signature
             Mac mac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secret_spec = new SecretKeySpec((new BASE64Decoder()).decodeBuffer(secret), "HmacSHA512");
+            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(secret), "HmacSHA512");
             mac.init(secret_spec);
 
             // path + NUL + POST (incl. nonce)
             String payload = path + "\0" + message;
-            String signature = (new BASE64Encoder()).encode(mac.doFinal(payload.getBytes()));
+            String signature = new String(Base64.encodeBase64(mac.doFinal(payload.getBytes()), false));
 
             // cleanup string
             return signature.replaceAll("\n", "");

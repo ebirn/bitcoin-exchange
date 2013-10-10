@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,6 +42,7 @@ public class BitcurexTest {
 
 
     @Test
+    @Ignore
     public void testAccountInfo() {
 
         AccountInfo info = client.getAccountInfo();

@@ -159,8 +159,9 @@ public class MtGoxClient extends ExchangeApiClient {
         return lagResponse.getData().getSeconds();
     }
 
+    //FIXME: actually use that
     @Override
-    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+    protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

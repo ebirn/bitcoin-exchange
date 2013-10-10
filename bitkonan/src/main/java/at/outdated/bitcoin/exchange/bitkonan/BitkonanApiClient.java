@@ -14,8 +14,11 @@ import org.apache.commons.codec.binary.Hex;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.JsonObject;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MultivaluedHashMap;
 import java.util.Date;
 import java.util.concurrent.Future;
 
@@ -38,8 +41,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
         WebTarget ordersTarget = client.target("https://bitkonan.com/api/open_orders");
 
 
-        Future<String> rawBalance = setupProtectedResource(balanceTarget).async().get(String.class);
-        Future<String> rawOrders = setupProtectedResource(ordersTarget).async().get(String.class);
+        Future<String> rawBalance = setupProtectedResource(balanceTarget, Entity.form(new MultivaluedHashMap<String,String>())).async().get(String.class);
+        Future<String> rawOrders = setupProtectedResource(ordersTarget, Entity.form(new MultivaluedHashMap<String,String>())).async().get(String.class);
 
         try {
             log.info("rawBalance: " + rawBalance.get());
@@ -49,7 +52,6 @@ public class BitkonanApiClient extends ExchangeApiClient {
             e.printStackTrace();
             return null;
         }
-
 
         BitkonanAccountInfo info = new BitkonanAccountInfo();
 
@@ -124,8 +126,9 @@ public class BitkonanApiClient extends ExchangeApiClient {
         return 0.12345678910;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
     @Override
-    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+    protected <Form> Invocation.Builder setupProtectedResource(WebTarget res, Entity<Form> entity) {
 
         Invocation.Builder builder = res.request();
 
@@ -145,7 +148,9 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
             // path + NUL + POST (incl. nonce)
 
-            String content = "";
+
+
+            String content = entity.getEntity().toString();
 
             String payload = content + ":" + apiTimestamp;
 

@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import java.io.StringReader;
 
 /**
@@ -32,27 +34,21 @@ public class BitstampClient extends ExchangeApiClient {
     }
 
     @Override
-    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+    protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
         return res.request();
     }
 
     @Override
     public AccountInfo getAccountInfo() {
 
-
-        StringBuilder payloadBuilder = new StringBuilder();
-        payloadBuilder.append("user=");
-        payloadBuilder.append(getUserId("bitstamp"));
-        payloadBuilder.append("&");
-        payloadBuilder.append("password=");
-        payloadBuilder.append(getSecret("bitstamp"));
+        Form f = new Form();
+        f.param("user", getUserId("bitstamp"));
+        f.param("password", getSecret("bitstamp"));
 
         WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
-        BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, payloadBuilder.toString());
-
+        BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(f));
 
         log.debug("bitstamp balance: {}", balance);
-
 
         BitstampAccountInfo info = new BitstampAccountInfo();
 

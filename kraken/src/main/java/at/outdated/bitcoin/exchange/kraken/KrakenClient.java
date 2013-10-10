@@ -145,7 +145,7 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
     @Override
-    protected Invocation.Builder setupProtectedResource(WebTarget tgt) {
+    protected <T> Invocation.Builder setupProtectedResource(WebTarget tgt, Entity<T> entity) {
         // see https://www.kraken.com/help/api
 
         // headers:

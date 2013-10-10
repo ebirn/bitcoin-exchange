@@ -16,6 +16,7 @@ import javax.json.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import java.io.StringReader;
 import java.net.URLEncoder;
@@ -41,7 +42,8 @@ public class BitcurexApiClient extends ExchangeApiClient {
         WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
         //WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
 
-        Invocation.Builder builder = setupProtectedResource(fundsTarget);
+
+        Invocation.Builder builder = setupProtectedResource(fundsTarget, Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
         String payload = null;
         try {
@@ -145,7 +147,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    protected Invocation.Builder setupProtectedResource(WebTarget res) {
+    protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
 
         /*
         headers = array(

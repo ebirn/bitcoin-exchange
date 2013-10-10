@@ -17,7 +17,7 @@ import org.junit.Test;
 public class MtgoxTest {
 
 
-    ExchangeApiClient client = new MtGoxClient();
+    MtGoxClient client = new MtGoxClient();
 
 
     @Test
