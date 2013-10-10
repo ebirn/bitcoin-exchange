@@ -20,7 +20,6 @@ public class KrakenTest {
     @Test
     public void testTickerclient() {
 
-
         TickerValue ticker = client.getTicker(Currency.EUR);
 
         System.out.println("ticker: " + ticker);
@@ -29,14 +28,10 @@ public class KrakenTest {
         Assert.assertNotNull(ticker.getAsk());
         Assert.assertNotNull(ticker.getCurrency());
         Assert.assertNotNull(ticker.getCurrency());
-
-
     }
 
     @Test
     public void testDepthClient() {
-
-
         MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
 
         System.out.println("depth: " + depth);
@@ -46,14 +41,11 @@ public class KrakenTest {
 
         Assert.assertFalse(depth.getAsks().isEmpty());
         Assert.assertFalse(depth.getBids().isEmpty());
-
     }
 
     @Test
     public void testAccountInfo() {
-
         AccountInfo info = client.getAccountInfo();
-
         Assert.assertNotNull(info);
     }
 

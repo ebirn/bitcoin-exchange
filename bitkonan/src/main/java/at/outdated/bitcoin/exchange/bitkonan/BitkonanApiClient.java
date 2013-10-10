@@ -140,7 +140,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
         String apiKey = getUserId("bitkonan");
         String apiSecret = getSecret("bitkonan");
-        long apiTimestamp = (new Date()).getTime()/1000L;
+        long apiTimestamp = 12345678L; //(new Date()).getTime()/1000L;
 
         try {
             Mac mac = Mac.getInstance("HmacSHA256");

@@ -47,11 +47,23 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         MultivaluedMap<String,String> data = new MultivaluedHashMap<>();
         data.add("method", "getInfo");
-
         String raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
-
+        log.debug("raw info: {}", raw);
 
         InfoResponse info = BtcEJsonResolver.convertFromJson(raw, InfoResponse.class);
+
+        data = new MultivaluedHashMap<>();
+        data.add("method", "TransHistory");
+        raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
+        log.debug("raw transactions: {}", raw);
+
+
+        data = new MultivaluedHashMap<>();
+        data.add("method", "TradeHistory");
+        raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
+        log.debug("raw trades: {}", raw);
+
+
 
         return info.result;  //To change body of implemented methods use File | Settings | File Templates.
     }
