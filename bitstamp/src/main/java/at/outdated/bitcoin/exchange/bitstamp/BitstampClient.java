@@ -9,8 +9,11 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -19,6 +22,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.io.StringReader;
+import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,18 +39,43 @@ public class BitstampClient extends ExchangeApiClient {
 
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
+
+        Form form = ((Entity<Form>) entity).getEntity();
+
+        long nonce = (System.currentTimeMillis());
+
+        form.param("nonce", Long.toString(nonce));
+        form.param("key", getUserId("bitstamp"));
+
+        String apiKey = getUserId("bitstamp");
+
+        //message = nonce + client_id + api_key
+        // signature = hmac.new(API_SECRET, msg=message, digestmod=hashlib.sha256).hexdigest().upper()
+        String secret = getSecret("bitstamp");
+
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_spec = new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256");
+            mac.init(secret_spec);
+
+            String signatureData = Long.toString(nonce) + getCustomerId() + apiKey;
+            String signature = Hex.encodeHexString(mac.doFinal(signatureData.getBytes("UTF-8"))).toUpperCase();
+            form.param("signature", signature);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+
         return res.request();
     }
 
     @Override
     public AccountInfo getAccountInfo() {
 
-        Form f = new Form();
-        f.param("user", getUserId("bitstamp"));
-        f.param("password", getSecret("bitstamp"));
-
         WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
-        BitstampAccountBalance balance = simplePostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(f));
+
+        BitstampAccountBalance balance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(new Form()));
 
         log.debug("bitstamp balance: {}", balance);
 
@@ -58,7 +87,12 @@ public class BitstampClient extends ExchangeApiClient {
 
         Wallet wBTC = new BitstampWallet(Currency.BTC);
         wBTC.setBalance(new CurrencyValue(balance.getBtcBalance().doubleValue(), Currency.BTC));
+
         info.setWallet(wBTC);
+
+        https://www.bitstamp.net/api/user_transactions/
+
+
 
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -109,5 +143,9 @@ public class BitstampClient extends ExchangeApiClient {
         return 1.0;
     }
 
+    protected String getCustomerId() {
+        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
+        return bundle.getString("bitstamp.customerid");
+    }
 
 }
