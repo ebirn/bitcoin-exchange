@@ -8,11 +8,18 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import org.apache.commons.codec.binary.Base64;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.json.*;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.io.StringReader;
+import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,7 +38,41 @@ public class BitcurexApiClient extends ExchangeApiClient {
         // getFunds
         // getTransactions
 
+        WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
+        //WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
 
+        Invocation.Builder builder = setupProtectedResource(fundsTarget);
+
+        String payload = null;
+        try {
+
+            /*
+            headers = array(
+            'Rest-Key: ' . key,
+            'Rest-Sign: ' . base64_encode(hash_hmac('sha512', post_data, base64_decode(secret), true)),
+            );
+            */
+
+            String secret = getSecret("bitcurex");
+            Mac mac = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(secret), "HmacSHA512");
+            mac.init(secret_spec);
+
+
+
+            String nonce = Long.toString((new Date()).getTime());
+            payload = URLEncoder.encode("nonce="+nonce, "UTF-8");
+            mac.update(payload.getBytes("UTF-8"));
+
+            builder.header("Rest-Sign", Base64.encodeBase64(mac.doFinal(), false).toString());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        String raw = builder.post(Entity.entity(payload, MediaType.APPLICATION_FORM_URLENCODED_TYPE), String.class);
+
+        log.info("raw: {}", raw);
 
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -105,6 +146,19 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
     @Override
     protected Invocation.Builder setupProtectedResource(WebTarget res) {
-        return res.request();  //To change body of implemented methods use File | Settings | File Templates.
+
+        /*
+        headers = array(
+                'Rest-Key: ' . key,
+                'Rest-Sign: ' . base64_encode(hash_hmac('sha512', post_data, base64_decode(secret), true)),
+                );
+        */
+
+        Invocation.Builder builder = res.request();
+
+        builder.header("Rest-Key", getUserId("bitcurex"));
+
+
+        return builder;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

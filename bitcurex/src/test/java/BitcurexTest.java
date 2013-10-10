@@ -1,4 +1,5 @@
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
@@ -35,6 +36,16 @@ public class BitcurexTest {
         MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
 
         Assert.assertNotNull(depth);
+
+    }
+
+
+    @Test
+    public void testAccountInfo() {
+
+        AccountInfo info = client.getAccountInfo();
+
+        Assert.assertNotNull(info);
 
     }
 
