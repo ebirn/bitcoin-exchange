@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -38,6 +39,10 @@ import java.io.StringReader;
  * To change this template use File | Settings | File Templates.
  */
 public class BtcEApiClient extends ExchangeApiClient {
+
+    public BtcEApiClient(Market market) {
+        super(market);
+    }
 
     @Override
     public AccountInfo getAccountInfo() {
@@ -142,8 +147,8 @@ public class BtcEApiClient extends ExchangeApiClient {
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget tgt, Entity<T> entity) {
 
-        String apiKey = getUserId("btce");
-        String apiSecret = getSecret("btce");
+        String apiKey = getUserId();
+        String apiSecret = getSecret();
 
         Invocation.Builder builder = null;
 

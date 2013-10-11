@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.kraken;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -35,6 +36,9 @@ import java.util.concurrent.Future;
  */
 public class KrakenClient extends ExchangeApiClient {
 
+    public KrakenClient(Market market) {
+        super(market);
+    }
 
     @Override
     public AccountInfo getAccountInfo() {
@@ -109,18 +113,16 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget tgt, Entity<T> entity) {
         // see https://www.kraken.com/help/api
-
         // headers:
         // API-Key = API key
         // API-Sign = Message signature using HMAC-SHA512 of (URI path + SHA256(nonce + POST data)) and base64 decoded secret API key
 
         long nonce = ((new Date()).getTime() * 1000L);
-
         Invocation.Builder builder = null;
 
         try {
             Mac mac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(getSecret("kraken")), "HmacSHA512");
+            SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(getSecret()), "HmacSHA512");
             mac.init(secret_spec);
 
             Form form = ((Entity<Form>) entity).getEntity();
@@ -150,10 +152,8 @@ public class KrakenClient extends ExchangeApiClient {
 
             // POST data:
             // nonce = always increasing unsigned 64 bit integer
-            // otp = two-factor password (if two-factor enabled, otherwise not required)
 
-
-            String key = getUserId("kraken");
+            String key = getUserId();
             log.debug("key: {}", key);
 
             builder = tgt.request();
@@ -162,7 +162,7 @@ public class KrakenClient extends ExchangeApiClient {
 
         }
         catch(Exception e) {
-            log.error("failed to get account info", e);
+            log.error("setup protected request", e);
         }
 
         return builder;  //To change body of implemented methods use File | Settings | File Templates.

@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -33,8 +34,8 @@ import java.util.ResourceBundle;
  */
 public class BitstampClient extends ExchangeApiClient {
 
-    static {
-        log = LoggerFactory.getLogger("client.bitstamp");
+    public BitstampClient(Market market) {
+        super(market);
     }
 
     @Override
@@ -42,16 +43,16 @@ public class BitstampClient extends ExchangeApiClient {
 
         Form form = ((Entity<Form>) entity).getEntity();
 
+        String apiKey = getUserId();
+        String secret = getSecret();
+
         long nonce = (System.currentTimeMillis());
 
         form.param("nonce", Long.toString(nonce));
-        form.param("key", getUserId("bitstamp"));
-
-        String apiKey = getUserId("bitstamp");
+        form.param("key", apiKey);
 
         //message = nonce + client_id + api_key
         // signature = hmac.new(API_SECRET, msg=message, digestmod=hashlib.sha256).hexdigest().upper()
-        String secret = getSecret("bitstamp");
 
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
@@ -65,7 +66,6 @@ public class BitstampClient extends ExchangeApiClient {
         catch(Exception e) {
             e.printStackTrace();
         }
-
 
         return res.request();
     }

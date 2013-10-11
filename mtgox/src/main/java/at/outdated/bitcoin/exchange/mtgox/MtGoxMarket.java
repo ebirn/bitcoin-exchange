@@ -28,6 +28,6 @@ public class MtGoxMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new MtGoxClient();
+        return new MtGoxClient(this);
     }
 }

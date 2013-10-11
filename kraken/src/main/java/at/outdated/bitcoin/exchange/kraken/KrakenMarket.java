@@ -29,6 +29,6 @@ public class KrakenMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new KrakenClient();  //
+        return new KrakenClient(this);
     }
 }

@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
+import at.outdated.bitcoin.exchange.bitcurex.BitcurexMarket;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import org.junit.Test;
  */
 public class BitcurexTest {
 
-    ExchangeApiClient client = new  BitcurexApiClient();
+    ExchangeApiClient client = new  BitcurexApiClient(new BitcurexMarket());
 
     @Test
     public void testTicker() {

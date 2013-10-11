@@ -30,6 +30,6 @@ public class BitkonanMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new BitkonanApiClient();  //To change body of implemented methods use File | Settings | File Templates.
+        return new BitkonanApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

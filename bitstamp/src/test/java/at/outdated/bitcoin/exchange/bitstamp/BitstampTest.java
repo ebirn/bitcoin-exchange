@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class BitstampTest {
 
-    BitstampClient bitstampClient = new BitstampClient();
+    BitstampClient bitstampClient = new BitstampClient(new BitstampMarket());
 
     @Test
     public void testTicker() {

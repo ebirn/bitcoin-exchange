@@ -30,6 +30,6 @@ public class BitcurexMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new BitcurexApiClient();  //To change body of implemented methods use File | Settings | File Templates.
+        return new BitcurexApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

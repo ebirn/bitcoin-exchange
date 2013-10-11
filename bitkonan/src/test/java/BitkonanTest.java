@@ -3,6 +3,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitkonan.BitkonanApiClient;
+import at.outdated.bitcoin.exchange.bitkonan.BitkonanMarket;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ import org.junit.Test;
 public class BitkonanTest {
 
 
-    BitkonanApiClient client = new BitkonanApiClient();
+    BitkonanApiClient client = new BitkonanApiClient(new BitkonanMarket());
 
     @Test
     public void testTicker() {

@@ -30,6 +30,6 @@ public class BitstampMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new BitstampClient();  //To change body of implemented methods use File | Settings | File Templates.
+        return new BitstampClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

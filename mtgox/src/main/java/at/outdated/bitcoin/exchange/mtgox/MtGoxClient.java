@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
@@ -52,14 +53,12 @@ public class MtGoxClient extends ExchangeApiClient {
 
     private WebTarget apiBaseResource;
 
-    static {
-        log = LoggerFactory.getLogger("client.mtgox");
-    }
-
-    public MtGoxClient() {
-        client= ClientBuilder.newBuilder().register(MtGoxJSONResolver.class).build();
+    public MtGoxClient(Market market) {
+        super(market);
+        client = ClientBuilder.newBuilder().register(MtGoxJSONResolver.class).build();
         apiBaseResource = client.target(API_BASE_URL);
     }
+
 
     @Override
     public AccountInfo getAccountInfo() {
@@ -177,12 +176,12 @@ public class MtGoxClient extends ExchangeApiClient {
             }
 
             RequestAuth auth = new RequestAuth();
-            String signature = auth.hmac(path, payload, getSecret("mtgox"));
+            String signature = auth.hmac(path, payload, getSecret());
 
             Date requestDate = new Date();
 
             Invocation.Builder builder = apiBaseResource.path(path).request("application/json");
-            Response res = builder.header("Rest-Key", getUserId("mtgox"))
+            Response res = builder.header("Rest-Key", getUserId())
                                         .header("Rest-Sign", signature)
                                         .post(Entity.entity(payload, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 

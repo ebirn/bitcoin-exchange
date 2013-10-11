@@ -15,7 +15,7 @@ public class BtcEMarket extends Market {
 
 
     public BtcEMarket() {
-        super("btc-e", "http://btc-e.com", "BTC-E", Currency.EUR);
+        super("btce", "http://btc-e.com", "BTC-E", Currency.EUR);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class BtcEMarket extends Market {
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new BtcEApiClient();  //To change body of implemented methods use File | Settings | File Templates.
+        return new BtcEApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

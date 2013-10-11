@@ -3,6 +3,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.btce.BtcEApiClient;
+import at.outdated.bitcoin.exchange.btce.BtcEMarket;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ import java.util.Map;
 public class BtceTest {
 
 
-    BtcEApiClient client = new BtcEApiClient();
+    BtcEApiClient client = new BtcEApiClient(new BtcEMarket());
 
     @Test
     public void testTicker() {

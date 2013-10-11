@@ -36,19 +36,27 @@ import java.util.concurrent.Future;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class ExchangeApiClient {
-    protected static Logger log = LoggerFactory.getLogger("client");
+    protected Logger log = LoggerFactory.getLogger("client");
 
     protected NumberTrack apiLagTrack = new NumberTrack(5);
 
     protected Client client = ClientBuilder.newClient();
 
-    protected final String userAgent = "ExchangeApiClient/1.0-Snapshot";
+    protected final String userAgent = "ExchangeApiClient/1.0a";
 
     public abstract AccountInfo getAccountInfo();
 
     public abstract TickerValue getTicker(Currency currency);
 
     public abstract Number getLag();
+
+    protected Market market;
+
+
+    public ExchangeApiClient(Market market) {
+        this.market = market;
+        log = LoggerFactory.getLogger("client." + market.getKey());
+    }
 
 
     protected JsonObject jsonFromString(String s) {
@@ -198,17 +206,17 @@ public abstract class ExchangeApiClient {
 
 
 
-    protected String getSecret(String market) {
+    protected String getSecret() {
         ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
 
-        String name = market + ".secret";
+        String name = market.getKey() + ".secret";
         return bundle.getString(name);
     }
 
-    protected String getUserId(String market) {
+    protected String getUserId() {
         ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
 
-        String name = market + ".userid";
+        String name = market.getKey() + ".userid";
         return bundle.getString(name);
     }
 

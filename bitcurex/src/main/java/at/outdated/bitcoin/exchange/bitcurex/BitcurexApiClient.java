@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -30,6 +31,11 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class BitcurexApiClient extends ExchangeApiClient {
+
+    public BitcurexApiClient(Market market) {
+        super(market);
+    }
+
     @Override
     public AccountInfo getAccountInfo() {
 
@@ -55,7 +61,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
             );
             */
 
-            String secret = getSecret("bitcurex");
+            String secret = getSecret();
             Mac mac = Mac.getInstance("HmacSHA512");
             SecretKeySpec secret_spec = new SecretKeySpec(Base64.decodeBase64(secret), "HmacSHA512");
             mac.init(secret_spec);
@@ -158,7 +164,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
         Invocation.Builder builder = res.request();
 
-        builder.header("Rest-Key", getUserId("bitcurex"));
+        builder.header("Rest-Key", getUserId());
 
 
         return builder;  //To change body of implemented methods use File | Settings | File Templates.

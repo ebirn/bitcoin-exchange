@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -32,6 +33,10 @@ import java.util.concurrent.Future;
  * To change this template use File | Settings | File Templates.
  */
 public class BitkonanApiClient extends ExchangeApiClient {
+
+    public BitkonanApiClient(Market market) {
+        super(market);
+    }
 
     @Override
     public AccountInfo getAccountInfo() {
@@ -138,8 +143,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
         // Api-Secret: message digest as lowercase hexits, generated using HMAC-SHA256 algorithm. Constructed from the the following concatenated strings: [POST Parameters]:[Timestamp].
         // Api-Timestamp: current timestamp in UNIX format.
 
-        String apiKey = getUserId("bitkonan");
-        String apiSecret = getSecret("bitkonan");
+        String apiKey = getUserId();
+        String apiSecret = getSecret();
         long apiTimestamp = (new Date()).getTime()/1000L;
 
         try {

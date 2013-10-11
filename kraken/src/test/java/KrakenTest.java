@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class KrakenTest {
 
-    KrakenClient client = new KrakenClient();
+    KrakenClient client = new KrakenClient(new KrakenMarket());
 
     @Test
     public void testTickerclient() {
