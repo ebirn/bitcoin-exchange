@@ -63,6 +63,10 @@ public abstract class ExchangeApiClient {
         return Json.createReader(new StringReader(s)).readObject();
     }
 
+    protected JsonArray jsonArrayFromString(String s) {
+        return Json.createReader(new StringReader(s)).readArray();
+    }
+
     protected double[][] parseNestedArray(JsonArray jsonArray) {
 
 

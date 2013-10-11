@@ -24,18 +24,6 @@ public class BitstampTest {
         TickerValue ticker = bitstampClient.getTicker(Currency.USD);
         Assert.assertNotNull("ticker value null", ticker);
 
-
-
-        /*
-        Client client = new Client();
-
-        ClientResponse response = client.resource("https://www.bitstamp.net/api/ticker/").header("User-Agent", "blubbTest").accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
-
-        ClientResponse.Status status = response.getClientResponseStatus();
-        System.out.println("status: " + status);
-        System.out.println("content: " + response.getEntity(String.class));
-*/
-
     }
 
     @Test
@@ -44,7 +32,8 @@ public class BitstampTest {
         AccountInfo info = bitstampClient.getAccountInfo();
 
         Assert.assertNotNull(info);
-
+        Assert.assertNotNull(info.getWallet(Currency.USD));
+        Assert.assertNotNull(info.getWallet(Currency.BTC));
     }
 
 
@@ -54,6 +43,8 @@ public class BitstampTest {
         MarketDepth d = bitstampClient.getMarketDepth(Currency.BTC, Currency.USD);
 
         Assert.assertNotNull(d);
+
+
 
     }
 }

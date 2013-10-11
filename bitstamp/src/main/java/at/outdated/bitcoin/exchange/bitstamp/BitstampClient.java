@@ -3,7 +3,9 @@ package at.outdated.bitcoin.exchange.bitstamp;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
@@ -11,7 +13,6 @@ import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +24,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -33,6 +36,8 @@ import java.util.ResourceBundle;
  * To change this template use File | Settings | File Templates.
  */
 public class BitstampClient extends ExchangeApiClient {
+
+    SimpleDateFormat bitstampDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public BitstampClient(Market market) {
         super(market);
@@ -76,21 +81,76 @@ public class BitstampClient extends ExchangeApiClient {
         WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
         BitstampAccountBalance balance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(new Form()));
 
-        log.debug("bitstamp balance: {}", balance);
 
         BitstampAccountInfo info = new BitstampAccountInfo();
 
-        Wallet wUSD = new BitstampWallet(Currency.USD);
-        wUSD.setBalance(new CurrencyValue(balance.getUsdBalance().doubleValue(), Currency.USD));
+        Wallet wUSD = new Wallet(Currency.USD);
+        Wallet wBTC = new Wallet(Currency.BTC);
+
         info.setWallet(wUSD);
-
-        Wallet wBTC = new BitstampWallet(Currency.BTC);
-        wBTC.setBalance(new CurrencyValue(balance.getBtcBalance().doubleValue(), Currency.BTC));
-
         info.setWallet(wBTC);
 
-        https://www.bitstamp.net/api/user_transactions/
+        WebTarget transactionsTgt = client.target("https://www.bitstamp.net/api/user_transactions/");
 
+        String rawTransactions = protectedPostRequest(transactionsTgt, String.class, Entity.form(new Form()));
+        JsonArray jsonTransactions = jsonArrayFromString(rawTransactions);
+        for(int i=0; i<jsonTransactions.size(); i++) {
+
+            try {
+                JsonObject jt = jsonTransactions.getJsonObject(i);
+                int orderId = Integer.valueOf(jt.getInt("order_id"));
+
+                double usd = Double.parseDouble(jt.getString("usd"));
+                double btc = Double.parseDouble(jt.getString("btc"));
+                double btc_usd = Double.parseDouble(jt.getString("btc_usd"));
+                double fee = Double.parseDouble(jt.getString("fee"));
+
+                int type = jt.getInt("type");
+                int id = jt.getInt("id");
+                Date timestamp = bitstampDate.parse(jt.getString("datetime"));
+
+                TransactionType transactionType = null;
+                if(usd != 0.0) {
+                    if(usd < 0.0)  transactionType = TransactionType.OUT;
+                    else transactionType = TransactionType.IN;
+
+                    WalletTransaction usdTrans = new WalletTransaction(transactionType, new CurrencyValue(usd, Currency.USD));
+                    usdTrans.setInfo(Integer.toString(id));
+                    usdTrans.setDatestamp(timestamp);
+
+                    wUSD.addTransaction(usdTrans);
+                }
+
+                if(btc != 0.0) {
+                    if(btc<0.0)  transactionType = TransactionType.OUT;
+                    else transactionType = TransactionType.IN;
+
+                    WalletTransaction btcTrans = new WalletTransaction(transactionType, new CurrencyValue(btc, Currency.BTC));
+                    btcTrans.setInfo(Integer.toString(id));
+                    btcTrans.setDatestamp(timestamp);
+
+                    wBTC.addTransaction(btcTrans);
+
+                }
+
+                if(fee > 0.0) {
+                    WalletTransaction feeTransaction = new WalletTransaction(TransactionType.FEE, new CurrencyValue(fee, Currency.USD));
+                    feeTransaction.setDatestamp(timestamp);
+                    feeTransaction.setInfo(Integer.toString(orderId));
+
+                    wUSD.addTransaction(feeTransaction);
+                }
+
+                //getAccountInfo().getWallet()
+            }
+            catch(Exception e) {
+                log.error("error parsing transaction", e);
+            }
+
+        }
+
+        wBTC.setBalance(new CurrencyValue(balance.getBtcBalance().doubleValue(), Currency.BTC));
+        wUSD.setBalance(new CurrencyValue(balance.getUsdBalance().doubleValue(), Currency.USD));
 
 
         return info;  //To change body of implemented methods use File | Settings | File Templates.

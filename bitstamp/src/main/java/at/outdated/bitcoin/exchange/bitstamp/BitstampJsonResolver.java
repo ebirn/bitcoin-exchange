@@ -18,7 +18,7 @@ public class BitstampJsonResolver extends JSONResolver {
 
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[]{ BitstampTickerValue.class, BitstampAccountBalance.class, BitstampAccountInfo.class, BitstampWallet.class };  //To change body of implemented methods use File | Settings | File Templates.
+        return new Class<?>[]{ BitstampTickerValue.class, BitstampAccountBalance.class, BitstampAccountInfo.class };  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }
