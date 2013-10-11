@@ -27,11 +27,6 @@ public abstract class AccountInfo {
 
     protected ExchangeRateCalculator calculator = new ExchangeRateCalculator();
 
-    abstract public String getLogin();
-
-    public double getTradeFeeOffset() {
-        return 0.0;
-    }
 
     abstract public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade);
 

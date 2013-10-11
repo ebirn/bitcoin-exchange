@@ -20,14 +20,11 @@ import java.util.List;
  * Time: 14:54
  * To change this template use File | Settings | File Templates.
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Wallet {
 
-    @XmlElement(name="Balance")
+public class Wallet {
+
+
     protected CurrencyValue balance;
-
-    @XmlElement(name="Open_Orders")
     protected CurrencyValue openOrders;
 
     protected Currency currency;
@@ -36,6 +33,11 @@ public abstract class Wallet {
 
 
     public Wallet() {
+    }
+
+    public Wallet(Currency c) {
+        this.currency = c;
+        this.balance = new CurrencyValue(0.0, c);
     }
 
     public Currency getCurrency() {
@@ -55,8 +57,6 @@ public abstract class Wallet {
     }
 
     public void addTransaction(WalletTransaction trans) {
-
-
 
         switch(trans.getType()) {
             case DEPOSIT:
@@ -79,7 +79,6 @@ public abstract class Wallet {
             this.balance = new CurrencyValue(trans.getBalance());
         else
             trans.setBalance(this.balance);
-
 
         transactions.add(trans);
     }

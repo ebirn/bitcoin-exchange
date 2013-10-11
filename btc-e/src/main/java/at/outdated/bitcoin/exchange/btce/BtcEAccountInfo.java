@@ -32,11 +32,6 @@ public class BtcEAccountInfo extends AccountInfo {
     @XmlElement
     BtceFunds funds;
 
-    @Override
-    public String getLogin() {
-        return "btce";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     @Override
     public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {

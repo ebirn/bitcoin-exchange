@@ -13,10 +13,6 @@ import at.outdated.bitcoin.exchange.api.market.TradeDecision;
  */
 public class BitstampAccountInfo extends AccountInfo {
 
-    @Override
-    public String getLogin() {
-        return "blubb";  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     @Override
     public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {

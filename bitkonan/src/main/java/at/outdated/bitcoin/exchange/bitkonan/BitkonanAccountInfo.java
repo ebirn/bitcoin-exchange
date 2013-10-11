@@ -13,11 +13,6 @@ import at.outdated.bitcoin.exchange.api.market.TradeDecision;
  */
 public class BitkonanAccountInfo extends AccountInfo {
 
-    @Override
-    public String getLogin() {
-        return "bitkonan";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     @Override
     public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {

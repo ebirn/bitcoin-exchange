@@ -3,12 +3,13 @@ package at.outdated.bitcoin.exchange.kraken;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.jaxb.JSONResolver;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.kraken.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -43,26 +44,44 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
 
-        try {
-            WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
-            Future<String> rawBalance = asyncRequest(balanceTgt, String.class, "POST", Entity.form(new Form()), true);
-            log.info("balance: {}", rawBalance.get());
-
-            WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
-            Future<String> rawTradeHistory = asyncRequest(tradeHistoryTgt, String.class, "POST", Entity.form(new Form()), true);
-            log.info("tradeHistory: {}", rawTradeHistory.get());
+        KrakenAccountInfo accountInfo = new KrakenAccountInfo();
 
 
-            WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
-            Future<String> rawLedger = asyncRequest(ledgerTgt, String.class, "POST", Entity.form(new Form()), true);
-            log.info("ledger: {}", rawLedger.get());
+        WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
+        String rawTradeHistory = syncRequest(tradeHistoryTgt, String.class, "POST", Entity.form(new Form()), true);
+        log.info("tradeHistory: {}", rawTradeHistory);
 
-        }
-        catch(Exception e) {
-            e.printStackTrace();
+        JsonObject jsonTrades = jsonFromString(rawTradeHistory).getJsonObject("result").getJsonObject("trades");
+        if(jsonTrades != null) {
+            for(String tradeKey : jsonTrades.keySet()) {
+                // TODO finish this
+                jsonTrades.getJsonObject(tradeKey);
+                log.debug("TRADE: {}", tradeKey);
+            }
         }
 
-        return new KrakenAccountInfo();  //To change body of implemented methods use File | Settings | File Templates.
+        WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
+        String rawLedger = syncRequest(ledgerTgt, String.class, "POST", Entity.form(new Form()), true);
+        log.info("ledger: {}", rawLedger);
+        JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
+        if(jsonLedger != null) parseLedger(accountInfo, jsonLedger);
+
+
+
+        WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
+        String rawBalance = syncRequest(balanceTgt, String.class, "POST", Entity.form(new Form()), true);
+        log.info("balance: {}", rawBalance);
+
+        JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
+        if(balances != null)
+        for(String currKey : balances.keySet()) {
+            Currency curr = parseCurrency(currKey);
+            accountInfo.getWallet(curr).setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
+        }
+
+        WebTarget feeTgt = client.target("https://api.kraken.com/0/public/AssetPairs?info=fees");
+
+        return accountInfo;
     }
 
     @Override
@@ -185,6 +204,30 @@ public class KrakenClient extends ExchangeApiClient {
         return baseStr;
     }
 
+    private Currency parseCurrency(String curr) {
+        Currency c = null;
+
+        switch(curr) {
+
+            case "XBT":
+                c = Currency.BTC;
+                break;
+
+            case "ZEUR":
+                c = Currency.EUR;
+                break;
+
+            case "ZUSD":
+                c = Currency.USD;
+                break;
+
+            default:
+                c = Currency.valueOf(curr);
+        }
+
+        return c;
+    }
+
     private void addOrders(TradeDecision dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
         for(double[] askVal : raw) {
 
@@ -196,4 +239,62 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
 
+    private TransactionType parseLedgerType(String type) {
+        TransactionType tt = null;
+        switch(type) {
+            case "deposit":
+                tt = TransactionType.DEPOSIT;
+                break;
+
+            default:
+        }
+        return tt;
+    }
+
+
+    private void parseLedger(AccountInfo accountInfo, JsonObject jsonLedger) {
+        for(String ledgerKey : jsonLedger.keySet()) {
+
+            JsonObject ledger = jsonLedger.getJsonObject(ledgerKey);
+
+
+            String refId = ledger.getString("refid");
+            Date timestamp = new Date((long)(1000.0 * ledger.getJsonNumber("time").doubleValue()));
+            TransactionType type = parseLedgerType(ledger.getString("type"));
+            String aclass = ledger.getString("aclass");
+
+            Currency curr = parseCurrency(ledger.getString("asset"));
+
+            double amount = Double.parseDouble(ledger.getString("amount"));
+            double fee = Double.parseDouble(ledger.getString("fee"));
+            double balance = Double.parseDouble(ledger.getString("balance"));
+
+            WalletTransaction trans = new WalletTransaction();
+            //trans.setBalance();
+            trans.setDatestamp(timestamp);
+            trans.setType(type);
+            trans.setValue(new CurrencyValue(amount, curr));
+            trans.setInfo(refId);
+
+            Wallet w = accountInfo.getWallet(curr);
+            if(w==null) {
+                w = new Wallet(curr);
+                accountInfo.setWallet(w);
+            }
+
+            w.addTransaction(trans);
+
+
+            // only add implicit fee entry if fee was actually paid
+            if(fee > 0.0) {
+                WalletTransaction feeTransaction = new WalletTransaction();
+                feeTransaction.setDatestamp(timestamp);
+                feeTransaction.setType(TransactionType.FEE);
+                feeTransaction.setValue(new CurrencyValue(fee, curr));
+                feeTransaction.setInfo(refId);
+                w.addTransaction(feeTransaction);
+            }
+
+        }
+    }
 }
