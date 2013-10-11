@@ -26,7 +26,6 @@ import java.util.Map;
  */
 public class BtceTest {
 
-
     BtcEApiClient client = new BtcEApiClient(new BtcEMarket());
 
     @Test
@@ -45,20 +44,16 @@ public class BtceTest {
         Assert.assertNotNull(ticker.getTimestamp());
 
         System.out.println("ticker: "+ ticker.getTimestamp() +"  "  + ticker);
-
-
     }
 
     @Test
     public void testDepth() {
-
         MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
 
         Assert.assertNotNull(depth);
         Assert.assertNotNull(depth.getBaseCurrency());
         Assert.assertFalse(depth.getAsks().isEmpty());
         Assert.assertFalse(depth.getBids().isEmpty());
-
     }
 
 
@@ -67,6 +62,5 @@ public class BtceTest {
 
         AccountInfo info = client.getAccountInfo();
         Assert.assertNotNull(info);
-
     }
 }

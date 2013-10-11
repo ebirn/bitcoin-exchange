@@ -20,9 +20,10 @@
 		<module>btcde</module>
 		<module>bitstamp</module>
 		<module>bitcurex</module>
-        	<module>kraken</module>
-        	<module>bitkonan</module>
+       	<module>kraken</module>
+       	<module>bitkonan</module>
 		<module>campbx</module>
+		<module>vircurex</module>
     </modules>
 
 	<dependencies>

@@ -47,30 +47,84 @@ public class BtcEApiClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
 
+
+
         //https://btc-e.com/tapi/
         WebTarget tgt = client.target("https://btc-e.com/tapi");
 
-        MultivaluedMap<String,String> data = new MultivaluedHashMap<>();
+        MultivaluedMap<String,String> data = null;
+
+        data = new MultivaluedHashMap<>();
         data.add("method", "getInfo");
         String raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
-        log.debug("raw info: {}", raw);
+        //log.debug("raw info: {}", raw);
+        InfoResponse infoRes = BtcEJsonResolver.convertFromJson(raw, InfoResponse.class);
 
-        InfoResponse info = BtcEJsonResolver.convertFromJson(raw, InfoResponse.class);
+        AccountInfo info = infoRes.result;
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TransHistory");
         raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
-        log.debug("raw transactions: {}", raw);
+        //log.debug("raw transactions: {}", raw);
+        JsonObject transResponse = jsonFromString(raw);
+        if(transResponse.getInt("success") == 1) {
+            /*
+            {
+                "success":1,
+                "return":{
+                    "1081672":{
+                        "type":1,
+                        "amount":1.00000000,
+                        "currency":"BTC",
+                        "desc":"BTC Payment",
+                        "status":2,
+                        "timestamp":1342448420
+                    }
+                }
+            }
+            */
+
+            JsonObject transResult = transResponse.getJsonObject("result");
+            for(String key : transResult.keySet()) {
+                JsonObject jt = transResult.getJsonObject(key);
+                Currency curr = Currency.valueOf(jt.getString("currency"));
+
+                double volume = jt.getJsonNumber("amount").doubleValue();
+                Date timestamp = new Date(jt.getJsonNumber("timestamp").longValue() * 1000L);
+                String desc = jt.getString("desc");
+
+            }
+        }
+
 
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TradeHistory");
         raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
-        log.debug("raw trades: {}", raw);
+        //log.debug("raw trades: {}", raw);
+        JsonObject tradeResponse = jsonFromString(raw);
+        if(tradeResponse.getInt("success") == 1) {
+        /*
+                {
+            "success":1,
+            "return":{
+                "166830":{
+                    "pair":"btc_usd",
+                    "type":"sell",
+                    "amount":1,
+                    "rate":1,
+                    "order_id":343148,
+                    "is_your_order":1,
+                    "timestamp":1342445793
+                }
+            }
+        }  */
 
 
+        }
 
-        return info.result;  //To change body of implemented methods use File | Settings | File Templates.
+
+        return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

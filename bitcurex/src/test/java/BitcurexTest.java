@@ -43,7 +43,7 @@ public class BitcurexTest {
 
 
     @Test
-    @Ignore
+
     public void testAccountInfo() {
 
         AccountInfo info = client.getAccountInfo();
