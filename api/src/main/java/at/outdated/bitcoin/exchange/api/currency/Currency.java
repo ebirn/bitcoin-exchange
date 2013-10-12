@@ -16,10 +16,13 @@ public enum Currency {
     FTC, // Feathercoin
     NMC, // Namecoin
     XRP, // Ripple
+    NVC, // Novacoin
+
 
     EUR, // Euro
     USD, // US Dollars
     JPY, // Japanese Yen
+    CNY, // Chinese
     PLN //Polish Zloty
 ;
 

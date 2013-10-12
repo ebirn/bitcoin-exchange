@@ -14,17 +14,16 @@ public class TransferMethod {
 
     protected Currency currency;
 
-    protected TransactionType type;
+    protected TransferType transfer = TransferType.OTHER;
 
     protected  String address;
 
     public TransferMethod() {
-
     }
 
-    public TransferMethod(Currency currency, TransactionType type, String address) {
+    public TransferMethod(Currency currency, TransferType transfer, String address) {
         setCurrency(currency);
-        setType(type);
+        setTransfer(transfer);
         setAddress(address);
     }
 
@@ -36,9 +35,6 @@ public class TransferMethod {
         return currency;
     }
 
-    public TransactionType getType() {
-        return type;
-    }
 
     public void setFee(Fee fee) {
         this.fee = fee;
@@ -48,17 +44,12 @@ public class TransferMethod {
         this.currency = currency;
     }
 
-    public void setType(TransactionType type) {
+    public TransferType getTransfer() {
+        return transfer;
+    }
 
-        switch (type) {
-            case DEPOSIT:
-            case WITHDRAW:
-                this.type = type;
-                break;
-
-            default:
-                throw new IllegalArgumentException("type " + type + " not allowed");
-        }
+    public void setTransfer(TransferType transfer) {
+        this.transfer = transfer;
     }
 
     public String getAddress() {

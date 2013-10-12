@@ -5,11 +5,14 @@ import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.performance.CombinedPerformance;
 import at.outdated.bitcoin.exchange.api.performance.Performance;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,25 +23,13 @@ import java.util.List;
  */
 public abstract class AccountInfo {
 
-
     protected Currency defaultCurrency = Currency.EUR;
 
     protected CurrencyContainer<Wallet> wallets = new CurrencyContainer<>();
 
     protected ExchangeRateCalculator calculator = new ExchangeRateCalculator();
 
-
     abstract public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade);
-
-    public CurrencyValue getFee(TradeDecision direction, CurrencyValue value) {
-
-        return value;
-    }
-
-    public CurrencyValue getFee(TransactionType transaction, CurrencyValue value) {
-
-        return value;
-    }
 
     public Wallet getWallet(Currency curr) {
         return wallets.get(curr);

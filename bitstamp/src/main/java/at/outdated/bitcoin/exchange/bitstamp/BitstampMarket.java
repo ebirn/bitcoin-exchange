@@ -3,6 +3,11 @@ package at.outdated.bitcoin.exchange.bitstamp;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +21,13 @@ public class BitstampMarket extends Market {
 
     public BitstampMarket() {
         super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net", Currency.USD);
+
+        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        withdrawals.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+
+        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+
     }
 
     @Override
@@ -32,4 +44,5 @@ public class BitstampMarket extends Market {
     public ExchangeApiClient getApiClient() {
         return new BitstampClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
+
 }

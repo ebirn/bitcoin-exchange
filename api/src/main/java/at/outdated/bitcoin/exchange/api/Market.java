@@ -1,7 +1,13 @@
 package at.outdated.bitcoin.exchange.api;
 
+import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +29,8 @@ public abstract class Market {
     protected Currency primaryCurrency;
     protected String key;
 
+    protected Set<TransferMethod> withdrawals = new HashSet<>();
+    protected Set<TransferMethod> deposits = new HashSet<>();
 
     protected Market(String key, String url, String description, Currency primaryCurrency) {
         this.key = key;
@@ -59,6 +67,16 @@ public abstract class Market {
     // what should be further service discorvery
     // exchange rate calculaters: service
     public abstract ExchangeApiClient getApiClient();
+
+
+    public Set<TransferMethod> getWithdrawalMethods() {
+        return withdrawals;
+    }
+
+    public Set<TransferMethod> getDepositMethods() {
+        return deposits;
+    }
+
 
     @Override
     public String toString() {

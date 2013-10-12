@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.vircurex;
+package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
@@ -12,10 +12,10 @@ import java.util.List;
 /**
  * Created by ebirn on 11.10.13.
  */
-public class VircurexMarket extends Market {
+public class BterMarket extends Market {
 
-    public VircurexMarket() {
-        super("vircurex", "http://vircurex.com", "Vircurex", Currency.USD);
+    public BterMarket() {
+        super("bter", "http://bter.com", "Bter.com", Currency.CNY);
 
         withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         withdrawals.add(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
@@ -23,24 +23,24 @@ public class VircurexMarket extends Market {
         withdrawals.add(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
 
         deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
-        deposits.add(new TransferMethod(Currency.USD, TransferType.BANK, null));
-
+        deposits.add(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
     }
 
     @Override
     public Currency[] getFiatCurrencies() {
-        return new Currency[]{ Currency.USD, Currency.EUR };
+        return new Currency[]{ };
     }
 
     @Override
     public Currency[] getCryptoCurrencies() {
-        return new Currency[]{ Currency.BTC };
+        return new Currency[]{ Currency.BTC, Currency.LTC, Currency.NMC, Currency.NVC };
     }
 
     @Override
     public ExchangeApiClient getApiClient() {
-        return new VircurexApiClient(this);
+        return new BterApiClient(this);
     }
 
 

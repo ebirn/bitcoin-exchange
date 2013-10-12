@@ -78,24 +78,34 @@ public class CurrencyValue {
         return currency;
     }
 
-    public void add(CurrencyValue other) {
+    public CurrencyValue add(CurrencyValue other) {
         this.value += other.value;
+
+        return this;
     }
 
-    public void subtract(CurrencyValue other) {
+    public CurrencyValue subtract(CurrencyValue other) {
         this.value -= other.value;
+
+        return this;
     }
 
-    public void multiply(long mul) {
+    public CurrencyValue multiply(long mul) {
         value *= (double) mul;
+
+        return this;
     }
 
-    public void multiply(BigDecimal mul) {
+    public CurrencyValue multiply(BigDecimal mul) {
         value *= mul.doubleValue();
+
+        return this;
     }
 
-    public void divide(long div) {
+    public CurrencyValue divide(long div) {
         value /= (double) div;
+
+        return this;
     }
 
     public BigDecimal asDecimal() {

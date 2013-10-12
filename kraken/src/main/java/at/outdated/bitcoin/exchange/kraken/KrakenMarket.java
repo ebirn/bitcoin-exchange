@@ -3,6 +3,11 @@ package at.outdated.bitcoin.exchange.kraken;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +20,21 @@ public class KrakenMarket extends Market {
 
     public KrakenMarket() {
         super("kraken", "http://www.kraken.com", "Kraken", Currency.EUR);
+
+        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        withdrawals.add(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
+        withdrawals.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+
+        withdrawals.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        withdrawals.add(new TransferMethod(Currency.USD, TransferType.BANK, null));
+
+
+        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+
+        deposits.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        deposits.add(new TransferMethod(Currency.USD, TransferType.BANK, null));
     }
 
     @Override
@@ -31,4 +51,5 @@ public class KrakenMarket extends Market {
     public ExchangeApiClient getApiClient() {
         return new KrakenClient(this);
     }
+
 }

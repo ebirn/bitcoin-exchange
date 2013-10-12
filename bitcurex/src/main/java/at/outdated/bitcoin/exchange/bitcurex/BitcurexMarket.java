@@ -3,6 +3,11 @@ package at.outdated.bitcoin.exchange.bitcurex;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +21,12 @@ public class BitcurexMarket extends Market {
 
     public BitcurexMarket() {
         super("bitcurex", "https://eur.bitcurex.com/", "Bitcurex", Currency.EUR);
+
+        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        deposits.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+
+        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        withdrawals.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
     }
 
     @Override
@@ -32,4 +43,6 @@ public class BitcurexMarket extends Market {
     public ExchangeApiClient getApiClient() {
         return new BitcurexApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
 }

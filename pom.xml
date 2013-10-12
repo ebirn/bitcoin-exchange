@@ -24,6 +24,7 @@
        	<module>bitkonan</module>
 		<module>campbx</module>
 		<module>vircurex</module>
+        <module>bter</module>
     </modules>
 
 	<dependencies>
