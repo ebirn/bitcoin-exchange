@@ -23,8 +23,8 @@ public class CurrencyValue {
     @XmlElement
     private double value = 0.0;
 
-    @XmlElement
-    private long value_int = 0;
+//    @XmlElement
+//    private long value_int = 0;
 
     @XmlElement
     private String display = "";
@@ -41,19 +41,21 @@ public class CurrencyValue {
 
     public CurrencyValue(double value, Currency curr) {
         this.value = value;
-        this.value_int = (long)(value * curr.getDivide());
+        //this.value_int = (long)(value * curr.getDivide());
         currency = curr;
     }
 
-    public CurrencyValue(long value, Currency curr) {
+    /*
+    //public CurrencyValue(long value, Currency curr) {
         value_int = value;
-        this.value = ((double)value / curr.getDivide());
+        //this.value = ((double)value / curr.getDivide());
         currency = curr;
     }
+*/
 
     public CurrencyValue(CurrencyValue value) {
         this.currency = value.currency;
-        this.value_int = value.value_int;
+    //    this.value_int = value.value_int;
         this.value = value.value;
         this.display_short = value.display_short;
         this.display = value.display;
@@ -63,9 +65,6 @@ public class CurrencyValue {
         return value;
     }
 
-    public long getIntValue() {
-        return value_int;
-    }
 
     public String getDisplay() {
         return StringEscapeUtils.unescapeJava(display);
@@ -81,38 +80,26 @@ public class CurrencyValue {
 
     public void add(CurrencyValue other) {
         this.value += other.value;
-        this.value_int += other.value_int;
     }
 
     public void subtract(CurrencyValue other) {
         this.value -= other.value;
-        this.value_int -= other.value_int;
     }
 
     public void multiply(long mul) {
-        value_int *= mul;
         value *= (double) mul;
     }
 
     public void multiply(BigDecimal mul) {
-        value_int *= mul.longValue();
         value *= mul.doubleValue();
     }
 
-
-
-
     public void divide(long div) {
-        value_int /= div;
         value /= (double) div;
     }
 
     public BigDecimal asDecimal() {
-        BigDecimal number = new BigDecimal(value_int);
-
-        number = number.divide(new BigDecimal(currency.getDivide()));
-
-        return number;
+        return new BigDecimal(value);
     }
 
     public boolean isMoreThan(CurrencyValue other) {

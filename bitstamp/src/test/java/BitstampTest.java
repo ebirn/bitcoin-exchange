@@ -1,9 +1,9 @@
-package at.outdated.bitcoin.exchange.bitstamp;
-
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.bitstamp.BitstampClient;
+import at.outdated.bitcoin.exchange.bitstamp.BitstampMarket;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,10 +41,6 @@ public class BitstampTest {
     public void testMarketDepth() {
 
         MarketDepth d = bitstampClient.getMarketDepth(Currency.BTC, Currency.USD);
-
         Assert.assertNotNull(d);
-
-
-
     }
 }

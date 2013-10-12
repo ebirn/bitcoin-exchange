@@ -11,28 +11,19 @@ import javax.xml.bind.annotation.XmlEnum;
  */
 @XmlEnum
 public enum Currency {
-    BTC(100000000, 0.00000001), // Bitcoin
-    EUR(100000, 0.00001), // Euro
-    USD(100000, 0.00001), // US Dollars
-    JPY(1000, 0.001), // Japanese Yen
-    PLN(100000, 0.00001) //Polish Zloty
+    BTC, // Bitcoin
+    LTC, // Litecoin
+    FTC, // Feathercoin
+    NMC, // Namecoin
+    XRP, // Ripple
+
+    EUR, // Euro
+    USD, // US Dollars
+    JPY, // Japanese Yen
+    PLN //Polish Zloty
 ;
 
-    private int divide = 1;
-    private double multiply = 1.0;
 
-    Currency(int divide, double multiply) {
-        this.divide = divide;
-        this.multiply = multiply;
-    }
-
-    public int getDivide() {
-        return divide;
-    }
-
-    public double getMultiply() {
-        return multiply;
-    }
 
 
 

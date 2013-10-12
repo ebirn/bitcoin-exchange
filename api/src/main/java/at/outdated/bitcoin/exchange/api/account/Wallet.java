@@ -75,10 +75,13 @@ public class Wallet {
                 throw new IllegalArgumentException("transaction type not implemented in wallet");
         }
 
-        if(trans.getBalance() != null)
+        if(trans.getBalance() != null) {
             this.balance = new CurrencyValue(trans.getBalance());
-        else
-            trans.setBalance(this.balance);
+        }
+        else {
+            // copy value, as this.balance reference changes when adding transactions
+            trans.setBalance(new CurrencyValue(this.balance));
+        }
 
         transactions.add(trans);
     }
