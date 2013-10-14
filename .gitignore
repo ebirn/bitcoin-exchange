@@ -1,8 +1,16 @@
 bitcoin-exchange.properties
 .idea
 target
+*.iml
+bitstamp/target
+bitstamp/.iml
 mtgox/target
+mtgox/mtgox.iml
 btc-e/target
+btc-e/btce.iml
 btcde/target
+btcde/btcde.iml
 kraken/target
+kraken/kraken.iml
 bitkonan/target
+bitkonan/bitkonan.iml
