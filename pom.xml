@@ -14,7 +14,7 @@
     </properties>
 
 	<modules>
-    		<module>api</module>
+        <module>api</module>
 		<module>mtgox</module>
 		<module>btc-e</module>
 		<module>btcde</module>
@@ -96,22 +96,6 @@
 	    	<scope>test</scope>
 	    </dependency>
 	</dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>at.outdated.bitcoin.exchange</groupId>
-                <artifactId>btcde</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>at.outdated.bitcoin.exchange</groupId>
-                <artifactId>mtgox</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-
-    </dependencyManagement>
 
 	<build>
         <plugins>
