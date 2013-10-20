@@ -8,10 +8,7 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 
@@ -189,7 +186,7 @@ public class BitstampClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
         WebTarget tickerResource = client.target("https://www.bitstamp.net/api/ticker/");
         BitstampTickerValue bticker = simpleGetRequest(tickerResource, BitstampTickerValue.class);

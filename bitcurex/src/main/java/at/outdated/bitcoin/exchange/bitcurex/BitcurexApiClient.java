@@ -6,10 +6,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.BitcurexAccountInfo;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.BitcurexTickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.TransactionType;
@@ -49,15 +46,11 @@ public class BitcurexApiClient extends ExchangeApiClient {
         // getTransactions
 
         WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
-        //WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
-
-
-
         Entity entity = Entity.form(new Form());
 
         Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
         String rawFunds = builder.post(entity, String.class);
-
+        log.debug("raw funds: {}", rawFunds);
 
         entity = Entity.form(new Form());
         WebTarget ordersTarget = client.target("https://eur.bitcurex.com/api/0/getOrders");
@@ -142,20 +135,20 @@ public class BitcurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
-        if(base != Currency.BTC) {
+        if(asset.getBase() != Currency.BTC) {
             throw new IllegalArgumentException("unsupported currency");
         }
 
-        WebTarget tickerResource = client.target("https://" + quote.name().toLowerCase() + ".bitcurex.com/data/ticker.json");
+        WebTarget tickerResource = client.target("https://" + asset.getQuote().name().toLowerCase() + ".bitcurex.com/data/ticker.json");
 
         BitcurexTickerValue bTicker = simpleGetRequest(tickerResource, BitcurexTickerValue.class);
 
         if(bTicker == null) return null;
 
         TickerValue ticker = bTicker.getTickerValue();
-        ticker.setCurrency(quote);
+        ticker.setCurrency(asset.getQuote());
         return ticker;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

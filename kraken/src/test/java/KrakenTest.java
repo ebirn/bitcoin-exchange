@@ -1,5 +1,6 @@
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.kraken.*;
@@ -20,7 +21,7 @@ public class KrakenTest {
     @Test
     public void testTickerclient() {
 
-        TickerValue ticker = client.getTicker(Currency.BTC, Currency.EUR);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
 
         System.out.println("ticker: " + ticker);
 

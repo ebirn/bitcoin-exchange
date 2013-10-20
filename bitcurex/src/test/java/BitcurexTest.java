@@ -1,6 +1,7 @@
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
@@ -23,7 +24,7 @@ public class BitcurexTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.BTC);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
         Assert.assertNotNull("ticker value", ticker);
 
     }

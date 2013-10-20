@@ -80,9 +80,9 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
-        String currencyKey = fixSymbol(base) + fixSymbol(quote);
+        String currencyKey = fixSymbol(asset.getBase()) + fixSymbol(asset.getQuote());
 
         WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=" + currencyKey);
         //KrakenTickerResponse tickerResponse =
@@ -96,7 +96,7 @@ public class KrakenClient extends ExchangeApiClient {
         JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(currencyKey);
 
         TickerValue value = new TickerValue();
-        value.setCurrency(quote);
+        value.setCurrency(asset.getQuote());
         value.setLast(Double.parseDouble(resultData.getJsonArray("c").getString(0)));
 
         value.setVolume(Double.parseDouble(resultData.getJsonArray("v").getString(0)));

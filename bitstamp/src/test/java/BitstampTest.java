@@ -1,5 +1,6 @@
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitstamp.BitstampClient;
@@ -21,7 +22,7 @@ public class BitstampTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = bitstampClient.getTicker(Currency.BTC);
+        TickerValue ticker = bitstampClient.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
         Assert.assertNotNull("ticker value null", ticker);
 
     }

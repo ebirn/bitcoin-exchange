@@ -1,4 +1,5 @@
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bter.BterApiClient;
@@ -15,7 +16,7 @@ public class BterTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.LTC, Currency.EUR);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
 
         Assert.assertNotNull(ticker);
     }

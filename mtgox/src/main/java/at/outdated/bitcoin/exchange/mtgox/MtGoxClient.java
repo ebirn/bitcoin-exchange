@@ -7,10 +7,7 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 
@@ -113,17 +110,17 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
         TickerValue ticker = null;
 
-        String uri = base.name() + quote.name() + "/money/ticker";
+        String uri = asset.getBase().name() + asset.getQuote().name() + "/money/ticker";
         WebTarget webResource = client.target(API_BASE_URL + uri);
         ApiTickerResponse tickerResponse = simpleGetRequest(webResource, ApiTickerResponse.class);
 
         if(tickerResponse != null && tickerResponse.getData() != null) {
-            tickerResponse.getData().setInCurrency(base);
-            tickerResponse.getData().setItemCurrency(Currency.BTC);
+            tickerResponse.getData().setInCurrency(asset.getQuote());
+            tickerResponse.getData().setItemCurrency(asset.getBase());
             ticker = tickerResponse.getData().getTickerValue();
         }
 

@@ -1,5 +1,6 @@
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitkonan.BitkonanApiClient;
@@ -23,7 +24,7 @@ public class BitkonanTest {
     public void testTicker() {
 
 
-        TickerValue ticker = client.getTicker(Currency.BTC);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.USD));
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());

@@ -1,5 +1,6 @@
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.btce.BtcEApiClient;
@@ -21,14 +22,14 @@ public class BtceTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.BTC, Currency.EUR);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());
 
         System.out.println("ticker: "+ ticker.getTimestamp() +"  " + ticker);
 
-        ticker = client.getTicker(Currency.BTC, Currency.EUR);
+        ticker = client.getTicker(new AssetPair(Currency.LTC, Currency.EUR));
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());

@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
@@ -26,10 +27,10 @@ public class VircurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
         // get_info_for_1_currency
-        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json?base=" + base.name() + "&alt=" + quote.name());
+        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json?base=" + asset.getBase().name() + "&alt=" + asset.getQuote().name());
         // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
 
         VircurexTicker ticker = simpleGetRequest(tickerTgt, VircurexTicker.class);

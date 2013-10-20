@@ -5,10 +5,7 @@ import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.*;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -108,7 +105,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
 
         WebTarget tickerResource = client.target("https://bitkonan.com/api/ticker/");
@@ -117,7 +114,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
 
         TickerValue value = response.getTickerValue();
-        value.setCurrency(base);
+        value.setCurrency(asset.getQuote());
 
         return value;
     }

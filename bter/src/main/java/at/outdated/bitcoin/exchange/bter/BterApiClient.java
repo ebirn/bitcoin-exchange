@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
@@ -26,9 +27,9 @@ public class BterApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency base, Currency quote) {
+    public TickerValue getTicker(AssetPair asset) {
 
-        WebTarget tickerTgt = client.target("https://bter.com/api/1/ticker/" + base.name().toLowerCase() + "_" + quote.name().toLowerCase());
+        WebTarget tickerTgt = client.target("https://bter.com/api/1/ticker/" + asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase());
 
         BterTicker ticker = simpleGetRequest(tickerTgt, BterTicker.class);
 
