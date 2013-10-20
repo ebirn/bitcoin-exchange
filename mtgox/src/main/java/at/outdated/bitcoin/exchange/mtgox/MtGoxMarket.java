@@ -3,11 +3,9 @@ package at.outdated.bitcoin.exchange.mtgox;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,20 +20,19 @@ public class MtGoxMarket extends Market {
         super("mtgox", "http://www.mtgox.com", "Mt.Gox", Currency.EUR);
 
 
-         withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-         withdrawals.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+         withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+         withdrawals.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
 
-         deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-         deposits.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+         deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
     }
 
-    @Override
-    public Currency[] getFiatCurrencies() {
-        return new Currency[] { Currency.EUR, Currency.JPY, Currency.USD };
-    }
-
-    public Currency[] getCryptoCurrencies() {
-        return new Currency[] {Currency.BTC };
+    public AssetPair[] getTradedAssets() {
+        return new AssetPair[] {
+            new AssetPair(Currency.BTC, Currency.USD),
+            new AssetPair(Currency.BTC, Currency.EUR),
+            new AssetPair(Currency.BTC, Currency.JPY),
+        };
     }
 
     @Override

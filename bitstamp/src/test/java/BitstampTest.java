@@ -21,7 +21,7 @@ public class BitstampTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = bitstampClient.getTicker(Currency.USD);
+        TickerValue ticker = bitstampClient.getTicker(Currency.BTC);
         Assert.assertNotNull("ticker value null", ticker);
 
     }

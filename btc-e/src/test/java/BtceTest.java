@@ -7,16 +7,6 @@ import at.outdated.bitcoin.exchange.btce.BtcEMarket;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -31,14 +21,14 @@ public class BtceTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.EUR);
+        TickerValue ticker = client.getTicker(Currency.BTC, Currency.EUR);
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());
 
         System.out.println("ticker: "+ ticker.getTimestamp() +"  " + ticker);
 
-        ticker = client.getTicker(Currency.USD);
+        ticker = client.getTicker(Currency.BTC, Currency.EUR);
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());

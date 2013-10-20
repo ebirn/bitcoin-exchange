@@ -23,7 +23,7 @@ public class BitkonanTest {
     public void testTicker() {
 
 
-        TickerValue ticker = client.getTicker(Currency.USD);
+        TickerValue ticker = client.getTicker(Currency.BTC);
 
         Assert.assertNotNull(ticker);
         Assert.assertNotNull(ticker.getTimestamp());

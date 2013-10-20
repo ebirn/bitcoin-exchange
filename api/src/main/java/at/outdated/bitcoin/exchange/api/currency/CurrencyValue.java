@@ -102,6 +102,12 @@ public class CurrencyValue {
         return this;
     }
 
+    public CurrencyValue multiply(double mul) {
+        value *= mul;
+
+        return this;
+    }
+
     public CurrencyValue divide(long div) {
         value /= (double) div;
 

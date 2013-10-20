@@ -19,15 +19,24 @@ public enum Currency {
     NVC, // Novacoin
 
 
-    EUR, // Euro
-    USD, // US Dollars
-    JPY, // Japanese Yen
-    CNY, // Chinese
-    PLN //Polish Zloty
+    EUR(false), // Euro
+    USD(false), // US Dollars
+    JPY(false), // Japanese Yen
+    CNY(false), // Chinese
+    PLN(false) //Polish Zloty
 ;
 
+    private Currency() {
 
+    }
 
+    private Currency(boolean crypto) {
+        this.crypto = crypto;
+    }
 
+    private boolean crypto = true;
 
+    public boolean isCrypto() {
+        return crypto;
+    }
 }

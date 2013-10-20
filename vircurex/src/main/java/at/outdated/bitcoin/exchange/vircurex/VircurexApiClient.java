@@ -26,10 +26,10 @@ public class VircurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
         // get_info_for_1_currency
-        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json?base=BTC&alt=" + currency.name());
+        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json?base=" + base.name() + "&alt=" + quote.name());
         // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
 
         VircurexTicker ticker = simpleGetRequest(tickerTgt, VircurexTicker.class);

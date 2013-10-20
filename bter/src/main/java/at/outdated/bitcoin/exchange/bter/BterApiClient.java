@@ -22,13 +22,13 @@ public class BterApiClient extends ExchangeApiClient {
 
     @Override
     public AccountInfo getAccountInfo() {
-        return null;
+        return new BterAccountInfo();
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
-        WebTarget tickerTgt = client.target("https://bter.com/api/1/ticker/" + currency.name().toLowerCase() + "_btc");
+        WebTarget tickerTgt = client.target("https://bter.com/api/1/ticker/" + base.name().toLowerCase() + "_" + quote.name().toLowerCase());
 
         BterTicker ticker = simpleGetRequest(tickerTgt, BterTicker.class);
 

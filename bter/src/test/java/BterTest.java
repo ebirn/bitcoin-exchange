@@ -15,7 +15,7 @@ public class BterTest {
     @Test
     public void testTicker() {
 
-        TickerValue ticker = client.getTicker(Currency.LTC);
+        TickerValue ticker = client.getTicker(Currency.LTC, Currency.EUR);
 
         Assert.assertNotNull(ticker);
     }

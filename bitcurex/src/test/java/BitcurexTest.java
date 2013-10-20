@@ -18,16 +18,12 @@ import org.junit.Test;
  */
 public class BitcurexTest {
 
-    ExchangeApiClient client = new  BitcurexApiClient(new BitcurexMarket());
+    BitcurexApiClient client = new  BitcurexApiClient(new BitcurexMarket());
 
     @Test
     public void testTicker() {
 
-
-
-
-        TickerValue ticker = client.getTicker(Currency.EUR);
-
+        TickerValue ticker = client.getTicker(Currency.BTC);
         Assert.assertNotNull("ticker value", ticker);
 
     }
@@ -36,14 +32,12 @@ public class BitcurexTest {
     public void testDepth() {
 
         MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
-
         Assert.assertNotNull(depth);
 
     }
 
 
     @Test
-
     public void testAccountInfo() {
 
         AccountInfo info = client.getAccountInfo();

@@ -3,11 +3,9 @@ package at.outdated.bitcoin.exchange.bitstamp;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,22 +20,17 @@ public class BitstampMarket extends Market {
     public BitstampMarket() {
         super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net", Currency.USD);
 
-        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        withdrawals.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
 
-        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.add(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
 
     }
 
     @Override
-    public Currency[] getFiatCurrencies() {
-        return new Currency[]{ Currency.USD };
-    }
-
-    @Override
-    public Currency[] getCryptoCurrencies() {
-        return new Currency[]{ Currency.BTC };
+    public AssetPair[] getTradedAssets() {
+        return new AssetPair[]{ new AssetPair(Currency.BTC, Currency.USD) };
     }
 
     @Override

@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.jaxb.JSONResolver;
+import at.outdated.bitcoin.exchange.bitcurex.jaxb.BitcurexTickerValue;
 
 import javax.ws.rs.ext.Provider;
 

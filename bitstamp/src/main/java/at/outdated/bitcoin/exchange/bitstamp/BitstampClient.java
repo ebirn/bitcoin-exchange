@@ -86,8 +86,8 @@ public class BitstampClient extends ExchangeApiClient {
         Wallet wUSD = new Wallet(Currency.USD);
         Wallet wBTC = new Wallet(Currency.BTC);
 
-        info.setWallet(wUSD);
-        info.setWallet(wBTC);
+        info.addWallet(wUSD);
+        info.addWallet(wBTC);
 
 
         WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
@@ -189,7 +189,7 @@ public class BitstampClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
         WebTarget tickerResource = client.target("https://www.bitstamp.net/api/ticker/");
         BitstampTickerValue bticker = simpleGetRequest(tickerResource, BitstampTickerValue.class);

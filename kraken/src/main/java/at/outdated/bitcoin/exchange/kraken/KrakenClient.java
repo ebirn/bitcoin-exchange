@@ -8,11 +8,8 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.jaxb.JSONResolver;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.kraken.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,11 +18,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 
 /**
@@ -85,18 +80,32 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
-        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=" + fixSymbol(Currency.BTC) + fixSymbol(currency));
+        String currencyKey = fixSymbol(base) + fixSymbol(quote);
+
+        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=" + currencyKey);
         //KrakenTickerResponse tickerResponse =
 
-       KrakenTickerResponse response = simpleGetRequest(webResource, KrakenTickerResponse.class);
-       // String tickerRaw = simpleGetRequest(webResource, String.class);
-        // log.debug("ticker raw: {}", tickerRaw);
+       String tickerRaw = simpleGetRequest(webResource, String.class);
 
-        TickerValue value = response.getResult().getXXBTZEUR().getValue();
-        value.setCurrency(currency);
+        JsonObject jsonTicker = jsonFromString(tickerRaw);
 
+
+
+        JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(currencyKey);
+
+        TickerValue value = new TickerValue();
+        value.setCurrency(quote);
+        value.setLast(Double.parseDouble(resultData.getJsonArray("c").getString(0)));
+
+        value.setVolume(Double.parseDouble(resultData.getJsonArray("v").getString(0)));
+
+        value.setAsk(Double.parseDouble(resultData.getJsonArray("a").getString(0)));
+        value.setBid(Double.parseDouble(resultData.getJsonArray("b").getString(0)));
+
+        value.setHigh(Double.parseDouble(resultData.getJsonArray("h").getString(0)));
+        value.setLow(Double.parseDouble(resultData.getJsonArray("l").getString(0)));
         return value;
     }
 
@@ -114,7 +123,7 @@ public class KrakenClient extends ExchangeApiClient {
         log.debug("raw depth: {}", rawDepth);
 
 
-        JsonObject jsonDepth = jsonFromString(rawDepth).getJsonObject("result").getJsonObject("X"+fixSymbol(base)+"Z"+fixSymbol(quote));
+        JsonObject jsonDepth = jsonFromString(rawDepth).getJsonObject("result").getJsonObject(fixSymbol(base) + fixSymbol(quote));
 
         double asks[][] = parseNestedArray(jsonDepth.getJsonArray("asks"));
         double bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
@@ -201,6 +210,13 @@ public class KrakenClient extends ExchangeApiClient {
                 baseStr = c.name().toUpperCase();
         }
 
+        if(c.isCrypto()) {
+            baseStr = "X" + baseStr;
+        }
+        else {
+            baseStr = "Z" + baseStr;
+        }
+
         return baseStr;
     }
 
@@ -213,16 +229,8 @@ public class KrakenClient extends ExchangeApiClient {
                 c = Currency.BTC;
                 break;
 
-            case "ZEUR":
-                c = Currency.EUR;
-                break;
-
-            case "ZUSD":
-                c = Currency.USD;
-                break;
-
             default:
-                c = Currency.valueOf(curr);
+                c = Currency.valueOf(curr.substring(1));
         }
 
         return c;
@@ -279,7 +287,7 @@ public class KrakenClient extends ExchangeApiClient {
             Wallet w = accountInfo.getWallet(curr);
             if(w==null) {
                 w = new Wallet(curr);
-                accountInfo.setWallet(w);
+                accountInfo.addWallet(w);
             }
 
             w.addTransaction(trans);

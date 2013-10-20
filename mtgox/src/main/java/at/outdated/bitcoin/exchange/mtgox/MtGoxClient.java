@@ -13,7 +13,6 @@ import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -81,7 +80,7 @@ public class MtGoxClient extends ExchangeApiClient {
             MtGoxWalletHistory history = this.getWalletHistory(c);
             w.setTransactions(history.getTransactions());
 
-            accountInfo.setWallet(w);
+            accountInfo.addWallet(w);
         }
 
         return accountInfo;
@@ -114,16 +113,16 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
         TickerValue ticker = null;
 
-        String uri = "BTC" + currency.name() + "/money/ticker";
+        String uri = base.name() + quote.name() + "/money/ticker";
         WebTarget webResource = client.target(API_BASE_URL + uri);
         ApiTickerResponse tickerResponse = simpleGetRequest(webResource, ApiTickerResponse.class);
 
         if(tickerResponse != null && tickerResponse.getData() != null) {
-            tickerResponse.getData().setInCurrency(currency);
+            tickerResponse.getData().setInCurrency(base);
             tickerResponse.getData().setItemCurrency(Currency.BTC);
             ticker = tickerResponse.getData().getTickerValue();
         }

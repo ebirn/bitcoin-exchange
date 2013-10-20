@@ -20,7 +20,7 @@ public class KrakenTest {
     @Test
     public void testTickerclient() {
 
-        TickerValue ticker = client.getTicker(Currency.EUR);
+        TickerValue ticker = client.getTicker(Currency.BTC, Currency.EUR);
 
         System.out.println("ticker: " + ticker);
 

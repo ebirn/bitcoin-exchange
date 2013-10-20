@@ -46,7 +46,33 @@ public abstract class ExchangeApiClient {
 
     public abstract AccountInfo getAccountInfo();
 
-    public abstract TickerValue getTicker(Currency currency);
+    public TickerValue getTicker(Currency base) {
+        return getTicker(base, market.getPrimaryCurrency());
+    }
+
+    public abstract TickerValue getTicker(Currency base, Currency quote);
+
+    public double getQuote(Currency base, Currency quote) {
+
+        double rate = Double.NaN;
+
+        TickerValue ticker = null;
+
+        try {
+            ticker = getTicker(base, quote);
+            rate = ticker.getBid();
+        }
+        catch(Exception e) {
+
+        }
+
+        if(ticker == null) {
+            ticker = getTicker(quote, base);
+            rate = 1.0 / ticker.getAsk();
+        }
+
+        return rate;
+    }
 
     public abstract Number getLag();
 
@@ -245,7 +271,7 @@ public abstract class ExchangeApiClient {
             }
         }
         catch(Exception e) {
-            log.error("faild to convert form", e);
+            log.error("failed to convert form", e);
         }
 
         return sb.toString();

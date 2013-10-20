@@ -9,12 +9,9 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
-import java.net.URLEncoder;
 import java.util.Date;
-import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
@@ -25,10 +22,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
 import java.io.StringReader;
 
 /**
@@ -175,18 +170,20 @@ public class BtcEApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(Currency base, Currency quote) {
 
         // https://btc-e.com/api/2/btc_usd/ticker
 
-        WebTarget tickerResource = client.target("https://btc-e.com/api/2/btc_" + currency.name().toLowerCase() + "/ticker");
+
+
+        WebTarget tickerResource = client.target("https://btc-e.com/api/2/" + base.name().toLowerCase() + "_" + quote.name().toLowerCase() + "/ticker");
 
         TickerResponse response = simpleGetRequest(tickerResource, TickerResponse.class);
 
         BtcETickerValue btcETickerValue = response.getTicker();
 
         TickerValue value = btcETickerValue.getTickerValue();
-        value.setCurrency(currency);
+        value.setCurrency(base);
 
         return value;
     }
