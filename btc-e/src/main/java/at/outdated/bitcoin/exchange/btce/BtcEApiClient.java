@@ -159,8 +159,7 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         String resultStr = super.simpleGetRequest(target, String.class);
 
-        log.debug("BTC-E raw: " + resultStr);
-
+        //log.debug("BTC-E raw: " + resultStr);
         result = BtcEJsonResolver.convertFromJson(resultStr, resultClass);
 
         return result;
@@ -170,8 +169,6 @@ public class BtcEApiClient extends ExchangeApiClient {
     public TickerValue getTicker(AssetPair asset) {
 
         // https://btc-e.com/api/2/btc_usd/ticker
-
-
 
         WebTarget tickerResource = client.target("https://btc-e.com/api/2/" + asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase() + "/ticker");
 
