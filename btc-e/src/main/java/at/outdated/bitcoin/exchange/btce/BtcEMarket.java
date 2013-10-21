@@ -28,19 +28,12 @@ public class BtcEMarket extends Market {
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
 
-    }
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-
-        return new AssetPair[] {
-            new AssetPair(Currency.BTC, Currency.USD),
-            new AssetPair(Currency.BTC, Currency.EUR),
-            new AssetPair(Currency.LTC, Currency.BTC),
-            new AssetPair(Currency.LTC, Currency.USD),
-            new AssetPair(Currency.LTC, Currency.EUR),
-            new AssetPair(Currency.NMC, Currency.BTC),
-        };
+        addAsset(Currency.BTC, Currency.USD);
+        addAsset(Currency.BTC, Currency.EUR);
+        addAsset(Currency.LTC, Currency.BTC);
+        addAsset(Currency.LTC, Currency.USD);
+        addAsset(Currency.LTC, Currency.EUR);
+        addAsset(Currency.NMC, Currency.BTC);
     }
 
     @Override

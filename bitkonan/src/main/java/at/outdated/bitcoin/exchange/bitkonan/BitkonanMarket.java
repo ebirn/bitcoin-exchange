@@ -26,12 +26,7 @@ public class BitkonanMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, null));
 
-    }
-
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[] { new AssetPair(Currency.BTC, Currency.USD) };  //To change body of implemented methods use File | Settings | File Templates.
+        addAsset(Currency.BTC, Currency.USD);
     }
 
     @Override

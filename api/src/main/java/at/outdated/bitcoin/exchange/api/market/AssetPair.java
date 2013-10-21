@@ -37,6 +37,12 @@ public class AssetPair {
         return (base.isCrypto() && quote.isCrypto());
     }
 
+    public boolean isMember(Currency one) {
+        if(base == one || quote == one) return true;
+
+        return false;
+    }
+
     @Override
     public String toString() {
         return base + ":" + quote;

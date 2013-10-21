@@ -48,19 +48,17 @@ public abstract class ExchangeApiClient {
 
         double rate = Double.NaN;
 
-        TickerValue ticker = null;
+        AssetPair asset = market.getAsset(base, quote);
 
-        try {
-            ticker = getTicker(new AssetPair(base, quote));
-            rate = ticker.getBid();
-        }
-        catch(Exception e) {
+        if(asset != null) {
+            TickerValue ticker = getTicker(asset);
 
-        }
-
-        if(ticker == null) {
-            ticker = getTicker(new AssetPair(quote, base));
-            rate = 1.0 / ticker.getAsk();
+            if(asset.getBase() == base) {
+                rate = ticker.getBid();
+            }
+            else {
+                rate = 1.0/ticker.getAsk();
+            }
         }
 
         return rate;

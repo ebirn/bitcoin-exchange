@@ -33,22 +33,18 @@ public class KrakenMarket extends Market {
 
         addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK, null));
-    }
 
 
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[] {
-            new AssetPair(Currency.BTC, Currency.EUR),
-            new AssetPair(Currency.BTC, Currency.USD),
-            new AssetPair(Currency.BTC, Currency.XRP),
-            new AssetPair(Currency.USD, Currency.XRP),
-            new AssetPair(Currency.EUR, Currency.XRP),
-            new AssetPair(Currency.BTC, Currency.LTC),
-            new AssetPair(Currency.LTC, Currency.USD),
-            new AssetPair(Currency.LTC, Currency.EUR),
-            new AssetPair(Currency.LTC, Currency.XRP),
-        };  //
+        addAsset(Currency.BTC, Currency.EUR);
+        addAsset(Currency.BTC, Currency.USD);
+        addAsset(Currency.BTC, Currency.XRP);
+        addAsset(Currency.USD, Currency.XRP);
+        addAsset(Currency.EUR, Currency.XRP);
+        addAsset(Currency.BTC, Currency.LTC);
+        addAsset(Currency.LTC, Currency.USD);
+        addAsset(Currency.LTC, Currency.EUR);
+        addAsset(Currency.LTC, Currency.XRP);
+
     }
 
     @Override

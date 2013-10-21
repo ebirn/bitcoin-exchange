@@ -30,6 +30,8 @@ public abstract class Market {
     protected Map<Currency,TransferMethod> withdrawals = new HashMap<>();
     protected Map<Currency,TransferMethod> deposits = new HashMap<>();
 
+    protected Set<AssetPair> assets = new HashSet<>();
+
     protected Market(String key, String url, String description, Currency primaryCurrency) {
         this.key = key;
         this.url = url;
@@ -53,7 +55,9 @@ public abstract class Market {
         return key;
     }
 
-    public abstract AssetPair[] getTradedAssets();
+    public Set<AssetPair> getTradedAssets() {
+        return assets;
+    }
 
     //TODO actually implememt this: also: decide what should be implemented here,
     // what should be further service discorvery
@@ -82,6 +86,29 @@ public abstract class Market {
 
     protected void addDeposit(TransferMethod method) {
         deposits.put(method.getCurrency(), method);
+    }
+
+    protected void addAsset(Currency base, Currency quote) {
+        assets.add(new AssetPair(base, quote));
+    }
+
+
+    // find asset pair that contains both currencies, in whatever order
+    protected AssetPair getAsset(Currency one, Currency other) {
+
+        AssetPair candidate = null;
+
+        for(AssetPair ap : assets) {
+            // exact match, return
+            if(ap.equals(new AssetPair(one, other))) return ap;
+            // set candidate, because we iterate in unknown order, full match may come later
+            else if(ap.equals(new AssetPair(other, one))) return candidate = ap;
+
+            //if(ap.getBase() == one && ap.getQuote() == other) return ap;
+            //if(ap.isMember(one) && ap.isMember(other)) candidate = ap;
+        }
+
+        return candidate;
     }
 
     @Override

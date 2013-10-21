@@ -21,24 +21,16 @@ public class VircurexMarket extends Market {
         withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
 
         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-
         deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
         deposits.put(Currency.USD, new TransferMethod(Currency.USD, TransferType.BANK, null));
 
-    }
-
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[]{
-            new AssetPair(Currency.BTC, Currency.LTC),
-            new AssetPair(Currency.BTC, Currency.LTC),
-            new AssetPair(Currency.BTC, Currency.NMC),
-            new AssetPair(Currency.BTC, Currency.NVC),
-            new AssetPair(Currency.LTC, Currency.NMC),
-            new AssetPair(Currency.LTC, Currency.NVC),
-            new AssetPair(Currency.NVC, Currency.NMC)
-        };
+        addAsset(Currency.BTC, Currency.LTC);
+        addAsset(Currency.BTC, Currency.LTC);
+        addAsset(Currency.BTC, Currency.NMC);
+        addAsset(Currency.BTC, Currency.NVC);
+        addAsset(Currency.LTC, Currency.NMC);
+        addAsset(Currency.LTC, Currency.NVC);
+        addAsset(Currency.NVC, Currency.NMC);
     }
 
     @Override

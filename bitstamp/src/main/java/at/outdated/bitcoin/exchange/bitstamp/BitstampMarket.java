@@ -26,11 +26,7 @@ public class BitstampMarket extends Market {
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
 
-    }
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[]{ new AssetPair(Currency.BTC, Currency.USD) };
+        addAsset(Currency.BTC, Currency.USD);
     }
 
     @Override

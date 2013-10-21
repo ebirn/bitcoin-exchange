@@ -24,17 +24,11 @@ public class BterMarket extends Market {
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
-    }
 
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[]{
-            new AssetPair(Currency.LTC, Currency.BTC),
-            new AssetPair(Currency.FTC, Currency.BTC),
-            new AssetPair(Currency.NMC, Currency.BTC),
-            new AssetPair(Currency.NVC, Currency.BTC),
-        };
+        addAsset(Currency.LTC, Currency.BTC);
+        addAsset(Currency.FTC, Currency.BTC);
+        addAsset(Currency.NMC, Currency.BTC);
+        addAsset(Currency.NVC, Currency.BTC);
     }
 
     @Override

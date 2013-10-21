@@ -28,15 +28,9 @@ public class BitcurexMarket extends Market {
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(1.15, Currency.EUR))));
-    }
 
-
-    @Override
-    public AssetPair[] getTradedAssets() {
-        return new AssetPair[] {
-            new AssetPair(Currency.BTC, Currency.EUR),
-            new AssetPair(Currency.BTC, Currency.PLN)
-        };  //To change body of implemented methods use File | Settings | File Templates.
+        addAsset(Currency.BTC, Currency.EUR);
+        addAsset(Currency.BTC, Currency.PLN);
     }
 
     @Override
