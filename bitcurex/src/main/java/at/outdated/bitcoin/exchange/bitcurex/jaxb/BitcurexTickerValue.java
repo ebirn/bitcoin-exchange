@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.bitcurex;
+package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 

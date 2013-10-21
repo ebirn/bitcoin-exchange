@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.bitkonan;
+package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -7,20 +7,14 @@ import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ebirn
- * Date: 26.05.13
- * Time: 23:44
- * To change this template use File | Settings | File Templates.
+ * Created by ebirn on 20.10.13.
  */
-public class BitkonanAccountInfo extends AccountInfo {
+public class BitcurexAccountInfo extends AccountInfo {
 
-
-    Fee fee = new SimplePercentageFee(0.029);
+    private Fee tradingFee = new SimplePercentageFee(0.004);
 
     @Override
     public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
-
-        return fee.calculate(trade, volume);  //To change body of implemented methods use File | Settings | File Templates.
+        return tradingFee.calculate(trade, volume);
     }
 }

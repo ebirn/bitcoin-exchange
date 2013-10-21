@@ -5,16 +5,10 @@ import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
-import org.apache.commons.codec.binary.Base64;
+import at.outdated.bitcoin.exchange.api.market.*;
 import org.apache.commons.codec.binary.Hex;
 
-import java.net.URLEncoder;
 import java.util.Date;
-import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
@@ -25,10 +19,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
 import java.io.StringReader;
 
 /**
@@ -175,18 +167,20 @@ public class BtcEApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(AssetPair asset) {
 
         // https://btc-e.com/api/2/btc_usd/ticker
 
-        WebTarget tickerResource = client.target("https://btc-e.com/api/2/btc_" + currency.name().toLowerCase() + "/ticker");
+
+
+        WebTarget tickerResource = client.target("https://btc-e.com/api/2/" + asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase() + "/ticker");
 
         TickerResponse response = simpleGetRequest(tickerResource, TickerResponse.class);
 
         BtcETickerValue btcETickerValue = response.getTicker();
 
         TickerValue value = btcETickerValue.getTickerValue();
-        value.setCurrency(currency);
+        value.setCurrency(asset.getQuote());
 
         return value;
     }

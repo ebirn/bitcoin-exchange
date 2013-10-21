@@ -1,11 +1,10 @@
-import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.mtgox.MtGoxClient;
-import at.outdated.bitcoin.exchange.mtgox.MtGoxMarket;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,12 +18,12 @@ import org.junit.Test;
 public class MtgoxTest {
 
 
-    MtGoxClient client = new MtGoxClient(new MtGoxMarket());
+    MtGoxClient client = new MtGoxClient(Markets.getMarket("mtgox"));
 
 
     @Test
     public void testTicker() {
-        TickerValue ticker = client.getTicker(Currency.EUR);
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
 
         Assert.assertNotNull(ticker);
 

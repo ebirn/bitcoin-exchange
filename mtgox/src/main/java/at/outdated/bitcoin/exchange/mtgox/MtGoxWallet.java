@@ -30,20 +30,30 @@ public class MtGoxWallet extends Wallet {
     @XmlElement(name="Max_Withdraw")
     private CurrencyValue Max_Withdraw;
 
+    @XmlElement
+    private CurrencyValue Balance;
+
+    @XmlElement
+    private CurrencyValue Open_Orders;
+
 
 
     @Override
     public Currency getCurrency() {
-        this.currency = balance.getCurrency();
-        return balance.getCurrency();
+
+        super.balance = Balance;
+        this.currency = Balance.getCurrency();
+        return Balance.getCurrency();
     }
 
     public CurrencyValue getBalance() {
-        return balance;
+        return Balance;
     }
 
     public CurrencyValue getOpenOrders() {
-        return openOrders;
+
+        super.openOrders = Open_Orders;
+        return Open_Orders;
     }
 
     public long getTransactionCount() {

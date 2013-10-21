@@ -35,7 +35,7 @@ public abstract class AccountInfo {
         return wallets.get(curr);
     }
 
-    public void setWallet(Wallet wallet) {
+    public void addWallet(Wallet wallet) {
         wallets.set(wallet.getCurrency(), wallet);
     }
 

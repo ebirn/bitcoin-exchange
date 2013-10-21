@@ -45,6 +45,10 @@ public class Wallet {
     }
 
     public void setBalance(CurrencyValue balance) {
+
+        if(balance.getCurrency() != this.currency)
+            throw new IllegalArgumentException("invalid currency: " + balance.getCurrency() + " != " + currency);
+
         this.balance = balance;
     }
 

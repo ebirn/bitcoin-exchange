@@ -5,23 +5,15 @@ import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
-import org.apache.commons.codec.binary.Base64;
+import at.outdated.bitcoin.exchange.api.market.*;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.JsonObject;
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedHashMap;
-import java.net.HttpCookie;
 import java.util.Date;
 import java.util.concurrent.Future;
 
@@ -113,9 +105,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public TickerValue getTicker(Currency currency) {
+    public TickerValue getTicker(AssetPair asset) {
 
-        // https://btc-e.com/api/2/btc_usd/ticker
 
         WebTarget tickerResource = client.target("https://bitkonan.com/api/ticker/");
 
@@ -123,7 +114,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
 
         TickerValue value = response.getTickerValue();
-        value.setCurrency(currency);
+        value.setCurrency(asset.getQuote());
 
         return value;
     }

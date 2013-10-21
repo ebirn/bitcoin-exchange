@@ -27,6 +27,13 @@ public class TransferMethod {
         setAddress(address);
     }
 
+    public TransferMethod(Currency currency, TransferType transfer, String address, Fee fee) {
+        setCurrency(currency);
+        setTransfer(transfer);
+        setAddress(address);
+        setFee(fee);
+    }
+
     public Fee getFee() {
         return fee;
     }
@@ -58,5 +65,10 @@ public class TransferMethod {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return transfer + ":" + currency;
     }
 }

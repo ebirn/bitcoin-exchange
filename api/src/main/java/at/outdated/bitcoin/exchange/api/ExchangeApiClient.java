@@ -2,10 +2,10 @@ package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
-import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +16,6 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.Date;
@@ -46,7 +42,29 @@ public abstract class ExchangeApiClient {
 
     public abstract AccountInfo getAccountInfo();
 
-    public abstract TickerValue getTicker(Currency currency);
+    public abstract TickerValue getTicker(AssetPair asset);
+
+    public double getQuote(Currency base, Currency quote) {
+
+        double rate = Double.NaN;
+
+        TickerValue ticker = null;
+
+        try {
+            ticker = getTicker(new AssetPair(base, quote));
+            rate = ticker.getBid();
+        }
+        catch(Exception e) {
+
+        }
+
+        if(ticker == null) {
+            ticker = getTicker(new AssetPair(quote, base));
+            rate = 1.0 / ticker.getAsk();
+        }
+
+        return rate;
+    }
 
     public abstract Number getLag();
 
@@ -245,7 +263,7 @@ public abstract class ExchangeApiClient {
             }
         }
         catch(Exception e) {
-            log.error("faild to convert form", e);
+            log.error("failed to convert form", e);
         }
 
         return sb.toString();

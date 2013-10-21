@@ -3,11 +3,9 @@ package at.outdated.bitcoin.exchange.bitkonan;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,22 +20,18 @@ public class BitkonanMarket extends Market {
     public BitkonanMarket() {
         super("bitkonan", "http://bitkonan.com", "BitKonan", Currency.USD);
 
-        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.add(new TransferMethod(Currency.USD, TransferType.BANK, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.USD, TransferType.BANK, null));
 
-        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        withdrawals.add(new TransferMethod(Currency.USD, TransferType.BANK, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, null));
 
     }
 
-    @Override
-    public Currency[] getFiatCurrencies() {
-        return new Currency[] {Currency.USD};  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     @Override
-    public Currency[] getCryptoCurrencies() {
-        return new Currency[] { Currency.BTC };  //To change body of implemented methods use File | Settings | File Templates.
+    public AssetPair[] getTradedAssets() {
+        return new AssetPair[] { new AssetPair(Currency.BTC, Currency.USD) };  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

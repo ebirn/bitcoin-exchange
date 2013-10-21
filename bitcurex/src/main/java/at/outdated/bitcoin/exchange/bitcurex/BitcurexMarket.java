@@ -3,11 +3,12 @@ package at.outdated.bitcoin.exchange.bitcurex;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
+import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
+import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,21 +23,20 @@ public class BitcurexMarket extends Market {
     public BitcurexMarket() {
         super("bitcurex", "https://eur.bitcurex.com/", "Bitcurex", Currency.EUR);
 
-        deposits.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(0.30, Currency.EUR))));
 
-        withdrawals.add(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        withdrawals.add(new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(1.15, Currency.EUR))));
     }
 
-    @Override
-    public Currency[] getFiatCurrencies() {
-        return new Currency[] { Currency.EUR, Currency.PLN };  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     @Override
-    public Currency[] getCryptoCurrencies() {
-        return new Currency[]{ Currency.BTC};  //To change body of implemented methods use File | Settings | File Templates.
+    public AssetPair[] getTradedAssets() {
+        return new AssetPair[] {
+            new AssetPair(Currency.BTC, Currency.EUR),
+            new AssetPair(Currency.BTC, Currency.PLN)
+        };  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

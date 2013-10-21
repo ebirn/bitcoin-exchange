@@ -1,6 +1,7 @@
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
@@ -18,16 +19,12 @@ import org.junit.Test;
  */
 public class BitcurexTest {
 
-    ExchangeApiClient client = new  BitcurexApiClient(new BitcurexMarket());
+    BitcurexApiClient client = new  BitcurexApiClient(new BitcurexMarket());
 
     @Test
     public void testTicker() {
 
-
-
-
-        TickerValue ticker = client.getTicker(Currency.EUR);
-
+        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
         Assert.assertNotNull("ticker value", ticker);
 
     }
@@ -36,14 +33,12 @@ public class BitcurexTest {
     public void testDepth() {
 
         MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
-
         Assert.assertNotNull(depth);
 
     }
 
 
     @Test
-
     public void testAccountInfo() {
 
         AccountInfo info = client.getAccountInfo();

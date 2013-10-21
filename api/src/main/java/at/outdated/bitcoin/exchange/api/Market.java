@@ -1,13 +1,11 @@
 package at.outdated.bitcoin.exchange.api;
 
-import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,8 +27,8 @@ public abstract class Market {
     protected Currency primaryCurrency;
     protected String key;
 
-    protected Set<TransferMethod> withdrawals = new HashSet<>();
-    protected Set<TransferMethod> deposits = new HashSet<>();
+    protected Map<Currency,TransferMethod> withdrawals = new HashMap<>();
+    protected Map<Currency,TransferMethod> deposits = new HashMap<>();
 
     protected Market(String key, String url, String description, Currency primaryCurrency) {
         this.key = key;
@@ -55,13 +53,7 @@ public abstract class Market {
         return key;
     }
 
-    public abstract Currency[] getFiatCurrencies();
-
-    public abstract Currency[] getCryptoCurrencies();
-
-    public Currency[] getAllCurrencies() {
-        return  ArrayUtils.addAll(getFiatCurrencies(), getCryptoCurrencies());
-    }
+    public abstract AssetPair[] getTradedAssets();
 
     //TODO actually implememt this: also: decide what should be implemented here,
     // what should be further service discorvery
@@ -69,14 +61,28 @@ public abstract class Market {
     public abstract ExchangeApiClient getApiClient();
 
 
-    public Set<TransferMethod> getWithdrawalMethods() {
-        return withdrawals;
+    public Collection<TransferMethod> getWithdrawalMethods() {
+        return withdrawals.values();
+    }
+    public TransferMethod getWithdrawalMethod(Currency currency) {
+        return withdrawals.get(currency);
     }
 
-    public Set<TransferMethod> getDepositMethods() {
-        return deposits;
+    public Collection<TransferMethod> getDepositMethods() {
+        return deposits.values();
+    }
+    public TransferMethod getDepositMethod(Currency currency) {
+        return deposits.get(currency);
     }
 
+
+    protected void addWithdrawal(TransferMethod method) {
+        withdrawals.put(method.getCurrency(), method);
+    }
+
+    protected void addDeposit(TransferMethod method) {
+        deposits.put(method.getCurrency(), method);
+    }
 
     @Override
     public String toString() {
