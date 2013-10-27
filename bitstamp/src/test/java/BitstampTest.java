@@ -41,7 +41,7 @@ public class BitstampTest {
     @Test
     public void testMarketDepth() {
 
-        MarketDepth d = bitstampClient.getMarketDepth(Currency.BTC, Currency.USD);
+        MarketDepth d = bitstampClient.getMarketDepth(new AssetPair(Currency.BTC, Currency.USD));
         Assert.assertNotNull(d);
     }
 }

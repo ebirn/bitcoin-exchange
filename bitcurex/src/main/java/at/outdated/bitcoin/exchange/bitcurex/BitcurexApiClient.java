@@ -88,9 +88,12 @@ public class BitcurexApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
 
-        WebTarget depthTarget = client.target("https://" + quote.name().toLowerCase() + ".bitcurex.com/data/trades.json");
+        WebTarget depthTarget = client.target("https://{curr}.bitcurex.com/data/trades.json")
+                .resolveTemplate("curr", quote.name().toLowerCase());
 
         String raw = super.simpleGetRequest(depthTarget, String.class);
 

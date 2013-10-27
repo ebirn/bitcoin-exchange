@@ -157,7 +157,9 @@ public class BitstampClient extends ExchangeApiClient {
 
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
 
         // https://www.bitstamp.net/api/order_book/
 

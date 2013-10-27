@@ -115,7 +115,10 @@ public class KrakenClient extends ExchangeApiClient {
     }
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
+
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
 
         WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=" + fixSymbol(base) + fixSymbol(quote));
         String rawDepth = simpleGetRequest(webResource, String.class);

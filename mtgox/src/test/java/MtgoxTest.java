@@ -40,7 +40,7 @@ public class MtgoxTest {
     @Test
     public void testMarketDepth() {
 
-        MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
+        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
 
         Assert.assertNotNull(depth);
     }

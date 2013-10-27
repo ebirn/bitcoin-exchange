@@ -120,10 +120,15 @@ public class BtcEApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
+
         // (price, volume)
 
-        WebTarget resource = client.target("https://btc-e.com/api/2/"+base.name().toLowerCase()+"_" + quote.name().toLowerCase() + "/depth");
+        WebTarget resource = client.target("https://btc-e.com/api/2/{base}_{quote}/depth")
+            .resolveTemplate("base", base.name().toLowerCase())
+            .resolveTemplate("quote", quote.name().toLowerCase());
 
         String response = super.simpleGetRequest(resource, String.class);
 

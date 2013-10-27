@@ -33,7 +33,7 @@ public class KrakenTest {
 
     @Test
     public void testDepthClient() {
-        MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
+        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
 
         System.out.println("depth: " + depth);
 

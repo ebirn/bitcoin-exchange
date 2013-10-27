@@ -85,10 +85,10 @@ public class MtGoxClient extends ExchangeApiClient {
 
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
 
 
-        WebTarget depthTarget = client.target(API_BASE_URL + base.name() + quote.name() + "/money/depth/fetch");
+        WebTarget depthTarget = client.target(API_BASE_URL + asset.getBase().name() + asset.getQuote().name() + "/money/depth/fetch");
 
         //String raw = simpleGetRequest(depthTarget, String.class);
 
@@ -96,14 +96,14 @@ public class MtGoxClient extends ExchangeApiClient {
 
         DepthResponse rawDepth = res.data;
 
-        MarketDepth depth = new MarketDepth(base);
+        MarketDepth depth = new MarketDepth(asset);
 
         for(DepthEntry e : rawDepth.getAsks()) {
-            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(e.amount, base), new CurrencyValue(e.price, quote)));
+            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(e.amount, asset.getBase()), new CurrencyValue(e.price, asset.getQuote())));
         }
 
         for(DepthEntry e : rawDepth.getBids()) {
-            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(e.amount, base), new CurrencyValue(e.price, quote)));
+            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(e.amount, asset.getBase()), new CurrencyValue(e.price, asset.getQuote())));
         }
 
         return depth;

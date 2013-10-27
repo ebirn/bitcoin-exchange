@@ -37,7 +37,7 @@ public class BitkonanTest {
     @Test
     public void testDepth() {
 
-        MarketDepth d = client.getMarketDepth(Currency.BTC, Currency.USD);
+        MarketDepth d = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.USD));
 
 
         Assert.assertNotNull(d);

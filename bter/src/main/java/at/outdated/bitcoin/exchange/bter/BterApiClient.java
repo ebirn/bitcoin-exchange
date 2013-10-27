@@ -42,7 +42,7 @@ public class BterApiClient extends ExchangeApiClient {
     }
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
         return null;
     }
 

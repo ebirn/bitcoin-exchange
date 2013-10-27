@@ -59,7 +59,9 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
 
     @Override
-    public MarketDepth getMarketDepth(Currency base, Currency quote) {
+    public MarketDepth getMarketDepth(AssetPair asset) {
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
 
         // https://bitkonan.com/api/orderbook/?group=0
 

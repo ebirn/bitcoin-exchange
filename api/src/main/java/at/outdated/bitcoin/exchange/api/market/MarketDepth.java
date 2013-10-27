@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.api.market;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import java.util.Date;
 import java.util.List;
@@ -24,8 +25,16 @@ public class MarketDepth {
 
     }
 
+    public MarketDepth(AssetPair asset) {
+        setAsset(asset);
+    }
+
     public MarketDepth(Currency base) {
         this.baseCurrency = base;
+    }
+
+    public void setAsset(AssetPair asset) {
+        this.baseCurrency = asset.getBase();
     }
 
     public List<MarketOrder> getBids() {
@@ -34,6 +43,14 @@ public class MarketDepth {
 
     public List<MarketOrder> getAsks() {
         return asks;
+    }
+
+    public void addAsk(MarketOrder ask) {
+        asks.add(ask);
+    }
+
+    public void addBid(MarketOrder bid) {
+        this.bids.add(bid);
     }
 
     public Currency getBaseCurrency() {
@@ -53,12 +70,16 @@ public class MarketDepth {
     }
 
     private String orderSummary(List<MarketOrder> orders) {
+
         if(orders == null || orders.isEmpty()) return "none";
 
+        CurrencyValue sum = new CurrencyValue(orders.get(0).getVolume());
+
         for(MarketOrder order : orders) {
+            sum.add(order.getVolume());
         }
 
-        return orders.size() + " orders";
+        return orders.size() + " orders (vol: " + sum.getValue() + ")";
     }
 
     @Override

@@ -39,7 +39,7 @@ public class BtceTest {
 
     @Test
     public void testDepth() {
-        MarketDepth depth = client.getMarketDepth(Currency.BTC, Currency.EUR);
+        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
 
         Assert.assertNotNull(depth);
         Assert.assertNotNull(depth.getBaseCurrency());

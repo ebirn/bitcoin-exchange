@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>at.outdated.bitcoin.exchange</groupId>
-  <artifactId>exchange-template<artifactId>
+  <artifactId>exchange-template</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 </project>

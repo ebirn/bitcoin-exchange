@@ -115,7 +115,7 @@ public abstract class ExchangeApiClient {
         return resultArray;
     }
 
-    public abstract MarketDepth getMarketDepth(Currency base, Currency quote);
+    public abstract MarketDepth getMarketDepth(AssetPair asset);
 
     final public double getApiLag() {
         return apiLagTrack.getStatistics().getGeometricMean();  //To change body of implemented methods use File | Settings | File Templates.
