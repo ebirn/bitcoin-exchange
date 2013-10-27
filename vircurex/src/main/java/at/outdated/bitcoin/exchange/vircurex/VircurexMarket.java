@@ -19,8 +19,8 @@ public class VircurexMarket extends Market {
 
         withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
         withdrawals.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
-        withdrawals.put(Currency.NMC, new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
-        withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
+        withdrawals.put(Currency.NMC, new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.01, Currency.NMC))));
+        withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
 
         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         deposits.put(Currency.BTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
