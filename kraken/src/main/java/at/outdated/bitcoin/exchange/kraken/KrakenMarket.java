@@ -34,7 +34,6 @@ public class KrakenMarket extends Market {
         addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK, null));
 
-
         addAsset(Currency.BTC, Currency.EUR);
         addAsset(Currency.BTC, Currency.USD);
         addAsset(Currency.BTC, Currency.XRP);
@@ -44,7 +43,6 @@ public class KrakenMarket extends Market {
         addAsset(Currency.LTC, Currency.USD);
         addAsset(Currency.LTC, Currency.EUR);
         addAsset(Currency.LTC, Currency.XRP);
-
     }
 
     @Override

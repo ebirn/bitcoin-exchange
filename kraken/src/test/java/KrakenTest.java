@@ -1,11 +1,17 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.kraken.*;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,40 +20,33 @@ import org.junit.Test;
  * Time: 18:46
  * To change this template use File | Settings | File Templates.
  */
-public class KrakenTest {
+public class KrakenTest extends BaseTest {
 
-    KrakenClient client = new KrakenClient(new KrakenMarket());
+
+    @Before
+    public void init() {
+        market = Markets.getMarket("kraken");
+        client = new KrakenClient(market);
+        log = LoggerFactory.getLogger(getClass());
+    }
+
 
     @Test
     public void testTickerclient() {
 
         TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-
         System.out.println("ticker: " + ticker);
 
-        Assert.assertNotNull(ticker.getBid());
-        Assert.assertNotNull(ticker.getAsk());
-        Assert.assertNotNull(ticker.getCurrency());
-        Assert.assertNotNull(ticker.getCurrency());
+        assertTicker(ticker);
     }
 
     @Test
     public void testDepthClient() {
         MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
 
-        System.out.println("depth: " + depth);
-
-        Assert.assertNotNull(depth);
-        Assert.assertNotNull(depth.getBaseCurrency());
-
-        Assert.assertFalse(depth.getAsks().isEmpty());
-        Assert.assertFalse(depth.getBids().isEmpty());
+        assertDepth(depth);
     }
 
-    @Test
-    public void testAccountInfo() {
-        AccountInfo info = client.getAccountInfo();
-        Assert.assertNotNull(info);
-    }
+
 
 }

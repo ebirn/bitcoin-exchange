@@ -123,8 +123,7 @@ public class KrakenClient extends ExchangeApiClient {
         WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=" + fixSymbol(base) + fixSymbol(quote));
         String rawDepth = simpleGetRequest(webResource, String.class);
 
-        log.debug("raw depth: {}", rawDepth);
-
+        //log.debug("raw depth: {}", rawDepth);
 
         JsonObject jsonDepth = jsonFromString(rawDepth).getJsonObject("result").getJsonObject(fixSymbol(base) + fixSymbol(quote));
 

@@ -24,8 +24,6 @@ public class VircurexApiClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
 
-
-
         return new VircurexAccountInfo();
     }
 
@@ -33,9 +31,9 @@ public class VircurexApiClient extends ExchangeApiClient {
     public TickerValue getTicker(AssetPair asset) {
 
         // get_info_for_1_currency
-        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json");
-        tickerTgt.queryParam("base", asset.getBase());
-        tickerTgt.queryParam("alt", asset.getQuote());
+        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json")
+            .queryParam("base", asset.getBase())
+            .queryParam("alt", asset.getQuote());
         // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
 
         VircurexTicker ticker = simpleGetRequest(tickerTgt, VircurexTicker.class);
