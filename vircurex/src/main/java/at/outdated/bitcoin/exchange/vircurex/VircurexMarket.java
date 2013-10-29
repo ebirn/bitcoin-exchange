@@ -23,7 +23,7 @@ public class VircurexMarket extends Market {
         withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
 
         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.put(Currency.BTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
+        deposits.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
         deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
         deposits.put(Currency.USD, new TransferMethod(Currency.USD, TransferType.BANK, null));
 

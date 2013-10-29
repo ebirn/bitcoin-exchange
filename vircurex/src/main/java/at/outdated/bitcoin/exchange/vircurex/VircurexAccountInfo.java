@@ -11,7 +11,7 @@ import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
  */
 public class VircurexAccountInfo extends AccountInfo {
 
-    Fee tradeFee = new SimplePercentageFee(0.0002);
+    Fee tradeFee = new SimplePercentageFee(0.002);
 
     @Override
     public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
