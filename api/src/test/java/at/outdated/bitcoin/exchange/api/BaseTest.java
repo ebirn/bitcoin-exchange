@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by ebirn on 29.10.13.
  */
-public class BaseTest {
+public abstract class BaseTest {
 
     protected ExchangeApiClient client;
     protected Market market;
@@ -32,7 +32,7 @@ public class BaseTest {
 
     @Test
     public void testAllDepth() {
-        for(AssetPair asset : Markets.getMarket("kraken").getTradedAssets()) {
+        for(AssetPair asset : market.getTradedAssets()) {
             MarketDepth depth = client.getMarketDepth(asset);
             log.info("depth: {}: {}", asset, depth);
 

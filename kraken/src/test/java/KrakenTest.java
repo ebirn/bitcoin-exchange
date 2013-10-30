@@ -41,7 +41,6 @@ public class KrakenTest extends BaseTest {
     @Test
     public void testDepthClient() {
         MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
-
         assertDepth(depth);
     }
 
@@ -49,12 +48,8 @@ public class KrakenTest extends BaseTest {
     @Test
     public void testMarketDepthPrice() {
 
-
         MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.LTC));
-
-
         CurrencyValue tradeVolume = new CurrencyValue(90.0, Currency.LTC);
-
 
         CurrencyValue resultPrice = null;
 
@@ -63,7 +58,6 @@ public class KrakenTest extends BaseTest {
 
         resultPrice = depth.getPrice(TradeDecision.BUY, tradeVolume);
         log.info("BUY {} get {}", tradeVolume, resultPrice);
-
     }
 
 }
