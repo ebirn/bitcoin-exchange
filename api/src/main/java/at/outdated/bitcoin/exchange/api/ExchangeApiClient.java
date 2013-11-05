@@ -227,17 +227,18 @@ public abstract class ExchangeApiClient {
 
 
     protected String getSecret() {
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
-
-        String name = market.getKey() + ".secret";
-        return bundle.getString(name);
+        return getPropertyString("secret");
     }
 
     protected String getUserId() {
+       return getPropertyString("userid");
+    }
+
+    protected String getPropertyString(String key) {
         ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
 
-        String name = market.getKey() + ".userid";
-        return bundle.getString(name);
+        String value = market.getKey() + "." + key;
+        return bundle.getString(value);
     }
 
 

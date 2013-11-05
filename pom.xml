@@ -25,6 +25,7 @@
 		<module>campbx</module>
 		<module>vircurex</module>
         <module>bter</module>
+        <module>icbit</module>
     </modules>
 
 	<dependencies>

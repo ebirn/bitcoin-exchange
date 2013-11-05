@@ -26,8 +26,8 @@ public class ExchangeRateCalculator {
 
         // set exchange rate for a currency with itself to 1
         for(int i=0; i<currencyCount; i++) {
-            // initialize rates with 0
-            Arrays.fill(rates[i], 0.0);
+            // initialize rates with NaN
+            Arrays.fill(rates[i], Double.NaN);
             rates[i][i] = 1.0;
         }
     }
