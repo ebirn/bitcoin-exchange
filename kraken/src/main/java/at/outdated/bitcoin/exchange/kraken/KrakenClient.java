@@ -55,6 +55,7 @@ public class KrakenClient extends ExchangeApiClient {
             }
         }
 
+
         WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
         String rawLedger = syncRequest(ledgerTgt, String.class, "POST", Entity.form(new Form()), true);
         log.info("ledger: {}", rawLedger);
@@ -62,14 +63,14 @@ public class KrakenClient extends ExchangeApiClient {
         if(jsonLedger != null) parseLedger(accountInfo, jsonLedger);
 
 
-
         WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
         String rawBalance = syncRequest(balanceTgt, String.class, "POST", Entity.form(new Form()), true);
         log.info("balance: {}", rawBalance);
 
         JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
+
         if(balances != null)
-        for(String currKey : balances.keySet()) {
+            for(String currKey : balances.keySet()) {
             Currency curr = parseCurrency(currKey);
             accountInfo.getWallet(curr).setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
         }
@@ -222,20 +223,19 @@ public class KrakenClient extends ExchangeApiClient {
         return baseStr;
     }
 
-    private Currency parseCurrency(String curr) {
-        Currency c = null;
+    private Currency parseCurrency(String currStr) {
+        // remove prefix
+        currStr = currStr.substring(1);
 
-        switch(curr) {
+        switch(currStr) {
 
             case "XBT":
-                c = Currency.BTC;
-                break;
+                return Currency.BTC;
 
             default:
-                c = Currency.valueOf(curr.substring(1));
+                return Currency.valueOf(currStr);
         }
 
-        return c;
     }
 
     private void addOrders(TradeDecision dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
@@ -254,6 +254,10 @@ public class KrakenClient extends ExchangeApiClient {
         switch(type) {
             case "deposit":
                 tt = TransactionType.DEPOSIT;
+                break;
+
+            case "trade":
+                tt = TransactionType.IN;
                 break;
 
             default:
