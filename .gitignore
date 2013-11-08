@@ -1,6 +1,7 @@
 bitcoin-exchange.properties
 .idea
 target
+*.iml
 */*.iml
 */target
 bitstamp/target
