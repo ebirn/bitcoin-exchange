@@ -1,9 +1,8 @@
 package at.outdated.bitcoin.exchange.api.jaxb;
 
-import org.eclipse.persistence.jaxb.xmlmodel.XmlJavaTypeAdapter;
-
-import javax.json.*;
-import javax.json.stream.JsonParser;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.StringReader;
 

@@ -3,10 +3,9 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import java.util.ArrayList;
 
 /**
  * Created by ebirn on 22.09.13.

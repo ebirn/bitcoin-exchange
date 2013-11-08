@@ -2,7 +2,6 @@ package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,6 +52,8 @@ public abstract class BaseTest {
     }
 
     protected void assertTicker(TickerValue ticker) {
+        Assert.assertNotNull(ticker);
+
         Assert.assertNotNull(ticker.getBid());
         Assert.assertNotEquals(ticker.getBid(), Double.NaN, 0.0);
 

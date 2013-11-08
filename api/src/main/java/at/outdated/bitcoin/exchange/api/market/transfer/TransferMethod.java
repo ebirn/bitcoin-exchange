@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.api.market.transfer;
 
-import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;

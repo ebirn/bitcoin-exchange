@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 /**

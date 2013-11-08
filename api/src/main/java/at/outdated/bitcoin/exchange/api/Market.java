@@ -3,7 +3,6 @@ package at.outdated.bitcoin.exchange.api;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 

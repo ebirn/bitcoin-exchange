@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeDateAdapter;
 import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeMicroDateAdapter;
 
 import javax.xml.bind.annotation.XmlElement;

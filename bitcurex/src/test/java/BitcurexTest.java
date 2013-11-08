@@ -1,4 +1,3 @@
-import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
@@ -7,7 +6,6 @@ import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexMarket;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

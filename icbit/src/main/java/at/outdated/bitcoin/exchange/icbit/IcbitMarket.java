@@ -3,7 +3,6 @@ package at.outdated.bitcoin.exchange.icbit;
 import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.icbit.IcbitClient;
 
 /**
  * Created by ebirn on 31.10.13.

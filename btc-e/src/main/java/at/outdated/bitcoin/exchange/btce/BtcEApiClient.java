@@ -8,7 +8,6 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import org.apache.commons.codec.binary.Hex;
 
-import java.util.Date;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.

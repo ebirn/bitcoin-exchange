@@ -5,14 +5,11 @@ import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
-import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.performance.CombinedPerformance;
 import at.outdated.bitcoin.exchange.api.performance.Performance;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.

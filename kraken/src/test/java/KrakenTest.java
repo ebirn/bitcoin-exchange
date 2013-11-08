@@ -1,14 +1,9 @@
 import at.outdated.bitcoin.exchange.api.BaseTest;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.kraken.*;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
+import at.outdated.bitcoin.exchange.kraken.KrakenClient;
 import org.junit.Test;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**

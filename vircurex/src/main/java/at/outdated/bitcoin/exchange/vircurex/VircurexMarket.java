@@ -4,7 +4,6 @@ import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
