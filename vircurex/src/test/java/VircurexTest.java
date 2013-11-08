@@ -1,3 +1,5 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
+import at.outdated.bitcoin.exchange.api.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
@@ -10,27 +12,11 @@ import org.junit.Test;
 /**
  * Created by ebirn on 11.10.13.
  */
-public class VircurexTest {
+public class VircurexTest extends BaseTest {
 
-    VircurexApiClient client = new VircurexApiClient(Markets.getMarket("vircurex"));
-
-    @Test
-    public void testTicker() {
-
-        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-
-        Assert.assertNotNull(ticker);
-    }
-
-
-    @Test
-    public void testDepth() {
-
-        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.LTC));
-
-        System.out.println("depth: " + depth);
-
-        Assert.assertNotNull(depth);
-
+    @Override
+    public void init() {
+        market = Markets.getMarket("vircurex");
+        client = market.getApiClient();
     }
 }

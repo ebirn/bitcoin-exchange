@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class KrakenTest extends BaseTest {
 
 
-    @Before
+
     public void init() {
         market = Markets.getMarket("kraken");
         client = new KrakenClient(market);

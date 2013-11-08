@@ -19,5 +19,19 @@
   </properties>
 
   <dependencies>
+	<dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
   </dependencies>
 </project>

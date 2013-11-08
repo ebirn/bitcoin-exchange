@@ -1,9 +1,10 @@
 bitcoin-exchange.properties
 .idea
 target
-*.iml
+*/*.iml
+*/target
 bitstamp/target
-bitstamp/.iml
+bitstamp/bitstamp.iml
 mtgox/target
 mtgox/mtgox.iml
 btc-e/target

@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public abstract class BaseTest {
     protected Market market;
 
     protected Logger log = LoggerFactory.getLogger(getClass());
+
+    @Before
+    public abstract void init();
 
     @Test
     public void testAllTickers() {
