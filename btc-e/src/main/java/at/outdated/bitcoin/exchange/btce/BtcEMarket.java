@@ -22,16 +22,21 @@ public class BtcEMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
 
         addAsset(Currency.BTC, Currency.USD);
         addAsset(Currency.BTC, Currency.EUR);
+
         addAsset(Currency.LTC, Currency.BTC);
+        addAsset(Currency.PPC, Currency.BTC);
         addAsset(Currency.LTC, Currency.USD);
         addAsset(Currency.LTC, Currency.EUR);
+
         addAsset(Currency.NMC, Currency.BTC);
     }
 

@@ -21,8 +21,12 @@ public class VircurexMarket extends Market {
         withdrawals.put(Currency.NMC, new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.01, Currency.NMC))));
         withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
 
+        // FIXME check currency
+        withdrawals.put(Currency.PPC, new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.PPC))));
+
         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         deposits.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
+        deposits.put(Currency.PPC, new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
         deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
         deposits.put(Currency.USD, new TransferMethod(Currency.USD, TransferType.BANK, null));
 
@@ -31,6 +35,7 @@ public class VircurexMarket extends Market {
         addAsset(Currency.BTC, Currency.NVC);
         addAsset(Currency.LTC, Currency.NMC);
         addAsset(Currency.LTC, Currency.NVC);
+        addAsset(Currency.PPC, Currency.BTC);
         addAsset(Currency.NVC, Currency.NMC);
     }
 

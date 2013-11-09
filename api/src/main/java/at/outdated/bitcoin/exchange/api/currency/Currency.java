@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlEnum;
 public enum Currency {
     BTC, // Bitcoin
     LTC, // Litecoin
+    PPC, // Peer-to-Peer coin
     FTC, // Feathercoin
     NMC, // Namecoin
     XRP, // Ripple
