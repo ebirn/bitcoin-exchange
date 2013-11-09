@@ -14,7 +14,7 @@ public class MarketDepth {
 
     Date timestamp = new Date();
 
-    Currency baseCurrency;
+    Currency baseCurrency, quoteCurrency;
 
     List<MarketOrder> bids = new ArrayList<>();
     List<MarketOrder> asks = new ArrayList<>();
@@ -28,12 +28,14 @@ public class MarketDepth {
         setAsset(asset);
     }
 
-    public MarketDepth(Currency base) {
+    public MarketDepth(Currency base, Currency quote) {
         this.baseCurrency = base;
+        this.quoteCurrency = quote;
     }
 
     public void setAsset(AssetPair asset) {
         this.baseCurrency = asset.getBase();
+        this.quoteCurrency = asset.getQuote();
     }
 
     public List<MarketOrder> getBids() {
@@ -48,12 +50,23 @@ public class MarketDepth {
         asks.add(ask);
     }
 
+    public void addAsk(double volume, double price) {
+        addAsk(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, baseCurrency), new CurrencyValue(price, quoteCurrency)));
+    }
+
     public void addBid(MarketOrder bid) {
         this.bids.add(bid);
     }
 
+    public void addBid(double volume, double price) {
+        addBid(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, baseCurrency), new CurrencyValue(price, quoteCurrency)));
+    }
     public Currency getBaseCurrency() {
         return baseCurrency;
+    }
+
+    public Currency getQuoteCurrency() {
+        return quoteCurrency;
     }
 
     public void setBaseCurrency(Currency baseCurrency) {

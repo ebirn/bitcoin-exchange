@@ -13,8 +13,8 @@ public class IcbitTest {
 
     @Test
     public void myTest() {
-
-        client.getTicker(new AssetPair(Currency.BTC, Currency.LTC));
+        //FIXME: cleanup
+        //client.getTicker(new AssetPair(Currency.BTC, Currency.LTC));
 
     }
 }

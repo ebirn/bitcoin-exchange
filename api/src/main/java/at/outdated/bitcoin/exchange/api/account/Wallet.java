@@ -48,6 +48,13 @@ public class Wallet {
         this.balance = balance;
     }
 
+    public void setOpenOrders(CurrencyValue value) {
+        if(balance.getCurrency() != this.currency)
+            throw new IllegalArgumentException("invalid currency: " + balance.getCurrency() + " != " + currency);
+
+        this.openOrders = value;
+    }
+
     public CurrencyValue getBalance() {
         return balance;
     }

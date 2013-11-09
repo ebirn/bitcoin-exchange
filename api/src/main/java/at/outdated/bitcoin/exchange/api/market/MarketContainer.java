@@ -1,7 +1,5 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import at.outdated.bitcoin.exchange.api.Market;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.api.container;
 
-import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketContainer;
 

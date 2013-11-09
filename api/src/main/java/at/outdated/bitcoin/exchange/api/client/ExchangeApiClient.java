@@ -1,9 +1,9 @@
-package at.outdated.bitcoin.exchange.api;
+package at.outdated.bitcoin.exchange.api.client;
 
+import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
  * Time: 17:00
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ExchangeApiClient {
+public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     protected Logger log = LoggerFactory.getLogger("client");
 
     protected NumberTrack apiLagTrack = new NumberTrack(5);
@@ -40,10 +40,9 @@ public abstract class ExchangeApiClient {
 
     protected final String userAgent = "ExchangeApiClient/1.0a";
 
-    public abstract AccountInfo getAccountInfo();
+    protected Market market;
 
-    public abstract TickerValue getTicker(AssetPair asset);
-
+    @Override
     public double getQuote(Currency base, Currency quote) {
 
         double rate = Double.NaN;
@@ -65,8 +64,6 @@ public abstract class ExchangeApiClient {
     }
 
     public abstract Number getLag();
-
-    protected Market market;
 
 
     public ExchangeApiClient(Market market) {
@@ -114,8 +111,6 @@ public abstract class ExchangeApiClient {
 
         return resultArray;
     }
-
-    public abstract MarketDepth getMarketDepth(AssetPair asset);
 
     final public double getApiLag() {
         return apiLagTrack.getStatistics().getGeometricMean();  //To change body of implemented methods use File | Settings | File Templates.

@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.btce;
 
-import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;

@@ -1,5 +1,6 @@
-package at.outdated.bitcoin.exchange.api;
+package at.outdated.bitcoin.exchange.api.market;
 
+import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
@@ -93,7 +94,7 @@ public abstract class Market {
 
 
     // find asset pair that contains both currencies, in whatever order
-    protected AssetPair getAsset(Currency one, Currency other) {
+    public AssetPair getAsset(Currency one, Currency other) {
 
         AssetPair candidate = null;
 

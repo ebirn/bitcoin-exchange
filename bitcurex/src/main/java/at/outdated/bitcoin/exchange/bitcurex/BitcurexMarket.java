@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
-import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;

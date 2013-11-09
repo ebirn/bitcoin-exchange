@@ -1,20 +1,36 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
-import at.outdated.bitcoin.exchange.api.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.Market;
+import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.Wallet;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+import java.util.TimeZone;
+
 
 /**
  * Created by ebirn on 11.10.13.
  */
 public class VircurexApiClient extends ExchangeApiClient {
+
+    private enum OType {
+        UNRELEASED,
+        RELEASED;
+    }
 
     public VircurexApiClient(Market market) {
         super(market);
@@ -23,7 +39,48 @@ public class VircurexApiClient extends ExchangeApiClient {
     @Override
     public AccountInfo getAccountInfo() {
 
-        return new VircurexAccountInfo();
+        /*
+        get_balances		balance
+        available_balance		Input token: YourSecurityWord;YourUserName;Timestamp;ID;get_balances
+
+        Note: the security word of this function is the security word from function "get_balance".
+
+        Output token: YourSecurityWord;YourUserName;Timestamp;get_balances
+         */
+
+        WebTarget balancesTgt = client.target("https://vircurex.com/api/get_balances.json");
+
+        Form f = new Form();
+        f.param("command", "get_balances");
+        String rawBalances = this.setupProtectedResource(balancesTgt, Entity.form(f)).get(String.class);
+
+
+        JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
+
+        AccountInfo info = new VircurexAccountInfo();
+
+        for(String currKey : jsonBalances.keySet()) {
+
+            try {
+
+                Currency curr = Currency.valueOf(currKey);
+                double balance = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("balance"));
+                double available = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("availablebalance"));
+
+                Wallet w = new Wallet(curr);
+
+                w.setBalance(new CurrencyValue(available, curr));
+                w.setOpenOrders(new CurrencyValue(balance - available, curr));
+
+                info.addWallet(w);
+
+            }
+            catch(Exception e) {
+                // log.info("unknown currency {}", currKey);
+            }
+        }
+
+        return info;
     }
 
     @Override
@@ -83,8 +140,69 @@ public class VircurexApiClient extends ExchangeApiClient {
         return depth;
     }
 
+
+    private Random rand = new Random();
+
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
-        return null;
+    /*
+         t = Time.now.gmtime.strftime("%Y-%m-%dT%H:%M:%S")
+         trx_id = Digest::SHA2.hexdigest("#{t}-#{rand}")
+         user_name = "MY_USER_NAME"
+         secret_word = "123456789"
+         tok = Digest::SHA2.hexdigest("#{secret_word};#{user_name};#{t};#{trx_id};create_order;sell;10;btc;50;nmc")
+         Order.call_https("https://vircurex.com","/api/create_order.json?account=#{user_name}&id=#{trx_id}&token=#{tok}&timestamp=#{t}&ordertype=sell&amount=10&currency1=btc&unitprice=50&currency2=nmc")
+     */
+
+        //FIXME to response authentication (check token)
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            Date now = new Date();
+            String timestamp = sdf.format(now);
+
+            String txId = Hex.encodeHexString(digest.digest(timestamp.getBytes()));
+            String user = getUserId();
+            String word = getPropertyString("words.balance");
+
+
+            Form form = (Form) entity.getEntity();
+
+            res = res.queryParam("account", user)
+                .queryParam("id",txId)
+                .queryParam("token", buildToken(word, user, timestamp, txId, form.asMap().getFirst("command")))
+                .queryParam("timestamp",timestamp);
+        }
+
+        catch(Exception e) {
+            log.error("failed to setup secure request");
+        }
+
+        Invocation.Builder builder = res.request();
+
+        return builder;
+    }
+
+
+
+    private String buildToken(String... args) {
+
+        String token = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            String fullString = StringUtils.join(args, ";");
+
+            token = Hex.encodeHexString(digest.digest(fullString.getBytes()));
+
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+
+        }
+
+        return token;
     }
 }
