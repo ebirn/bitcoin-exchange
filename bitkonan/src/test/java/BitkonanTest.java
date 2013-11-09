@@ -1,7 +1,9 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitkonan.BitkonanApiClient;
 import at.outdated.bitcoin.exchange.bitkonan.BitkonanMarket;
@@ -15,10 +17,15 @@ import org.junit.Test;
  * Time: 00:00
  * To change this template use File | Settings | File Templates.
  */
-public class BitkonanTest {
+public class BitkonanTest extends BaseTest {
 
 
-    BitkonanApiClient client = new BitkonanApiClient(new BitkonanMarket());
+    @Override
+    public void init() {
+
+        market = Markets.getMarket("bitkonan");
+        client = new BitkonanApiClient(market);
+    }
 
     @Test
     public void testTicker() {

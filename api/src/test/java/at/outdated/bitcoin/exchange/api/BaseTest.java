@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.api;
 
+import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
@@ -41,6 +42,21 @@ public abstract class BaseTest {
 
             assertDepth(depth);
         }
+    }
+
+    @Test
+    public void testAccountInfo() {
+        AccountInfo info = client.getAccountInfo();
+
+        assertAccountInfo(info);
+    }
+
+    protected void assertAccountInfo(AccountInfo info) {
+
+        Assert.assertNotNull(info);
+
+
+
     }
 
     protected void assertDepth(MarketDepth depth){

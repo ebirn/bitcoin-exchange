@@ -1,3 +1,4 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Markets;
@@ -9,16 +10,12 @@ import org.junit.Test;
 /**
  * Created by ebirn on 11.10.13.
  */
-public class BterTest {
+public class BterTest extends BaseTest {
 
-    BterApiClient client = new BterApiClient(Markets.getMarket("bter"));
 
-    @Test
-    public void testTicker() {
-
-        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-
-        Assert.assertNotNull(ticker);
+    @Override
+    public void init() {
+        market = Markets.getMarket("bter");
+        client = new BterApiClient(market);
     }
-
 }

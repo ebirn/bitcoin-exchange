@@ -1,7 +1,9 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitstamp.BitstampClient;
 import at.outdated.bitcoin.exchange.bitstamp.BitstampMarket;
@@ -15,33 +17,14 @@ import org.junit.Test;
  * Time: 14:03
  * To change this template use File | Settings | File Templates.
  */
-public class BitstampTest {
+public class BitstampTest extends BaseTest {
 
-    BitstampClient bitstampClient = new BitstampClient(new BitstampMarket());
 
-    @Test
-    public void testTicker() {
-
-        TickerValue ticker = bitstampClient.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-        Assert.assertNotNull("ticker value null", ticker);
-
-    }
-
-    @Test
-    public void testAccountInfo() {
-
-        AccountInfo info = bitstampClient.getAccountInfo();
-
-        Assert.assertNotNull(info);
-        Assert.assertNotNull(info.getWallet(Currency.USD));
-        Assert.assertNotNull(info.getWallet(Currency.BTC));
+    @Override
+    public void init() {
+        market = Markets.getMarket("bitstamp");
+        client = new BitstampClient(new BitstampMarket());
     }
 
 
-    @Test
-    public void testMarketDepth() {
-
-        MarketDepth d = bitstampClient.getMarketDepth(new AssetPair(Currency.BTC, Currency.USD));
-        Assert.assertNotNull(d);
-    }
 }

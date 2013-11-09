@@ -1,3 +1,4 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
@@ -15,33 +16,13 @@ import org.junit.Test;
  * Time: 17:24
  * To change this template use File | Settings | File Templates.
  */
-public class MtgoxTest {
+public class MtgoxTest extends BaseTest {
 
 
-    MtGoxClient client = new MtGoxClient(Markets.getMarket("mtgox"));
-
-
-    @Test
-    public void testTicker() {
-        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-
-        Assert.assertNotNull(ticker);
-
+    @Override
+    public void init() {
+        market = Markets.getMarket("mtgox");
+        client = new MtGoxClient(market);
     }
 
-    @Test
-    public void testAccountInfo() {
-
-        AccountInfo info = client.getAccountInfo();
-        Assert.assertNotNull(info);
-    }
-
-
-    @Test
-    public void testMarketDepth() {
-
-        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
-
-        Assert.assertNotNull(depth);
-    }
 }

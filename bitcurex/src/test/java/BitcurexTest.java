@@ -1,7 +1,9 @@
+import at.outdated.bitcoin.exchange.api.BaseTest;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexApiClient;
 import at.outdated.bitcoin.exchange.bitcurex.BitcurexMarket;
@@ -15,35 +17,17 @@ import org.junit.Test;
  * Time: 13:11
  * To change this template use File | Settings | File Templates.
  */
-public class BitcurexTest {
+public class BitcurexTest extends BaseTest{
 
-    BitcurexApiClient client = new  BitcurexApiClient(new BitcurexMarket());
 
-    @Test
-    public void testTicker() {
 
-        TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.EUR));
-        Assert.assertNotNull("ticker value", ticker);
-
-    }
-
-    @Test
-    public void testDepth() {
-
-        MarketDepth depth = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.EUR));
-        Assert.assertNotNull(depth);
-
+    @Override
+    public void init() {
+        market = Markets.getMarket("bitcurex");
+        client = new  BitcurexApiClient(market);
     }
 
 
-    @Test
-    public void testAccountInfo() {
-
-        AccountInfo info = client.getAccountInfo();
-
-        Assert.assertNotNull(info);
-
-    }
 
 
 }
