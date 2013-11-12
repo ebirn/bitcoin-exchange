@@ -14,7 +14,7 @@ import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 public class VircurexMarket extends Market {
 
     public VircurexMarket() {
-        super("vircurex", "http://vircurex.com", "Vircurex", Currency.USD);
+        super("vircurex", "http://vircurex.com", "Vircurex");
 
         withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
         withdrawals.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));

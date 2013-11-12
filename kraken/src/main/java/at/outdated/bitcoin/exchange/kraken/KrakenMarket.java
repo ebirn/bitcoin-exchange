@@ -16,7 +16,7 @@ import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 public class KrakenMarket extends Market {
 
     public KrakenMarket() {
-        super("kraken", "http://www.kraken.com", "Kraken", Currency.EUR);
+        super("kraken", "http://www.kraken.com", "Kraken");
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));

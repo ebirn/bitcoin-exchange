@@ -60,8 +60,6 @@ public class BitstampTickerValue {
 
         ticker.setVolume((volume).doubleValue());
 
-        ticker.setCurrency(Currency.USD);
-
         return ticker;
     }
 }

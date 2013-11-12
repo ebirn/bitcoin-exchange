@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -144,22 +145,19 @@ public class TickerResponse {
     public TickerValue getTickerValue() {
         TickerValue value = new TickerValue();
 
-        // TODO this is a stupid workaround
-        TickerResponse ticker = this;
+        value.setTimestamp(getTimestamp());
 
-        value.setTimestamp(ticker.getTimestamp());
+        value.setLast(getLast().getValue());
 
-        value.setLast(ticker.getLast().getValue());
+        value.setAsk(getSell().getValue());
+        value.setBid(getBuy().getValue());
 
-        value.setAsk(ticker.getSell().getValue());
-        value.setBid(ticker.getBuy().getValue());
+        value.setLow(getLow().getValue());
+        value.setHigh(getHigh().getValue());
 
-        value.setLow(ticker.getLow().getValue());
-        value.setHigh(ticker.getHigh().getValue());
+        value.setVolume(getVol().getValue());
 
-        value.setVolume(ticker.getVol().getValue());
-
-        value.setCurrency(ticker.getInCurrency());
+        value.setAsset(new AssetPair(item, inCurrency));
 
         return value;
     }

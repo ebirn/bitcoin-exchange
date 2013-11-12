@@ -19,7 +19,7 @@ public class BitcurexMarket extends Market {
 
 
     public BitcurexMarket() {
-        super("bitcurex", "https://eur.bitcurex.com/", "Bitcurex", Currency.EUR);
+        super("bitcurex", "https://eur.bitcurex.com/", "Bitcurex");
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(0.30, Currency.EUR))));

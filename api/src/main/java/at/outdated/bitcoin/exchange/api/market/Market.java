@@ -24,7 +24,6 @@ public abstract class Market {
 
     protected String url;
     protected String description;
-    protected Currency primaryCurrency;
     protected String key;
 
     protected Map<Currency,TransferMethod> withdrawals = new HashMap<>();
@@ -32,11 +31,10 @@ public abstract class Market {
 
     protected Set<AssetPair> assets = new HashSet<>();
 
-    protected Market(String key, String url, String description, Currency primaryCurrency) {
+    protected Market(String key, String url, String description) {
         this.key = key;
         this.url = url;
         this.description = description;
-        this.primaryCurrency = primaryCurrency;
     }
 
     public String getUrl() {
@@ -45,10 +43,6 @@ public abstract class Market {
 
     public String getDescription() {
         return description;
-    }
-
-    public Currency getPrimaryCurrency() {
-        return primaryCurrency;
     }
 
     public String getKey() {

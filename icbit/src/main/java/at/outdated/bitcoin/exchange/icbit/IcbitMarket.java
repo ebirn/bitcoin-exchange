@@ -10,7 +10,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 public class IcbitMarket  extends Market {
 
     public IcbitMarket() {
-        super("icbit", "https://icbit.se", "icbit.se", Currency.BTC);
+        super("icbit", "https://icbit.se", "icbit.se");
     }
 
     @Override

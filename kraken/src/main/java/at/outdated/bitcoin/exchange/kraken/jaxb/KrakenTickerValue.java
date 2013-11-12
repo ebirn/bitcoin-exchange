@@ -88,7 +88,6 @@ public class KrakenTickerValue {
         TickerValue value = new TickerValue();
 
 
-        value.setCurrency(Currency.EUR);
         value.setLast(Double.parseDouble(l[0]));
 
         value.setAsk(Double.parseDouble(a[0]));

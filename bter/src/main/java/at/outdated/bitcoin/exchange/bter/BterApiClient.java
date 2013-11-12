@@ -84,7 +84,7 @@ public class BterApiClient extends ExchangeApiClient {
 
         TickerValue tickerValue = ticker.getValue();
 
-        tickerValue.setCurrency(asset.getQuote());
+        tickerValue.setAsset(asset);
 
         return tickerValue;
     }

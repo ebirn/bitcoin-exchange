@@ -194,7 +194,12 @@ public class BitstampClient extends ExchangeApiClient {
         BitstampTickerValue bticker = simpleGetRequest(tickerResource, BitstampTickerValue.class);
 
         TickerValue ticker = null;
-        if(bticker != null) ticker = bticker.getTickerValue();
+        if(bticker != null) {
+            ticker = bticker.getTickerValue();
+            ticker.setAsset(asset);
+        }
+
+
         return ticker;
     }
 

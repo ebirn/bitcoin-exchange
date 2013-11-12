@@ -24,8 +24,6 @@ public abstract class AccountInfo {
 
     protected CurrencyContainer<Wallet> wallets = new CurrencyContainer<>();
 
-    protected ExchangeRateCalculator calculator = new ExchangeRateCalculator();
-
     abstract public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade);
 
     public Wallet getWallet(Currency curr) {
@@ -60,7 +58,7 @@ public abstract class AccountInfo {
     }
 
 
-    public Performance getOverallPerformance(Currency inCurrency) {
+    public Performance getOverallPerformance(Currency inCurrency, ExchangeRateCalculator calculator) {
         CombinedPerformance perf = new CombinedPerformance(inCurrency, calculator);
 
         for(Wallet w : wallets) {
@@ -71,10 +69,6 @@ public abstract class AccountInfo {
             }
         }
         return perf;
-    }
-
-    public void setExchangeRateCalculator(ExchangeRateCalculator calculator) {
-        this.calculator = calculator;
     }
 
 }

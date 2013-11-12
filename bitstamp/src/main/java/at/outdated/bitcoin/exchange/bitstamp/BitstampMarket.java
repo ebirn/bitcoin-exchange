@@ -17,7 +17,7 @@ public class BitstampMarket extends Market {
 
 
     public BitstampMarket() {
-        super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net", Currency.USD);
+        super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net");
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));

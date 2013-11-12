@@ -17,7 +17,7 @@ public class BitkonanMarket extends Market {
 
 
     public BitkonanMarket() {
-        super("bitkonan", "http://bitkonan.com", "BitKonan", Currency.USD);
+        super("bitkonan", "http://bitkonan.com", "BitKonan");
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK, null));

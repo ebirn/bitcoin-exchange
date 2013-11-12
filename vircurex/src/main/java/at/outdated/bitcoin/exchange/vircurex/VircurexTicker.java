@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,11 +43,12 @@ public class VircurexTicker {
 
         TickerValue val = new TickerValue();
 
-        val.setCurrency(alt);
         val.setAsk(ask);
         val.setBid(bid);
         val.setVolume(volume);
         val.setLast(last);
+
+        val.setAsset(new AssetPair(base, alt));
         return val;
     }
 

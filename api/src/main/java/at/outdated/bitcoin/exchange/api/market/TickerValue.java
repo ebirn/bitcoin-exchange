@@ -17,14 +17,14 @@ public class TickerValue extends TimedValue<double[]> {
 
     public static final int DIMENSIONS = 4;
 
-    private Currency currency = Currency.EUR;
+    private AssetPair asset = null;
 
     public TickerValue() {
         this.timestamp = new Date();
     }
 
     public static final TickerValue createNanInstance(Currency curr) {
-        TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, curr);
+        TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, null);
         return ticker;
     }
 
@@ -41,10 +41,10 @@ public class TickerValue extends TimedValue<double[]> {
         this.high = other.high;
 
         this.volume = other.volume;
-        this.currency = other.currency;
+        this.asset = other.asset;
     }
 
-    public TickerValue(Date timestamp, double last, double bid, double ask, double volume, double high, double low, Currency curr) {
+    public TickerValue(Date timestamp, double last, double bid, double ask, double volume, double high, double low, AssetPair asset) {
         this.timestamp = timestamp;
         this.last = last;
         this.bid = bid;
@@ -53,7 +53,7 @@ public class TickerValue extends TimedValue<double[]> {
         this.high = high;
 
         this.volume = volume;
-        this.currency = curr;
+        this.asset = asset;
     }
 
     @Override
@@ -115,12 +115,18 @@ public class TickerValue extends TimedValue<double[]> {
         this.volume = volume;
     }
 
-    public void setCurrency(Currency curr) {
-        this.currency = curr;
+    public void setAsset(AssetPair asset) {
+        this.asset = asset;
+    }
+
+    public AssetPair getAsset() {
+        return asset;
     }
 
     public Currency getCurrency() {
-        return currency;
+        if(asset == null) return null;
+
+        return asset.getQuote();
     }
 
 
@@ -130,6 +136,6 @@ public class TickerValue extends TimedValue<double[]> {
 
     @Override
     public String toString() {
-        return "Ticker: " + (bid+ask)/2.0 + " " + currency.name();
+        return "Ticker: " + (bid+ask)/2.0 + " " + getCurrency();
     }
 }

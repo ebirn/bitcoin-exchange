@@ -116,7 +116,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
 
 
         TickerValue value = response.getTickerValue();
-        value.setCurrency(asset.getQuote());
+        value.setAsset(asset);
 
         return value;
     }

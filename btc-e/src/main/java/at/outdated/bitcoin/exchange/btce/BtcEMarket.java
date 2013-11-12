@@ -17,7 +17,7 @@ public class BtcEMarket extends Market {
 
 
     public BtcEMarket() {
-        super("btce", "http://btc-e.com", "BTC-E", Currency.EUR);
+        super("btce", "http://btc-e.com", "BTC-E");
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));

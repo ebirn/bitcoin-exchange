@@ -124,6 +124,8 @@ public class MtGoxClient extends ExchangeApiClient {
             ticker = tickerResponse.getData().getTickerValue();
         }
 
+
+
         return ticker;
     }
 

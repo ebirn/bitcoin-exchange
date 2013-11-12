@@ -154,7 +154,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
         if(bTicker == null) return null;
 
         TickerValue ticker = bTicker.getTickerValue();
-        ticker.setCurrency(asset.getQuote());
+        ticker.setAsset(asset);
         return ticker;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

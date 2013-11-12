@@ -182,7 +182,7 @@ public class BtcEApiClient extends ExchangeApiClient {
         BtcETickerValue btcETickerValue = response.getTicker();
 
         TickerValue value = btcETickerValue.getTickerValue();
-        value.setCurrency(asset.getQuote());
+        value.setAsset(asset);
 
         return value;
     }

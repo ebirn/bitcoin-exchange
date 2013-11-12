@@ -16,7 +16,7 @@ import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 public class MtGoxMarket extends Market {
 
      public MtGoxMarket() {
-        super("mtgox", "http://www.mtgox.com", "Mt.Gox", Currency.EUR);
+        super("mtgox", "http://www.mtgox.com", "Mt.Gox");
 
         withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         withdrawals.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));

@@ -97,7 +97,7 @@ public class KrakenClient extends ExchangeApiClient {
         JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(currencyKey);
 
         TickerValue value = new TickerValue();
-        value.setCurrency(asset.getQuote());
+        value.setAsset(asset);
         value.setLast(Double.parseDouble(resultData.getJsonArray("c").getString(0)));
 
         value.setVolume(Double.parseDouble(resultData.getJsonArray("v").getString(0)));

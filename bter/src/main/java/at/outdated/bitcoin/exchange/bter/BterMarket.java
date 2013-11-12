@@ -12,7 +12,7 @@ import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 public class BterMarket extends Market {
 
     public BterMarket() {
-        super("bter", "http://bter.com", "Bter.com", Currency.CNY);
+        super("bter", "http://bter.com", "Bter.com");
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
