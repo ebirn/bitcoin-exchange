@@ -3,18 +3,23 @@ package at.outdated.bitcoin.exchange.api.currency;
 /**
  * Created by ebirn on 10.11.13.
  */
-public abstract class CurrencyAddress {
+public  class CurrencyAddress {
 
     Currency reference;
 
     String address;
 
-    public void setAddress(String rawAddress) throws IllegalArgumentException {
+    public CurrencyAddress(Currency c, String address) {
+        this.reference = c;
+        this.address = address;
+    }
 
-        if(validateAddress(rawAddress))
+    public void setAddress(String rawAddress) {
+
+//        if(validateAddress(rawAddress))
             this.address = rawAddress;
-        else
-            throw new IllegalArgumentException("Invalid address '" + rawAddress + "' for " + reference);
+ //       else
+ //           throw new IllegalArgumentException("Invalid address '" + rawAddress + "' for " + reference);
     }
 
     public Currency getReference() {
@@ -25,7 +30,6 @@ public abstract class CurrencyAddress {
         return address;
     }
 
-    abstract boolean validateAddress(String rawAddress);
 
     @Override
     public String toString() {

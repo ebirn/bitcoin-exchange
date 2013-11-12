@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.api.market.transfer;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
 
@@ -15,18 +16,18 @@ public class TransferMethod {
 
     protected TransferType transfer = TransferType.OTHER;
 
-    protected  String address;
+    protected CurrencyAddress address;
 
     public TransferMethod() {
     }
 
-    public TransferMethod(Currency currency, TransferType transfer, String address) {
+    public TransferMethod(Currency currency, TransferType transfer, CurrencyAddress address) {
         setCurrency(currency);
         setTransfer(transfer);
         setAddress(address);
     }
 
-    public TransferMethod(Currency currency, TransferType transfer, String address, Fee fee) {
+    public TransferMethod(Currency currency, TransferType transfer, CurrencyAddress address, Fee fee) {
         setCurrency(currency);
         setTransfer(transfer);
         setAddress(address);
@@ -58,11 +59,16 @@ public class TransferMethod {
         this.transfer = transfer;
     }
 
-    public String getAddress() {
+    public CurrencyAddress getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(CurrencyAddress address) {
+
+        if(address != null && address.getReference() != currency) {
+            throw new IllegalArgumentException("currency address does not match currency");
+        }
+
         this.address = address;
     }
 

@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.client;
 
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
@@ -261,5 +261,15 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         }
 
         return sb.toString();
+    }
+
+    protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
+        String addrString = getPropertyString("deposit."+curr.name().toLowerCase());
+        return new CurrencyAddress(curr, addrString);
+    }
+
+    @Override
+    public CurrencyAddress getDepositAddress(Currency currency) {
+        return lookupUpDepositAddress(currency);
     }
 }
