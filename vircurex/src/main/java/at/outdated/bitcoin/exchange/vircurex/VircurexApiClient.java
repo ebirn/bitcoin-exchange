@@ -54,7 +54,6 @@ public class VircurexApiClient extends ExchangeApiClient {
         f.param("command", "get_balances");
         String rawBalances = this.setupProtectedResource(balancesTgt, Entity.form(f)).get(String.class);
 
-
         JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
 
         AccountInfo info = new VircurexAccountInfo();
@@ -62,7 +61,6 @@ public class VircurexApiClient extends ExchangeApiClient {
         for(String currKey : jsonBalances.keySet()) {
 
             try {
-
                 Currency curr = Currency.valueOf(currKey);
                 double balance = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("balance"));
                 double available = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("availablebalance"));
@@ -73,7 +71,6 @@ public class VircurexApiClient extends ExchangeApiClient {
                 w.setOpenOrders(new CurrencyValue(balance - available, curr));
 
                 info.addWallet(w);
-
             }
             catch(Exception e) {
                 // log.info("unknown currency {}", currKey);
@@ -99,7 +96,7 @@ public class VircurexApiClient extends ExchangeApiClient {
 
     @Override
     public Number getLag() {
-        return null;
+        return 100.00;
     }
 
     @Override
@@ -166,7 +163,14 @@ public class VircurexApiClient extends ExchangeApiClient {
 
             String txId = Hex.encodeHexString(digest.digest(timestamp.getBytes()));
             String user = getUserId();
+            if(user == null) {
+                throw new IllegalStateException("cannot setup secure request, missing user ID.");
+            }
+
             String word = getPropertyString("words.balance");
+            if(word == null) {
+                throw new IllegalStateException("cannot setup secure request, missing secret word.");
+            }
 
 
             Form form = (Form) entity.getEntity();

@@ -68,23 +68,18 @@ public abstract class BaseTest {
 
             if(transferCurrency.isCrypto()) {
 
-
                 CurrencyAddress address = client.getDepositAddress(transferCurrency);
                 assertCurrencyAddress(address, transferCurrency);
 
                 log.info("deposit: {}", transferCurrency, address);
             }
-
         }
-
     }
 
     protected void assertAccountInfo(AccountInfo info) {
 
         Assert.assertNotNull(info);
-
         // TODO: more detailed checks
-
     }
 
     protected void assertDepth(MarketDepth depth){
