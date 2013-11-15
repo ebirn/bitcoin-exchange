@@ -65,14 +65,10 @@ public class MarketUpdate {
         this.orderLag = orderLag;
     }
 
-    public Currency getCurrency() {
-        return getTicker().getCurrency();
-    }
-
     @Override
     public String toString() {
 
         NumberFormat secFmt = NumberFormat.getInstance();
-        return market + ": curr:" + ticker.getLast() + " " + getCurrency() + " tradeLag:" + secFmt.format(orderLag) + "s, apiLag:" + secFmt.format(apiLag) + "s";
+        return market + ": curr:" + ticker.getLast() + " " + ticker.getAsset() + " tradeLag:" + secFmt.format(orderLag) + "s, apiLag:" + secFmt.format(apiLag) + "s";
     }
 }

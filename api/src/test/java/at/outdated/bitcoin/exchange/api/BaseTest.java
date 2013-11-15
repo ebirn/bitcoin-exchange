@@ -99,7 +99,7 @@ public abstract class BaseTest {
         Assert.assertNotNull(ticker.getAsk());
         Assert.assertNotEquals(ticker.getAsk(), Double.NaN, 0.0);
 
-        Assert.assertNotNull(ticker.getCurrency());
+        Assert.assertNotNull(ticker.getAsset());
 
     }
 
