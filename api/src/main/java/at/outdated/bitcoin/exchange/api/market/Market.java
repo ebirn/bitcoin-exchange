@@ -53,6 +53,17 @@ public abstract class Market {
         return assets;
     }
 
+    public Set<Currency> getCurrencies() {
+        Set<Currency> currencies = new HashSet<>();
+
+        for(AssetPair a : assets) {
+            currencies.add(a.getBase());
+            currencies.add(a.getQuote());
+        }
+
+        return currencies;
+    }
+
     //TODO actually implememt this: also: decide what should be implemented here,
     // what should be further service discorvery
     // exchange rate calculaters: service

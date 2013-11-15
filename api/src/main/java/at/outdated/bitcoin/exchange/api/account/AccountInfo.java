@@ -61,13 +61,12 @@ public abstract class AccountInfo {
     public Performance getOverallPerformance(Currency inCurrency, ExchangeRateCalculator calculator) {
         CombinedPerformance perf = new CombinedPerformance(inCurrency, calculator);
 
-        for(Wallet w : wallets) {
-            List<WalletTransaction> currencyTransactions = w.getTransactions();
 
-            for(WalletTransaction trans : currencyTransactions) {
-                perf.includeTransaction(trans);
-            }
+
+        for(Wallet w : wallets) {
+           perf.includeWallet(w);
         }
+
         return perf;
     }
 

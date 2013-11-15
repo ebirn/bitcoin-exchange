@@ -56,6 +56,10 @@ public class ExchangeRateCalculator {
 
         double rate = getRate(value.getCurrency(), in);
 
+
+        //FIXME: this is an incorrect hack: we must have a exchange path for all currencies
+        if(Double.isNaN(rate) || Double.isInfinite(rate)) rate = 0.0;
+
         return new CurrencyValue(value.getValue()*rate, in);
     }
 }
