@@ -123,19 +123,18 @@ public class TickerValue extends TimedValue<double[]> {
         return asset;
     }
 
-    public Currency getCurrency() {
-        if(asset == null) return null;
-
-        return asset.getQuote();
-    }
-
-
     public double getBidAskSpread() {
         return bid-ask;
     }
 
     @Override
     public String toString() {
-        return "Ticker: " + (bid+ask)/2.0 + " " + getCurrency();
+
+        String quote = "";
+        if(asset != null) {
+            quote = asset.getQuote().name();
+        }
+
+        return "Ticker: " + (bid+ask)/2.0 + " " + quote;
     }
 }
