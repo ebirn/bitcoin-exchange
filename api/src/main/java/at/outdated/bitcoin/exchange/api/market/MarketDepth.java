@@ -14,11 +14,10 @@ public class MarketDepth {
 
     Date timestamp = new Date();
 
-    Currency baseCurrency, quoteCurrency;
+    AssetPair asset;
 
     List<MarketOrder> bids = new ArrayList<>();
     List<MarketOrder> asks = new ArrayList<>();
-
 
     public MarketDepth() {
 
@@ -29,13 +28,15 @@ public class MarketDepth {
     }
 
     public MarketDepth(Currency base, Currency quote) {
-        this.baseCurrency = base;
-        this.quoteCurrency = quote;
+        this.asset = new AssetPair(base, quote);
     }
 
     public void setAsset(AssetPair asset) {
-        this.baseCurrency = asset.getBase();
-        this.quoteCurrency = asset.getQuote();
+        this.asset = asset;
+    }
+
+    public AssetPair getAsset() {
+        return asset;
     }
 
     public List<MarketOrder> getBids() {
@@ -51,7 +52,7 @@ public class MarketDepth {
     }
 
     public void addAsk(double volume, double price) {
-        addAsk(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, baseCurrency), new CurrencyValue(price, quoteCurrency)));
+        addAsk(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote())));
     }
 
     public void addBid(MarketOrder bid) {
@@ -59,19 +60,9 @@ public class MarketDepth {
     }
 
     public void addBid(double volume, double price) {
-        addBid(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, baseCurrency), new CurrencyValue(price, quoteCurrency)));
-    }
-    public Currency getBaseCurrency() {
-        return baseCurrency;
+        addBid(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote())));
     }
 
-    public Currency getQuoteCurrency() {
-        return quoteCurrency;
-    }
-
-    public void setBaseCurrency(Currency baseCurrency) {
-        this.baseCurrency = baseCurrency;
-    }
 
     public Date getTimestamp() {
         return timestamp;
@@ -114,7 +105,7 @@ public class MarketDepth {
         }
 
 
-        CurrencyValue total = new CurrencyValue(0.0, baseCurrency);
+        CurrencyValue total = new CurrencyValue(0.0, asset.getBase());
 
         double remaining = volume.getValue();
 

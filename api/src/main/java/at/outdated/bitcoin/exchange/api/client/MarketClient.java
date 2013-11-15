@@ -14,4 +14,6 @@ public interface MarketClient {
     double getQuote(Currency base, Currency quote);
 
     MarketDepth getMarketDepth(AssetPair asset);
+
+    double getApiLag();
 }

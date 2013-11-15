@@ -132,11 +132,9 @@ public class KrakenClient extends ExchangeApiClient {
         double bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
 
 
-        MarketDepth depth = new MarketDepth();
+        MarketDepth depth = new MarketDepth(asset);
         addOrders(TradeDecision.SELL, asks, depth.getAsks(), base, quote);
         addOrders(TradeDecision.BUY, bids, depth.getBids(), base, quote);
-
-        depth.setBaseCurrency(base);
 
         return depth;
     }

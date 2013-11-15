@@ -169,8 +169,7 @@ public class BitstampClient extends ExchangeApiClient {
 
         JsonObject depthData = Json.createReader(new StringReader(depthString)).readObject();
 
-        MarketDepth depth = new MarketDepth();
-        depth.setBaseCurrency(base);
+        MarketDepth depth = new MarketDepth(asset);
 
         double[][] asks = parseNestedArray(depthData.getJsonArray("asks"));
         double[][] bids = parseNestedArray(depthData.getJsonArray("bids"));

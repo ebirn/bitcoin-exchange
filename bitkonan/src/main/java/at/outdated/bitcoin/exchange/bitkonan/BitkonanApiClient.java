@@ -75,9 +75,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
         double[][] bids = parseNestedArray(konanDepth.getJsonArray("bids"));
 
 
-        MarketDepth depth = new MarketDepth();
-
-        depth.setBaseCurrency(base);
+        MarketDepth depth = new MarketDepth(asset);
 
         for(double[] bid : bids) {
             double price = bid[0];

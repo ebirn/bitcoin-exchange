@@ -84,7 +84,7 @@ public abstract class BaseTest {
 
     protected void assertDepth(MarketDepth depth){
         Assert.assertNotNull(depth);
-        Assert.assertNotNull(depth.getBaseCurrency());
+        Assert.assertNotNull(depth.getAsset());
 
         Assert.assertNotNull(depth.getAsks());
         Assert.assertNotNull(depth.getBids());

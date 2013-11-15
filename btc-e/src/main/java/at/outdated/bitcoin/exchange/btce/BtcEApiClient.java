@@ -138,9 +138,7 @@ public class BtcEApiClient extends ExchangeApiClient {
         JsonArray asksArr = root.getJsonArray("asks");
         JsonArray bidsArr = root.getJsonArray("bids");
 
-        MarketDepth depth = new MarketDepth();
-        depth.setBaseCurrency(base);
-
+        MarketDepth depth = new MarketDepth(asset);
 
         for(int i=0; i<asksArr.size(); i++ ) {
             double price = asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();

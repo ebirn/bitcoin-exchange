@@ -53,15 +53,11 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
         Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
         String rawFunds = builder.post(entity, String.class);
-        log.debug("raw funds: {}", rawFunds);
 
         entity = Entity.form(new Form());
         WebTarget ordersTarget = client.target("https://eur.bitcurex.com/api/0/getOrders");
 
         String rawOrders =  setupProtectedResource(ordersTarget, entity).post(entity, String.class);
-
-        log.debug("raw orders: {}", rawOrders);
-
 
         WebTarget transactionsTarget = client.target("https://eur.bitcurex.com/api/0/getTransactions");
         Form form = new Form();
@@ -69,8 +65,6 @@ public class BitcurexApiClient extends ExchangeApiClient {
         form.param("type", "" + TransactionType.BTC_DEPOST.ordinal());
         entity = Entity.form(form);
         String rawTransactions =  setupProtectedResource(transactionsTarget, entity).post(entity, String.class);
-
-        log.debug("raw transactions: {}", rawTransactions);
 
 
         JsonObject jsonFunds = jsonFromString(rawFunds);
@@ -102,8 +96,8 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
         JsonArray rawDepth =  Json.createReader(new StringReader(raw)).readArray();
 
-        MarketDepth depth = new MarketDepth();
-        depth.setBaseCurrency(base);
+        MarketDepth depth = new MarketDepth(asset);
+
         for(JsonValue v : rawDepth) {
             JsonObject trade = (JsonObject) v;
 
