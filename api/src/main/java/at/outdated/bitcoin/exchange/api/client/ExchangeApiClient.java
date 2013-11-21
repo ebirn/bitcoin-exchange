@@ -261,12 +261,20 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     }
 
     protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
-        String addrString = getPropertyString("deposit."+curr.name().toLowerCase());
+        String addrString = null;
+
+        addrString = getPropertyString("deposit."+curr.name().toLowerCase());
+
         return new CurrencyAddress(curr, addrString);
     }
 
     @Override
     public CurrencyAddress getDepositAddress(Currency currency) {
+
+        if(market.getWithdrawalMethod(currency) == null) {
+            throw new IllegalArgumentException("cannot withdraw " + currency);
+        }
+
         return lookupUpDepositAddress(currency);
     }
 }

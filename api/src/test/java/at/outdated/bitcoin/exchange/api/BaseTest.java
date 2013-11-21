@@ -10,11 +10,13 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,6 +76,34 @@ public abstract class BaseTest {
                 log.info("deposit: {}", transferCurrency, address);
             }
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidDepositCurrency() {
+
+
+
+        Set<Currency> invalidCurrencies = new HashSet();
+        invalidCurrencies.addAll(Arrays.asList(Currency.values()));
+
+
+        Set<Currency> withdrawalCurrencies = new HashSet<>();
+        for(TransferMethod m : market.getDepositMethods()) {
+            withdrawalCurrencies.remove(m.getCurrency());
+        }
+
+
+        boolean hasInvalids = !invalidCurrencies.isEmpty();
+        Assume.assumeTrue("can deposit all currencies, cannot test invalid curr", hasInvalids);
+
+        //TODO: is this if necessary at all?
+        if(hasInvalids) {
+            Currency invalid = invalidCurrencies.iterator().next();
+
+            // this must throw up
+            client.getDepositAddress(invalid);
+        }
+
     }
 
     protected void assertAccountInfo(AccountInfo info) {
