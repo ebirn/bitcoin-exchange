@@ -18,10 +18,7 @@ import java.util.Arrays;
 public class ExchangeRateCalculator {
 
     BigDecimal[][] rates;
-
     MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
-
-
 
     public ExchangeRateCalculator() {
         int currencyCount = Currency.values().length;
