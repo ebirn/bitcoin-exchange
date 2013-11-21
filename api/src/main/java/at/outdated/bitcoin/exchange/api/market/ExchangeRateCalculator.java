@@ -3,6 +3,9 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 /**
@@ -14,7 +17,9 @@ import java.util.Arrays;
  */
 public class ExchangeRateCalculator {
 
-    double[][] rates;
+    BigDecimal[][] rates;
+
+    MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
 
 
 
@@ -22,13 +27,15 @@ public class ExchangeRateCalculator {
         int currencyCount = Currency.values().length;
 
         // init exchange rate matrix
-        rates = new double[currencyCount][currencyCount];
+        rates = new BigDecimal[currencyCount][currencyCount];
 
         // set exchange rate for a currency with itself to 1
+        BigDecimal selfRate = new BigDecimal(1, mc);
+
         for(int i=0; i<currencyCount; i++) {
             // initialize rates with NaN
-            Arrays.fill(rates[i], Double.NaN);
-            rates[i][i] = 1.0;
+            Arrays.fill(rates[i], null);
+            rates[i][i] = selfRate;
         }
     }
 
@@ -41,25 +48,26 @@ public class ExchangeRateCalculator {
         }
     }
 
-    public double getRate(Currency from, Currency to) {
+    public BigDecimal getRate(Currency from, Currency to) {
         return rates[from.ordinal()][to.ordinal()];
     }
 
-    public void setRate(Currency from, Currency to, double rate) {
+    public void setRate(Currency from, Currency to, BigDecimal rate) {
         int fromIdx = from.ordinal();
         int toIdx = to.ordinal();
         rates[fromIdx][toIdx] = rate;
-        rates[toIdx][fromIdx] = 1.0 / rate;
+        rates[toIdx][fromIdx] = (new BigDecimal(1.0, mc)).divide(rate, mc);
     }
 
     public CurrencyValue calculate(CurrencyValue value, Currency in) {
 
-        double rate = getRate(value.getCurrency(), in);
+        // FIXME: this must be all BigDecimal
+        BigDecimal rate = getRate(value.getCurrency(), in);
 
 
         //FIXME: this is an incorrect hack: we must have a exchange path for all currencies
-        if(Double.isNaN(rate) || Double.isInfinite(rate)) rate = 0.0;
+        if(rate == null || Double.isNaN(rate.doubleValue()) || Double.isInfinite(rate.doubleValue())) rate = new BigDecimal(0.0, mc);
 
-        return new CurrencyValue(value.getValue()*rate, in);
+        return new CurrencyValue(value.getValue()*rate.doubleValue(), in);
     }
 }
