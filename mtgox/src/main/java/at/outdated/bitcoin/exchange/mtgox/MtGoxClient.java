@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
@@ -11,6 +12,7 @@ import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 
+import javax.json.JsonObject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -222,6 +224,16 @@ public class MtGoxClient extends ExchangeApiClient {
     }
 
 
+    @Override
+    protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
 
 
+        String accountId = getPropertyString("accountid");
+
+        String raw = simpleGetRequest(client.target("https://data.mtgox.com/api/2/BTCUSD/money/bitcoin/get_address").queryParam("account", accountId), String.class);
+
+        JsonObject jo = jsonFromString(raw);
+
+        return new CurrencyAddress(curr, jo.getString("data"));
+    }
 }

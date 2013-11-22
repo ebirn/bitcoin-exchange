@@ -270,7 +270,7 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     }
 
     @Override
-    public CurrencyAddress getDepositAddress(Currency currency) {
+    public final CurrencyAddress getDepositAddress(Currency currency) {
 
         TransferMethod withdrawal = market.getWithdrawalMethod(currency);
 
