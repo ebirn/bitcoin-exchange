@@ -23,13 +23,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ebirn
- * Date: 26.05.13
- * Time: 23:43
- * To change this template use File | Settings | File Templates.
- */
+
+// TODO: use fee api: https://hdbtce.kayako.com/Knowledgebase/Article/View/27/4/api-fee
+//
+
 public class BtcEApiClient extends ExchangeApiClient {
 
     public BtcEApiClient(Market market) {

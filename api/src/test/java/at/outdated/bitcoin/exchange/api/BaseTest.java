@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -81,17 +82,20 @@ public abstract class BaseTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidDepositCurrency() {
 
-
-
         Set<Currency> invalidCurrencies = new HashSet();
         invalidCurrencies.addAll(Arrays.asList(Currency.values()));
 
 
-        Set<Currency> withdrawalCurrencies = new HashSet<>();
         for(TransferMethod m : market.getDepositMethods()) {
-            withdrawalCurrencies.remove(m.getCurrency());
+            invalidCurrencies.remove(m.getCurrency());
         }
 
+        Iterator<Currency> ci = invalidCurrencies.iterator();
+        while(ci.hasNext()) {
+            Currency c = ci.next();
+            if(!c.isCrypto())
+                ci.remove();
+        }
 
         boolean hasInvalids = !invalidCurrencies.isEmpty();
         Assume.assumeTrue("can deposit all currencies, cannot test invalid curr", hasInvalids);

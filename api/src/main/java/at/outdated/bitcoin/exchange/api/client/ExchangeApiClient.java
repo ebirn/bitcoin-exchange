@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -271,8 +272,15 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     @Override
     public CurrencyAddress getDepositAddress(Currency currency) {
 
-        if(market.getWithdrawalMethod(currency) == null) {
+        TransferMethod withdrawal = market.getWithdrawalMethod(currency);
+
+        if(withdrawal == null) {
             throw new IllegalArgumentException("cannot withdraw " + currency);
+        }
+
+        // TODO: make this better
+        if(withdrawal.getCurrency().isCrypto() == false) {
+            throw new IllegalArgumentException("currently only crypto currencies are supported, NOT " + currency);
         }
 
         return lookupUpDepositAddress(currency);
