@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
@@ -266,5 +267,31 @@ public class BitstampClient extends ExchangeApiClient {
         transaction.setDatestamp(timestamp);
 
         info.getWallet(curr).addTransaction(transaction);
+    }
+
+    @Override
+    protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
+
+        //"https://www.bitstamp.net/api/bitcoin_deposit_address/"
+
+        String address = null;
+        Entity e = Entity.form(new Form());
+
+        switch(curr) {
+            case BTC:
+                address = setupProtectedResource(client.target("https://www.bitstamp.net/api/bitcoin_deposit_address/"), e).post(e, String.class);
+                address = address.replace("\"", "");
+                break;
+
+            case XRP:
+                address = setupProtectedResource(client.target("https://www.bitstamp.net/api/ripple_address/"), e).post(e, BitstampAddress.class).getAddress();
+                break;
+
+            default:
+                throw new IllegalArgumentException("no withdrawals for " + curr);
+        }
+
+        return new CurrencyAddress(curr, address);
+
     }
 }

@@ -24,6 +24,8 @@ public class KrakenTest extends BaseTest {
     }
 
 
+    //TODO: reenable that
+    /*
     @Test
     public void testTickerclient() {
 
@@ -54,5 +56,7 @@ public class KrakenTest extends BaseTest {
         resultPrice = depth.getPrice(TradeDecision.BUY, tradeVolume);
         log.info("BUY {} get {}", tradeVolume, resultPrice);
     }
+
+    */
 
 }
