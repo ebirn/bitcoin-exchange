@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
@@ -19,8 +18,8 @@ public class BitkonanAccountInfo extends AccountInfo {
     Fee fee = new SimplePercentageFee(0.029);
 
     @Override
-    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
+    public Fee getTradeFee(TradeDecision trade) {
 
-        return fee.calculate(trade, volume);  //To change body of implemented methods use File | Settings | File Templates.
+        return fee;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

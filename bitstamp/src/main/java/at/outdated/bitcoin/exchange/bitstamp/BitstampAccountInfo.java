@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 
@@ -21,7 +20,7 @@ public class BitstampAccountInfo extends AccountInfo {
     }
 
     @Override
-    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
-        return fee.calculate(trade, volume);  //To change body of implemented methods use File | Settings | File Templates.
+    public Fee getTradeFee(TradeDecision trade) {
+        return fee;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

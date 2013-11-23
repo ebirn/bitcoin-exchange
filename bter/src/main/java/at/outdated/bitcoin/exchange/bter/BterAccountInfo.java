@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
@@ -14,7 +13,7 @@ public class BterAccountInfo extends AccountInfo {
     Fee tradingFee = new ZeroFee();
 
     @Override
-    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
-        return tradingFee.calculate(trade, volume);
+    public Fee getTradeFee(TradeDecision trade) {
+        return tradingFee;
     }
 }

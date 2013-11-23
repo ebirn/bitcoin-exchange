@@ -5,6 +5,8 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -82,13 +84,9 @@ public class MtGoxAccountInfo extends AccountInfo {
     }
 
     @Override
-    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
+    public Fee getTradeFee(TradeDecision trade) {
 
-        CurrencyValue fee = new CurrencyValue(volume);
-
-        fee.multiply(new BigDecimal(tradeFee));
-
-        return fee;
+        return new SimplePercentageFee(tradeFee / 100.0);
 
     }
 

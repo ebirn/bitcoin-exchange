@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.util.*;
 
@@ -121,4 +122,21 @@ public abstract class Market {
         return getKey().toUpperCase();
     }
 
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if(!(obj instanceof  Market)) {
+            return false;
+        }
+
+        Market other = (Market) obj;
+
+        EqualsBuilder builder = new EqualsBuilder();
+
+        builder.append(this.key, other.key);
+        builder.append(this.assets, other.assets);
+
+        return builder.build();
+    }
 }

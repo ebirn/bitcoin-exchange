@@ -1,9 +1,9 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeDateAdapter;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,9 +34,8 @@ public class BtcEAccountInfo extends AccountInfo {
 
 
     @Override
-    public CurrencyValue getTradeFee(CurrencyValue volume, TradeDecision trade) {
+    public Fee getTradeFee(TradeDecision trade) {
 
-        SimplePercentageFee fee = new SimplePercentageFee(0.002);
-        return fee.calculate(trade, volume);
+        return new SimplePercentageFee(0.002);
     }
 }

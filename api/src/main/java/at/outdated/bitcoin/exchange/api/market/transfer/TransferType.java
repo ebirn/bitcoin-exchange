@@ -6,6 +6,7 @@ package at.outdated.bitcoin.exchange.api.market.transfer;
 public enum TransferType {
     BANK,
     VIRTUAL,
+    TRADE,
     OTHER
 
 }
