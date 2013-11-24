@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.api.client;
 
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
@@ -284,5 +285,23 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         }
 
         return lookupUpDepositAddress(currency);
+    }
+
+    //protected abstract String performFundWithdrawal(CurrencyValue volume, CurrencyAddress address);
+
+    @Override
+    public String withdrawFunds(CurrencyValue volume, CurrencyAddress address) {
+
+        if(volume == null || address == null) {
+            throw new IllegalArgumentException("parameters must not be null.");
+        }
+
+        if(volume.getCurrency() != address.getReference()) {
+            throw new IllegalArgumentException("Currency mismatch");
+        }
+
+
+        return null;
+        //return performFundWithdrawal(volume, address);
     }
 }

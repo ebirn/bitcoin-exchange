@@ -18,6 +18,7 @@ public interface TradeClient {
     //public String cancelOrder();
 
     public CurrencyAddress getDepositAddress(Currency currency);
-    //public String withdrawFunds(CurrencyValue volume, CurrencyAddress address);
+
+    public String withdrawFunds(CurrencyValue volume, CurrencyAddress address);
 
 }
