@@ -19,11 +19,17 @@ public class BitstampMarket extends Market {
     public BitstampMarket() {
         super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
 
-        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK));
+
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
+
+        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK));
+        addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
 
         addAsset(Currency.BTC, Currency.USD);
     }

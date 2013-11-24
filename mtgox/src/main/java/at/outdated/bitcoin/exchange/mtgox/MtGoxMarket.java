@@ -18,11 +18,11 @@ public class MtGoxMarket extends Market {
      public MtGoxMarket() {
         super("mtgox", "http://www.mtgox.com", "Mt.Gox");
 
-        withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        withdrawals.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        withdrawals.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK));
 
-        deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
+        deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK));
 
         addAsset(Currency.BTC, Currency.USD);
         addAsset(Currency.BTC, Currency.EUR);

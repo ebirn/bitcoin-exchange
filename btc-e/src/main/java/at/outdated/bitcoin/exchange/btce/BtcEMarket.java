@@ -19,15 +19,15 @@ public class BtcEMarket extends Market {
     public BtcEMarket() {
         super("btce", "http://btc-e.com", "BTC-E");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
 
-        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
 
         addAsset(Currency.BTC, Currency.USD);
         addAsset(Currency.BTC, Currency.EUR);

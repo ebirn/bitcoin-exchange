@@ -18,20 +18,20 @@ public class KrakenMarket extends Market {
     public KrakenMarket() {
         super("kraken", "http://www.kraken.com", "Kraken");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
 
-        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, null));
-        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, null));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK));
 
 
-        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
 
-        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null));
-        addDeposit(new TransferMethod(Currency.USD, TransferType.BANK, null));
+        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK));
+        addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
 
         addAsset(Currency.BTC, Currency.EUR);
         addAsset(Currency.BTC, Currency.USD);

@@ -34,6 +34,17 @@ public class TransferMethod {
         setFee(fee);
     }
 
+    public TransferMethod(Currency currency, TransferType transfer, Fee fee) {
+        setCurrency(currency);
+        setTransfer(transfer);
+        setFee(fee);
+    }
+
+    public TransferMethod(Currency currency, TransferType transfer) {
+        setCurrency(currency);
+        setTransfer(transfer);
+    }
+
     public Fee getFee() {
         return fee;
     }

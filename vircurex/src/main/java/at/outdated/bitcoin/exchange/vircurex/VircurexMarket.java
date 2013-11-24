@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
+import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 
@@ -16,19 +17,19 @@ public class VircurexMarket extends Market {
     public VircurexMarket() {
         super("vircurex", "http://vircurex.com", "Vircurex");
 
-        withdrawals.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
-        withdrawals.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
-        withdrawals.put(Currency.NMC, new TransferMethod(Currency.NMC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.01, Currency.NMC))));
-        withdrawals.put(Currency.NVC, new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.01, Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
 
         // FIXME check currency
-        withdrawals.put(Currency.PPC, new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null, new ConstantFee(new CurrencyValue(0.1, Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.PPC))));
 
-        deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        deposits.put(Currency.LTC, new TransferMethod(Currency.LTC, TransferType.VIRTUAL, null));
-        deposits.put(Currency.PPC, new TransferMethod(Currency.PPC, TransferType.VIRTUAL, null));
-        deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, null));
-        deposits.put(Currency.USD, new TransferMethod(Currency.USD, TransferType.BANK, null));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK));
+        addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
 
         addAsset(Currency.BTC, Currency.LTC);
         addAsset(Currency.BTC, Currency.NMC);
