@@ -11,6 +11,8 @@ import java.text.NumberFormat;
  * Time: 22:53
  * To change this template use File | Settings | File Templates.
  */
+// TODO: Move this class to engine
+// TODO: extract interface update event?
 public class MarketUpdate {
 
     private Market market;
