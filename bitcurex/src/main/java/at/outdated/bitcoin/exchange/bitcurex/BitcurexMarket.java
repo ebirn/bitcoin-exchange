@@ -21,11 +21,11 @@ public class BitcurexMarket extends Market {
     public BitcurexMarket() {
         super("bitcurex", "https://eur.bitcurex.com/", "Bitcurex");
 
-        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(0.30, Currency.EUR))));
+        addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(0.30, Currency.EUR))));
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, null));
-        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, null, new ConstantFee(new CurrencyValue(1.15, Currency.EUR))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(1.15, Currency.EUR))));
 
         addAsset(Currency.BTC, Currency.EUR);
         addAsset(Currency.BTC, Currency.PLN);
