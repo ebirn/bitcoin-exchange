@@ -1,8 +1,8 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,5 +39,44 @@ public class Markets {
 
     public static Iterable<Market> allMarkets() {
         return loader;
+    }
+
+    public static Set<Market> getMarkets(Currency currency) {
+
+        Set<Market> markets = new HashSet<>();
+
+        for(Market m : marketMap.values()) {
+            if(m.getCurrencies().contains(currency)) {
+                markets.add(m);
+            }
+        }
+
+        return markets;
+    }
+
+    public static Set<Market> getMarkets(AssetPair asset) {
+
+        Set<Market> markets = new HashSet<>();
+
+        for(Market m : marketMap.values()) {
+            if(m.getTradedAssets().contains(asset)) {
+                markets.add(m);
+            }
+        }
+
+        return markets;
+    }
+
+
+    public static Set<Market> getMarkets(Currency a, Currency b) {
+        Set<Market> markets = new HashSet<>();
+
+        for(Market m : marketMap.values()) {
+            if(m.getAsset(a, b) != null) {
+                markets.add(m);
+            }
+        }
+
+        return markets;
     }
 }
