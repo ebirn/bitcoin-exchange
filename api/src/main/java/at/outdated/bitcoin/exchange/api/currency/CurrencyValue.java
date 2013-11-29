@@ -84,6 +84,12 @@ public class CurrencyValue {
         return this;
     }
 
+    public CurrencyValue add(double other) {
+        this.value += other;
+
+        return this;
+    }
+
     public CurrencyValue subtract(CurrencyValue other) {
         this.value -= other.value;
 

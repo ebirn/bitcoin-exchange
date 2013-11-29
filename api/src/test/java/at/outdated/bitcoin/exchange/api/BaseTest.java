@@ -55,12 +55,21 @@ public abstract class BaseTest {
         }
     }
 
+
+    @Test
+    public void testDepthPrice() {
+
+        MarketDepth depth = new MarketDepth();
+
+    }
+
     @Test
     public void testAccountInfo() {
         AccountInfo info = client.getAccountInfo();
 
         assertAccountInfo(info);
     }
+
 
 
     @Test

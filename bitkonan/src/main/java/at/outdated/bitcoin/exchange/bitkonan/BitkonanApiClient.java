@@ -80,13 +80,13 @@ public class BitkonanApiClient extends ExchangeApiClient {
         for(double[] bid : bids) {
             double price = bid[0];
             double volume = bid[1];
-            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+            depth.addBid(volume, price);
         }
 
         for(double[] ask : asks) {
             double price = ask[0];
             double volume = ask[1];
-            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+            depth.addAsk(volume, price);
         }
 
         return depth;

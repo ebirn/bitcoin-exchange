@@ -79,10 +79,11 @@ public class MarketDepth {
         CurrencyValue volumeSum = new CurrencyValue(0.0, orders.get(0).getVolume().getCurrency());
         CurrencyValue priceSum = new CurrencyValue(0.0, orders.get(0).getPrice().getCurrency());
 
-
         for(MarketOrder order : orders) {
             volumeSum.add(order.getVolume());
-            priceSum.add(order.getPrice());
+
+            double volumePrice  = order.getPrice().getValue() * order.getVolume().getValue();
+            priceSum.add(volumePrice);
         }
 
         return orders.size() + " orders (vol: " + volumeSum + " @ " + priceSum + ")";
@@ -90,14 +91,21 @@ public class MarketDepth {
 
     public CurrencyValue getPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
 
+        assert(asset.getQuote() == volume.getCurrency());
+
         List<MarketOrder> orders = null;
+
+        Currency returnCurrency = null;
+
         switch(decision) {
             case BUY:
                 orders = getAsks();
+                returnCurrency = asset.getQuote();
                 break;
 
             case SELL:
                 orders = getBids();
+                returnCurrency = asset.getBase();
                 break;
 
             default:
@@ -123,9 +131,9 @@ public class MarketDepth {
             }
 
             // FIXME: this is probably wrong?
-            total = total.add(new CurrencyValue(additiveVol, total.getCurrency()));
+            total.add(additiveVol * orderPrice);
 
-            remaining -= orderPrice;
+            remaining -= orderVol;
             if(remaining < 0.000001) break;
         }
 

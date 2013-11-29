@@ -109,11 +109,11 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
             // sell
             if(type == 1) {
-                depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+                depth.addAsk(volume, price);
             }
             // buy
             else {
-                depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+                depth.addBid(volume, price);
             }
         }
 
