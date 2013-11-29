@@ -1,10 +1,15 @@
 package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -17,6 +22,8 @@ public class DepthTest {
 
     AssetPair asset = new AssetPair(Currency.BTC, Currency.USD);
 
+    Logger log = LoggerFactory.getLogger("MarketDepthTest");
+
     @Before
     public void setup() {
         depth = new MarketDepth();
@@ -26,16 +33,47 @@ public class DepthTest {
 
 
         bids();
-
+        asks();
     }
 
     @Test
-    public void testDepthPrice() {
+    public void testDepthPriceInAssetOrder() {
 
+        log.info("depth: {}", depth);
+
+        CurrencyValue volume = new CurrencyValue(3.0, Currency.BTC);
+
+        CurrencyValue buyPrice = depth.getPrice(TradeDecision.BUY, volume);
+        log.info("buy {} for {}", volume, buyPrice);
+
+        Assert.assertNotEquals("buy currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
+        Assert.assertEquals("buy pice mismatch", 3170.43, buyPrice.getValue(), 0.001);
+
+        CurrencyValue sellPrice = depth.getPrice(TradeDecision.SELL, volume);
+        log.info("sell {} for {}", volume, sellPrice);
+        Assert.assertEquals("sell pice mismatch", 3204.3353, sellPrice.getValue(), 0.001);
+
+        Assert.assertNotEquals("sell currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
+    }
+
+    @Test
+    public void testDepthPriceReverseAssetOrder() {
+
+        CurrencyValue volume = new CurrencyValue(5600.0, Currency.USD);
+
+        CurrencyValue buyPrice = depth.getPrice(TradeDecision.BUY, volume);
+        log.info("buy {} for {}", volume, buyPrice);
+
+        Assert.assertNotEquals("buy currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
+
+        CurrencyValue sellPrice = depth.getPrice(TradeDecision.SELL, volume);
+        log.info("sell {} for {}", volume, sellPrice);
+
+        Assert.assertNotEquals("sell currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
 
     }
 
-    private void bids() {
+        private void bids() {
         //["1056.81", "2.36020121"],
         depth.addBid(2.36020121, 1056.81);
 
