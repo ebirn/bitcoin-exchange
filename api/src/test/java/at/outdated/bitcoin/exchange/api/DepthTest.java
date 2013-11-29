@@ -46,14 +46,18 @@ public class DepthTest {
         CurrencyValue buyPrice = depth.getPrice(TradeDecision.BUY, volume);
         log.info("buy {} for {}", volume, buyPrice);
 
-        Assert.assertNotEquals("buy currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
-        Assert.assertEquals("buy pice mismatch", 3170.43, buyPrice.getValue(), 0.001);
-
         CurrencyValue sellPrice = depth.getPrice(TradeDecision.SELL, volume);
         log.info("sell {} for {}", volume, sellPrice);
-        Assert.assertEquals("sell pice mismatch", 3204.3353, sellPrice.getValue(), 0.001);
 
+
+        Assert.assertNotEquals("buy currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
         Assert.assertNotEquals("sell currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
+
+
+        Assert.assertTrue(" sell higher than buy? ", buyPrice.isMoreThan(sellPrice));
+
+        Assert.assertEquals("buy pice mismatch", 3204.3353, buyPrice.getValue(), 0.001);
+        Assert.assertEquals("sell pice mismatch", 3170.43, sellPrice.getValue(), 0.001);
     }
 
     @Test
@@ -70,6 +74,12 @@ public class DepthTest {
         log.info("sell {} for {}", volume, sellPrice);
 
         Assert.assertNotEquals("sell currency mismatch", volume.getCurrency(), buyPrice.getCurrency());
+
+        Assert.assertTrue(" sell higher than buy? ", buyPrice.isMoreThan(sellPrice));
+
+        Assert.assertEquals("buy pice mismatch", 5.298965, buyPrice.getValue(), 0.001);
+        Assert.assertEquals("sell pice mismatch", 5.242858, sellPrice.getValue(), 0.001);
+
 
     }
 

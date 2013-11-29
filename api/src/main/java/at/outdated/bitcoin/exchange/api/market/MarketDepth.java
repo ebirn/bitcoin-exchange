@@ -105,7 +105,7 @@ public class MarketDepth {
 
 
     public CurrencyValue getAssetOrderPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
-        assert(asset.getQuote() == volume.getCurrency());
+        assert(asset.getBase() == volume.getCurrency());
 
         Currency returnCurrency = asset.getOther(volume.getCurrency());
         List<MarketOrder> orders = null;
@@ -129,8 +129,8 @@ public class MarketDepth {
 
         for(MarketOrder order : orders) {
 
-            // FIXME: what is the right thing here
-            assert(order.getPrice().getCurrency() == volume.getCurrency());
+
+            assert(order.getVolume().getCurrency() == volume.getCurrency());
 
             double orderPrice = order.getPrice().getValue();
 
@@ -157,7 +157,7 @@ public class MarketDepth {
 
 
     protected CurrencyValue getReverseAssetOrderPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
-        assert(asset.getBase() == volume.getCurrency());
+        assert(asset.getQuote() == volume.getCurrency());
 
         Currency returnCurrency = asset.getOther(volume.getCurrency());
 
