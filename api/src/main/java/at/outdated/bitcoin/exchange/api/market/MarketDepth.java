@@ -140,15 +140,15 @@ public class MarketDepth {
             }
 
             // FIXME: this is probably wrong?
-            total.add(additiveVol);
+            total.add(additiveVol * orderPrice);
 
-            remaining -= (additiveVol * orderPrice);
-            if(remaining < 0.000001) break;
+            remaining -= additiveVol;
+            if(remaining < 0.00000001) break;
         }
 
         // FIXME: this should actually be exact 0
         // TODO: use my own exception, return missing difference in exception to recalculate with less volume (find maximum tradeable volume)
-        if(remaining > 0.000001) {
+        if(remaining > 0.00001) {
             throw new IllegalStateException("Insufficient market depth");
         }
 
@@ -178,9 +178,7 @@ public class MarketDepth {
                 throw new IllegalArgumentException("cannot process TradeDecision " + decision);
         }
 
-
         CurrencyValue total = new CurrencyValue(0.0, returnCurrency);
-
         double remaining = volume.getValue();
 
         for(MarketOrder order : orders) {
@@ -189,9 +187,7 @@ public class MarketDepth {
             assert(order.getPrice().getCurrency() == volume.getCurrency());
 
             double orderPrice = order.getPrice().getValue();
-
             double orderVolume = order.getVolume().getValue();
-
             double fullPrice = order.getVolume().getValue() * orderPrice;
 
             if(fullPrice > remaining) {
