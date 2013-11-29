@@ -82,7 +82,7 @@ public class MarketDepth {
 
         for(MarketOrder order : orders) {
             volumeSum.add(order.getVolume());
-            priceSum.add(order.getPrice().multiply(order.getVolume().getValue()));
+            priceSum.add(order.getPrice());
         }
 
         return orders.size() + " orders (vol: " + volumeSum + " @ " + priceSum + ")";
@@ -110,6 +110,10 @@ public class MarketDepth {
         double remaining = volume.getValue();
 
         for(MarketOrder order : orders) {
+
+            // FIXME: what is the right thing here
+//            assert(order.getPrice().getCurrency() == volume.getCurrency());
+
             double orderVol = order.getVolume().getValue();
             double orderPrice = order.getPrice().getValue();
 
@@ -118,9 +122,10 @@ public class MarketDepth {
                 additiveVol = remaining;
             }
 
-            total.add(new CurrencyValue(additiveVol * orderPrice, total.getCurrency()));
+            // FIXME: this is probably wrong?
+            total = total.add(new CurrencyValue(additiveVol, total.getCurrency()));
 
-            remaining -= additiveVol;
+            remaining -= orderPrice;
             if(remaining < 0.000001) break;
         }
 
