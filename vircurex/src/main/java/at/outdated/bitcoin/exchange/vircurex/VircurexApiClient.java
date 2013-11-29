@@ -115,19 +115,21 @@ public class VircurexApiClient extends ExchangeApiClient {
         JsonObject jsonDepth = jsonFromString(rawDepth);
 
         try {
-        double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
-        for(double[] bid : bids) {
-            CurrencyValue volume = new CurrencyValue(bid[0], asset.getBase());
-            CurrencyValue price = new CurrencyValue(bid[1], asset.getQuote());
-            depth.addBid(new MarketOrder(TradeDecision.BUY, volume, price));
-        }
+            double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
+            for(double[] bid : bids) {
+                double volume = bid[1];
+                double price = bid[0];
 
-        double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
-        for(double[] ask : asks) {
-            CurrencyValue volume = new CurrencyValue(ask[0], asset.getBase());
-            CurrencyValue price = new CurrencyValue(ask[1], asset.getQuote());
-            depth.addAsk(new MarketOrder(TradeDecision.BUY, volume, price));
-        }
+                depth.addBid(volume, price);
+            }
+
+            double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
+            for(double[] ask : asks) {
+                double volume = ask[1];
+                double price = ask[0];
+
+                depth.addAsk(volume, price);
+            }
 
         }
         catch(ClassCastException cce) {

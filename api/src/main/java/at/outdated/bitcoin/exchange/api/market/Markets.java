@@ -1,8 +1,6 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,7 +35,7 @@ public class Markets {
     }
 
 
-    public static Iterable<Market> allMarkets() {
-        return loader;
+    public static Set<Market> allMarkets() {
+        return new HashSet(marketMap.values());
     }
 }

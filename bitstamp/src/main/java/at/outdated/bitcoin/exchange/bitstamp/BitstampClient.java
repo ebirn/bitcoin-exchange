@@ -87,20 +87,20 @@ public class BitstampClient extends ExchangeApiClient {
         info.addWallet(wUSD);
         info.addWallet(wBTC);
 
-
-        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
-
         Form balanceForm = new Form();
         balanceForm.param("sort", "asc");
         balanceForm.param("offset", "0");
         balanceForm.param("limit", "1000");
 
+        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
         BitstampAccountBalance balance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(balanceForm));
 
-        info.setFee(new SimplePercentageFee(balance.getFee().doubleValue() / 100.0));
         WebTarget transactionsTgt = client.target("https://www.bitstamp.net/api/user_transactions/");
-
         String rawTransactions = protectedPostRequest(transactionsTgt, String.class, Entity.form(new Form()));
+
+
+        info.setFee(new SimplePercentageFee(balance.getFee().doubleValue() / 100.0));
+
         JsonArray jsonTransactions = jsonArrayFromString(rawTransactions);
         for(int i=0; i<jsonTransactions.size(); i++) {
 
@@ -177,11 +177,11 @@ public class BitstampClient extends ExchangeApiClient {
 
 
         for(double[] bid : bids) {
-            depth.getBids().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(bid[1], base), new CurrencyValue(bid[0], quote)));
+            depth.addBid(bid[1], bid[0]);
         }
 
         for(double[] ask : asks) {
-            depth.getAsks().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(ask[1], base), new CurrencyValue(ask[0], quote)));
+            depth.addAsk(ask[1], ask[0]);
         }
 
         return depth;

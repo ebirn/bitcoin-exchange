@@ -18,6 +18,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.Response;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.*;
@@ -188,7 +189,9 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
                 builder = setupResource(resource, payload);
             }
 
-            result = builder.header("User-Agent", userAgent).method(httpMethod, payload, resultClass);
+            // better for debugging to do this in 2 lines ;-)
+            Response response = builder.header("User-Agent", userAgent).method(httpMethod, payload);
+            result = response.readEntity(resultClass);
         }
         //
         catch (WebApplicationException wae) {

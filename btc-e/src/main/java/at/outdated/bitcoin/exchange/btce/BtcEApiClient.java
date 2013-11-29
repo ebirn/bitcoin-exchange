@@ -140,12 +140,14 @@ public class BtcEApiClient extends ExchangeApiClient {
         for(int i=0; i<asksArr.size(); i++ ) {
             double price = asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
             double volume = asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getAsks().add(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+
+            depth.addAsk(volume, price);
         }
         for(int i=0; i<bidsArr.size(); i++ ) {
             double price = bidsArr.getJsonArray(i).getJsonNumber(0).doubleValue();
             double volume = bidsArr.getJsonArray(i).getJsonNumber(1).doubleValue();
-            depth.getBids().add(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, base), new CurrencyValue(price, quote)));
+
+            depth.addBid(volume, price);
         }
 
         return depth;

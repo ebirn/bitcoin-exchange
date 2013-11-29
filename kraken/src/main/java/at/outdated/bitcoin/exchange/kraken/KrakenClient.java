@@ -133,8 +133,18 @@ public class KrakenClient extends ExchangeApiClient {
 
 
         MarketDepth depth = new MarketDepth(asset);
-        addOrders(TradeDecision.SELL, asks, depth.getAsks(), base, quote);
-        addOrders(TradeDecision.BUY, bids, depth.getBids(), base, quote);
+
+        for(double ask[] : asks) {
+            double price = ask[0];
+            double volume = ask[1];
+            depth.addAsk(volume, price);
+        }
+
+        for(double bid[] : bids) {
+            double price = bid[0];
+            double volume = bid[1];
+            depth.addBid(volume, price);
+        }
 
         return depth;
     }
@@ -235,17 +245,6 @@ public class KrakenClient extends ExchangeApiClient {
         }
 
     }
-
-    private void addOrders(TradeDecision dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
-        for(double[] askVal : raw) {
-
-            CurrencyValue price = new CurrencyValue(askVal[0], quote);
-            CurrencyValue volume = new CurrencyValue(askVal[1], base);
-
-            orders.add(new MarketOrder(dec, volume, price));
-        }
-    }
-
 
     private TransactionType parseLedgerType(String type) {
         TransactionType tt = null;
