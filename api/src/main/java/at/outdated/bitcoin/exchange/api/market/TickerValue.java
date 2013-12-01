@@ -124,7 +124,11 @@ public class TickerValue extends TimedValue<double[]> {
     }
 
     public double getBidAskSpread() {
-        return bid-ask;
+        return bid - ask;
+    }
+
+    public double getMiddle() {
+        return (bid + ask)/2.0;
     }
 
     @Override
