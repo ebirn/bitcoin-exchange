@@ -37,8 +37,7 @@ public class BterApiClient extends ExchangeApiClient {
         WebTarget fundsTarget = client.target("https://bter.com/api/1/private/getfunds");
 
 
-        Entity<Form> form = Entity.form(new Form());
-        String rawFunds = setupProtectedResource(fundsTarget, form).post(form, String.class);
+        String rawFunds = protectedPostRequest(fundsTarget, String.class, Entity.form(new Form()));
 
         JsonObject jsonFunds = jsonFromString(rawFunds);
 
