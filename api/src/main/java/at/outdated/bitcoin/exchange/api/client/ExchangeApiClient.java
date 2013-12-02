@@ -195,6 +195,10 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
             }
 
             // better for debugging to do this in 2 lines ;-)
+            if(httpMethod == HttpMethod.GET || httpMethod == HttpMethod.HEAD) {
+                payload = null;
+            }
+            
             Response response = builder.header("User-Agent", userAgent).method(httpMethod, payload);
             result = response.readEntity(resultClass);
         }
