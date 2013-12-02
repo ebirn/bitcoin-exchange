@@ -29,7 +29,7 @@ import java.util.Iterator;
  * Time: 11:18
  * To change this template use File | Settings | File Templates.
  */
-
+//FIXME: retro fit this class to the default class/client layout
 public class MtGoxClient extends ExchangeApiClient {
 
     private final String API_BASE_URL = "https://data.mtgox.com/api/2/";

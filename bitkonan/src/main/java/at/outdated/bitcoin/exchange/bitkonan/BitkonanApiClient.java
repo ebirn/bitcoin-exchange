@@ -40,7 +40,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
         WebTarget ordersTarget = client.target("https://bitkonan.com/api/open_orders");
 
 
-        Future<String> rawBalance =  asyncRequest(balanceTarget, String.class, "GET", null, true);
+        Future<String> rawBalance = asyncRequest(balanceTarget, String.class, "GET", null, true);
         Future<String> rawOrders = asyncRequest(ordersTarget, String.class , "GET", null, true);
 
         try {
@@ -52,6 +52,7 @@ public class BitkonanApiClient extends ExchangeApiClient {
             return null;
         }
 
+        // FIXME do actual parsing here
         BitkonanAccountInfo info = new BitkonanAccountInfo();
 
         return info;  //To change body of implemented methods use File | Settings | File Templates.

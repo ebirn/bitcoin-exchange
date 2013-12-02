@@ -45,7 +45,7 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         data = new MultivaluedHashMap<>();
         data.add("method", "getInfo");
-        String raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
         //log.debug("raw info: {}", raw);
         InfoResponse infoRes = BtcEJsonResolver.convertFromJson(raw, InfoResponse.class);
 
@@ -53,7 +53,8 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TransHistory");
-        raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
+        raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+
         //log.debug("raw transactions: {}", raw);
         JsonObject transResponse = jsonFromString(raw);
         if(transResponse.getInt("success") == 1) {
@@ -73,6 +74,7 @@ public class BtcEApiClient extends ExchangeApiClient {
             }
             */
 
+            //FIXME: this doesn't do anyting: account data parsing
             JsonObject transResult = transResponse.getJsonObject("result");
             for(String key : transResult.keySet()) {
                 JsonObject jt = transResult.getJsonObject(key);
@@ -89,7 +91,7 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TradeHistory");
-        raw = syncRequest(tgt, String.class, "POST", Entity.form(data), true);
+        raw = protectedPostRequest(tgt, String.class, Entity.form(data));
         //log.debug("raw trades: {}", raw);
         JsonObject tradeResponse = jsonFromString(raw);
         if(tradeResponse.getInt("success") == 1) {

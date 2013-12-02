@@ -136,6 +136,11 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         return syncRequest(resource, resultClass, HttpMethod.GET, null, true);
     }
 
+    protected <R> R protectedGetRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
+        return syncRequest(resource, resultClass, HttpMethod.GET, payload, true);
+    }
+
+
     protected <R> R protectedPostRequest(WebTarget resource, Class<R> resultClass, Entity payload) {
         return syncRequest(resource, resultClass, HttpMethod.POST, payload, true);
     }

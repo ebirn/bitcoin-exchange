@@ -30,6 +30,8 @@ import java.util.List;
  * Time: 18:23
  * To change this template use File | Settings | File Templates.
  */
+
+//FIXME: use GenericType in return values to do acutail jax/rs parsing
 public class KrakenClient extends ExchangeApiClient {
 
     public KrakenClient(Market market) {
@@ -43,7 +45,7 @@ public class KrakenClient extends ExchangeApiClient {
 
 
         WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
-        String rawTradeHistory = syncRequest(tradeHistoryTgt, String.class, "POST", Entity.form(new Form()), true);
+        String rawTradeHistory = protectedPostRequest(tradeHistoryTgt, String.class, Entity.form(new Form()));
         log.info("tradeHistory: {}", rawTradeHistory);
 
         JsonObject jsonTrades = jsonFromString(rawTradeHistory).getJsonObject("result").getJsonObject("trades");
@@ -57,14 +59,14 @@ public class KrakenClient extends ExchangeApiClient {
 
 
         WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
-        String rawLedger = syncRequest(ledgerTgt, String.class, "POST", Entity.form(new Form()), true);
+        String rawLedger = protectedPostRequest(ledgerTgt, String.class, Entity.form(new Form()));
         log.info("ledger: {}", rawLedger);
         JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
         if(jsonLedger != null) parseLedger(accountInfo, jsonLedger);
 
 
         WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
-        String rawBalance = syncRequest(balanceTgt, String.class, "POST", Entity.form(new Form()), true);
+        String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));
         log.info("balance: {}", rawBalance);
 
         JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
@@ -75,6 +77,7 @@ public class KrakenClient extends ExchangeApiClient {
             accountInfo.getWallet(curr).setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
         }
 
+        // TODO: fee parsing
         WebTarget feeTgt = client.target("https://api.kraken.com/0/public/AssetPairs?info=fees");
 
         return accountInfo;

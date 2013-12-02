@@ -52,7 +52,7 @@ public class VircurexApiClient extends ExchangeApiClient {
 
         Form f = new Form();
         f.param("command", "get_balances");
-        String rawBalances = this.setupProtectedResource(balancesTgt, Entity.form(f)).get(String.class);
+        String rawBalances = protectedGetRequest(balancesTgt, String.class, Entity.form(f));
 
         JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
 
