@@ -15,15 +15,15 @@
 
 	<modules>
         <module>api</module>
-		<module>mtgox</module>
-		<module>btc-e</module>
-		<module>btcde</module>
-		<module>bitstamp</module>
-		<module>bitcurex</module>
+	<module>mtgox</module>
+	<module>btc-e</module>
+	<module>btcde</module>
+	<module>bitstamp</module>
+	<module>bitcurex</module>
        	<module>kraken</module>
        	<module>bitkonan</module>
-		<module>campbx</module>
-		<module>vircurex</module>
+	<module>campbx</module>
+	<module>vircurex</module>
         <module>bter</module>
         <module>icbit</module>
     </modules>
@@ -101,6 +101,8 @@
 	</dependencies>
 
 	<build>
+	<finalName>bitcoin-exchange-${artifactId}-${project.version}</finalName>
+	
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
