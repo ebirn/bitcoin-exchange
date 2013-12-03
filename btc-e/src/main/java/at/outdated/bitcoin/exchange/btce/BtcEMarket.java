@@ -38,6 +38,8 @@ public class BtcEMarket extends Market {
         addAsset(Currency.LTC, Currency.EUR);
 
         addAsset(Currency.NMC, Currency.BTC);
+
+        addAsset(Currency.EUR, Currency.USD);
     }
 
     @Override
