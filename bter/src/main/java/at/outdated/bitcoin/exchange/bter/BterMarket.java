@@ -28,6 +28,7 @@ public class BterMarket extends Market {
         //addAsset(Currency.FTC, Currency.BTC);
         addAsset(Currency.PPC, Currency.BTC);
         //addAsset(Currency.NVC, Currency.BTC);
+        addAsset(Currency.QRK, Currency.BTC);
     }
 
     @Override

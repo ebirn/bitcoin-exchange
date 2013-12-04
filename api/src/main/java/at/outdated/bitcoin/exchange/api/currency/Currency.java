@@ -18,6 +18,7 @@ public enum Currency {
     NMC, // Namecoin
     XRP, // Ripple
     NVC, // Novacoin
+    QRK, // Quarkcoin
 
 
     EUR(false), // Euro
