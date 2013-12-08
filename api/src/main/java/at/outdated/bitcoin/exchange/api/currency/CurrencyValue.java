@@ -138,4 +138,16 @@ public class CurrencyValue {
         nf.setMinimumIntegerDigits(1);
         return nf.format(value) + " " + currency.name();
     }
+
+    public boolean isPositive() {
+        return value > 0.0;
+    }
+
+    public boolean isNonNegative() {
+        return value >= 0.0;
+    }
+
+    public boolean isNegative() {
+        return value < 0.0;
+    }
 }
