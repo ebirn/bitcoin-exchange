@@ -28,6 +28,15 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+
+     <dependency>
+         <groupId>at.outdated.bitcoin.exchange</groupId>
+         <artifactId>api</artifactId>
+         <version>${version}</version>
+         <type>test-jar</type>
+         <scope>test</scope>
+     </dependency>
   </dependencies>
 </project>
 

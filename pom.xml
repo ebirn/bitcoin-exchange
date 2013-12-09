@@ -101,7 +101,7 @@
 	</dependencies>
 
 	<build>
-	<finalName>bitcoin-exchange-${artifactId}-${project.version}</finalName>
+	<finalName>bitcoin-exchange-${project.artifactId}-${project.version}</finalName>
 	
         <plugins>
             <plugin>
