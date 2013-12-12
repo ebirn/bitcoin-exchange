@@ -1,8 +1,10 @@
 package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 
@@ -14,9 +16,9 @@ public class BterMarket extends Market {
     public BterMarket() {
         super("bter", "http://bter.com", "Bter.com");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.0005, Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL,new ConstantFee(new CurrencyValue(0.001, Currency.PPC))));
         //addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
