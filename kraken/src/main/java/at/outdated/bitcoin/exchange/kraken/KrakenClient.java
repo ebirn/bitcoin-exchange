@@ -260,6 +260,12 @@ public class KrakenClient extends ExchangeApiClient {
                 tt = TransactionType.IN;
                 break;
 
+            case "withdrawal":
+                tt = TransactionType.WITHDRAW;
+                break;
+
+
+
             default:
         }
         return tt;

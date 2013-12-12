@@ -53,10 +53,10 @@ public class BterApiClient extends ExchangeApiClient {
                     Currency c = Currency.valueOf(key);
 
                     Wallet w = new Wallet(c);
-                    w.setBalance(new CurrencyValue(funds.getJsonNumber(key).doubleValue(), c));
+                    w.setBalance(new CurrencyValue(Double.valueOf(funds.getString(key)), c));
 
-                    if(lockedFunds.containsKey(key)) {
-                        w.setOpenOrders(new CurrencyValue(lockedFunds.getJsonNumber(key).doubleValue(), c));
+                    if(lockedFunds != null && lockedFunds.containsKey(key)) {
+                        w.setOpenOrders(new CurrencyValue(Double.valueOf(lockedFunds.getString(key)), c));
                     }
 
                     info.addWallet(w);
