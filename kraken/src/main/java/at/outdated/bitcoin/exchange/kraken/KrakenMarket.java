@@ -1,8 +1,10 @@
 package at.outdated.bitcoin.exchange.kraken;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 
@@ -18,12 +20,12 @@ public class KrakenMarket extends Market {
     public KrakenMarket() {
         super("kraken", "http://www.kraken.com", "Kraken");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
-        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.0005, Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.00002, Currency.XRP))));
 
-        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK));
-        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(0.09, Currency.EUR))));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new ConstantFee(new CurrencyValue(30.0, Currency.USD))));
 
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
