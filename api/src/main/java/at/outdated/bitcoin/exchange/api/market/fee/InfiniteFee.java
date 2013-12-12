@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -7,9 +10,10 @@ package at.outdated.bitcoin.exchange.api.market.fee;
  * Time: 16:31
  * To change this template use File | Settings | File Templates.
  */
-public class InfiniteFee extends ConstantFee {
+public class InfiniteFee extends Fee {
 
-    public InfiniteFee() {
-        super(Double.MAX_VALUE);
+    @Override
+    public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
+        return new CurrencyValue(Double.POSITIVE_INFINITY, volume.getCurrency());
     }
 }

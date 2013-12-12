@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 
@@ -12,10 +13,12 @@ import at.outdated.bitcoin.exchange.api.market.TradeDecision;
  */
 public class ConstantFee extends Fee {
 
-    protected double constantFee;
+    double constantFee;
+    Currency currency;
 
     public ConstantFee(CurrencyValue currencyFee) {
-
+        this.constantFee = currencyFee.getValue();
+        this.currency = currencyFee.getCurrency();
     }
 
     public ConstantFee(Number fee) {
@@ -25,6 +28,9 @@ public class ConstantFee extends Fee {
 
     @Override
     public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
-        return new CurrencyValue(constantFee, volume.getCurrency());  //To change body of implemented methods use File | Settings | File Templates.
+
+        Currency feeCurrency = currency == null ? volume.getCurrency() : currency;
+
+        return new CurrencyValue(constantFee, feeCurrency);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
