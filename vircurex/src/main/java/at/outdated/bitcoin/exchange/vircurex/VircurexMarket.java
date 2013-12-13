@@ -19,11 +19,11 @@ public class VircurexMarket extends Market {
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.01, Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NMC))));
         addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
 
         // FIXME check currency
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.PPC))));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
