@@ -17,7 +17,6 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WalletTransaction implements Comparable<WalletTransaction> {
 
-
     /*
         "Index": "16",
         "Date": 1366218001,
