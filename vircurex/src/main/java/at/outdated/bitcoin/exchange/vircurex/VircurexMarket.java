@@ -21,6 +21,7 @@ public class VircurexMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
         addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NMC))));
         addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
+        addWithdrawal(new TransferMethod(Currency.QRK, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.QRK))));
 
         // FIXME check currency
         addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.PPC))));
@@ -28,6 +29,9 @@ public class VircurexMarket extends Market {
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.QRK, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.FTC, TransferType.VIRTUAL));
+
         addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
 
@@ -38,6 +42,7 @@ public class VircurexMarket extends Market {
         addAsset(Currency.LTC, Currency.NVC);
         addAsset(Currency.PPC, Currency.BTC);
         addAsset(Currency.NVC, Currency.NMC);
+        addAsset(Currency.QRK, Currency.BTC);
     }
 
     @Override
