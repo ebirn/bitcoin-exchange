@@ -74,7 +74,14 @@ public class KrakenClient extends ExchangeApiClient {
         if(balances != null)
             for(String currKey : balances.keySet()) {
             Currency curr = parseCurrency(currKey);
-            accountInfo.getWallet(curr).setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
+
+            Wallet wallet = accountInfo.getWallet(curr);
+            if(wallet == null) {
+                wallet = new Wallet(curr);
+                accountInfo.addWallet(wallet);
+            }
+
+            wallet.setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
         }
 
         // TODO: fee parsing
