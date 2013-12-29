@@ -19,18 +19,19 @@ public class BterMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.0005, Currency.BTC))));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
         addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL,new ConstantFee(new CurrencyValue(0.001, Currency.PPC))));
-        //addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.001, Currency.NMC))));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.PPC, TransferType.VIRTUAL));
-        //addDeposit(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, null));
+        addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL));
 
         addAsset(Currency.LTC, Currency.BTC);
         //addAsset(Currency.FTC, Currency.BTC);
         addAsset(Currency.PPC, Currency.BTC);
         //addAsset(Currency.NVC, Currency.BTC);
         addAsset(Currency.QRK, Currency.BTC);
+        addAsset(Currency.NMC, Currency.BTC);
     }
 
     @Override
