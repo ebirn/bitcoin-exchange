@@ -44,8 +44,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
         Future<String> rawOrders = asyncRequest(ordersTarget, String.class , "GET", null, true);
 
         try {
-            log.info("rawBalance: " + rawBalance.get());
-            log.info("rawOrders: " + rawOrders.get());
+            //log.info("rawBalance: " + rawBalance.get());
+            //log.info("rawOrders: " + rawOrders.get());
         }
         catch(Exception e) {
             e.printStackTrace();

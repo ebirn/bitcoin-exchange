@@ -46,28 +46,28 @@ public class KrakenClient extends ExchangeApiClient {
 
         WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
         String rawTradeHistory = protectedPostRequest(tradeHistoryTgt, String.class, Entity.form(new Form()));
-        log.info("tradeHistory: {}", rawTradeHistory);
+        //log.debug("tradeHistory: {}", rawTradeHistory);
 
         JsonObject jsonTrades = jsonFromString(rawTradeHistory).getJsonObject("result").getJsonObject("trades");
         if(jsonTrades != null) {
             for(String tradeKey : jsonTrades.keySet()) {
                 // TODO finish this
                 jsonTrades.getJsonObject(tradeKey);
-                log.debug("TRADE: {}", tradeKey);
+                //log.debug("TRADE: {}", tradeKey);
             }
         }
 
 
         WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
         String rawLedger = protectedPostRequest(ledgerTgt, String.class, Entity.form(new Form()));
-        log.info("ledger: {}", rawLedger);
+        //log.debug("ledger: {}", rawLedger);
         JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
         if(jsonLedger != null) parseLedger(accountInfo, jsonLedger);
 
 
         WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
         String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));
-        log.info("balance: {}", rawBalance);
+        //log.debug("balance: {}", rawBalance);
 
         JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
 
@@ -181,11 +181,11 @@ public class KrakenClient extends ExchangeApiClient {
             String formStr = formData2String(form);
             String signatureData = Long.toString(nonce) + formStr;
 
-            log.debug("payload: {}", formStr);
-            log.debug("sign payload: {}", signatureData);
+            //log.debug("payload: {}", formStr);
+            //log.debug("sign payload: {}", signatureData);
 
             String path = tgt.getUri().getPath();
-            log.debug("path: {}", path);
+            //log.debug("path: {}", path);
 
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -197,13 +197,12 @@ public class KrakenClient extends ExchangeApiClient {
 
             // need exactly this function, otherwise might add linebreaks after 76 characters
             String signature = new String(Base64.encodeBase64(rawSignature, false));
-            log.debug("signature: {}", signature);
+            //log.debug("signature: {}", signature);
 
             // POST data:
             // nonce = always increasing unsigned 64 bit integer
 
             String key = getUserId();
-            log.debug("key: {}", key);
 
             builder = tgt.request();
             builder.header("API-Key", key);
