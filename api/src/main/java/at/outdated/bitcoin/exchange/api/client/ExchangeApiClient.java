@@ -243,8 +243,10 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     protected String getPropertyString(String key) {
         ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
 
-        String value = market.getKey() + "." + key;
-        return bundle.getString(value);
+        String fullKey = market.getKey() + "." + key;
+        String value = bundle.getString(fullKey);
+
+        return value;
     }
 
 

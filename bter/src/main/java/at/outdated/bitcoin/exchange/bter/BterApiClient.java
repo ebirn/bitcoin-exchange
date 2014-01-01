@@ -62,7 +62,7 @@ public class BterApiClient extends ExchangeApiClient {
                     info.addWallet(w);
                 }
                 catch(Exception e) {
-                    log.info("Currency '{}' unhandled, cannot create wallte", key);
+                    log.info("Currency '{}' unhandled, cannot create wallet", key);
                 }
             }
         }

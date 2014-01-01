@@ -100,12 +100,12 @@ public class MtGoxClient extends ExchangeApiClient {
 
         MarketDepth depth = new MarketDepth(asset);
 
-        for(DepthEntry e : rawDepth.getAsks()) {
-            depth.addAsk(e.amount, e.price);
+        for(DepthEntry ask : rawDepth.getAsks()) {
+            depth.addAsk(ask.amount, ask.price);
         }
 
-        for(DepthEntry e : rawDepth.getBids()) {
-            depth.addAsk(e.amount, e.price);
+        for(DepthEntry bid : rawDepth.getBids()) {
+            depth.addBid(bid.amount, bid.price);
         }
 
         return depth;
