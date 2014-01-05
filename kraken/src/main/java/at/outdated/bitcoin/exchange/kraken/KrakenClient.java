@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.kraken;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -19,6 +20,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -322,5 +324,40 @@ public class KrakenClient extends ExchangeApiClient {
             }
 
         }
+    }
+
+    /*
+    see also https://www.kraken.com/help/api#get-open-orders
+     */
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+
+        List<MarketOrder> orders = new ArrayList<>();
+
+
+        return orders;
+    }
+
+    /*
+        see also: https://www.kraken.com/help/api#add-standard-order
+         */
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        String orderId = null;
+
+        //  https://api.kraken.com/0/private/AddOrder
+
+
+        return new OrderId(market, orderId);
+    }
+
+    /*
+    see also: https://www.kraken.com/help/api#cancel-open-order
+     */
+    @Override
+    public boolean cancelOrder(OrderId order) {
+
+
+        return false;
     }
 }
