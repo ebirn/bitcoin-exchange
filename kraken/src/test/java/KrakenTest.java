@@ -6,6 +6,8 @@ import at.outdated.bitcoin.exchange.kraken.KrakenClient;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -59,4 +61,18 @@ public class KrakenTest extends BaseTest {
 
     */
 
+
+    @Test
+    public void testOpenOrders() {
+
+        List<MarketOrder> openOrders = client.getOpenOrders();
+
+
+        for(MarketOrder order : openOrders) {
+
+            log.info("cancel order: {}", order.getId());
+            client.cancelOrder(order.getId());
+        }
+
+    }
 }

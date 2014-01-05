@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.api.market;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 /**
@@ -7,6 +8,9 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
  */
 public class MarketOrder {
 
+    OrderId id;
+
+    AssetPair asset;
 
     protected CurrencyValue price;
     protected CurrencyValue volume;
@@ -43,5 +47,13 @@ public class MarketOrder {
     @Override
     public String toString() {
         return "Order: " + decision + " " + volume  + " @ " + price;
+    }
+
+    public OrderId getId() {
+        return id;
+    }
+
+    public void setId(OrderId id) {
+        this.id = id;
     }
 }

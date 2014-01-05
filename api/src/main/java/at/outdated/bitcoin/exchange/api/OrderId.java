@@ -31,4 +31,9 @@ public class OrderId {
     public Market getMarket() {
         return market;
     }
+
+    @Override
+    public String toString() {
+        return market + ":" + identifier;
+    }
 }

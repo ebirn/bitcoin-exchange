@@ -10,6 +10,9 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenOpenOrderResult;
+import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenOrderCancelResult;
+import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenResponse;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
@@ -19,6 +22,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -335,6 +339,29 @@ public class KrakenClient extends ExchangeApiClient {
         List<MarketOrder> orders = new ArrayList<>();
 
 
+        // TODO: write adapter for JSON "key": { ... } -> Map<Key,Object> mapping
+        GenericType<KrakenResponse<KrakenOpenOrderResult>> resultType = new GenericType<KrakenResponse<KrakenOpenOrderResult>>() {};
+
+        Entity payload = Entity.form(new Form());
+        String rawOpenResult =  setupProtectedResource(client.target("https://api.kraken.com/0/private/OpenOrders"), payload).post(payload).readEntity(String.class);
+
+        // sample result:
+        // {"error":[],"result":{"open":{"OHKQFZ-ALIP3-SBVVCF":{"refid":null,"userref":null,"status":"open","opentm":1388937107.352,"starttm":0,"expiretm":0,"descr":{"pair":"XBTEUR","type":"buy","ordertype":"limit","price":"0.75000","price2":"0","leverage":"none","order":"buy 2.00000000 XBTEUR @ limit 0.75000"},"vol":"2.00000000","vol_exec":"0.00000000","cost":"0.00000","fee":"0.00000","price":"0.00000","misc":"","oflags":""},"OSJPS5-K5GK2-NDEQBQ":{"refid":null,"userref":null,"status":"open","opentm":1388937079.8802,"starttm":0,"expiretm":0,"descr":{"pair":"XBTEUR","type":"buy","ordertype":"limit","price":"1.00000","price2":"0","leverage":"none","order":"buy 1.00000000 XBTEUR @ limit 1.00000"},"vol":"1.00000000","vol_exec":"0.00000000","cost":"0.00000","fee":"0.00000","price":"0.00000","misc":"","oflags":""}}}}
+
+        JsonObject jsonOpenResult = jsonFromString(rawOpenResult);
+        JsonObject jsonOpen = jsonOpenResult.getJsonObject("result").getJsonObject("open");
+
+        for(String key : jsonOpen.keySet()) {
+            log.info("open order: {}", key);
+
+            MarketOrder order = new MarketOrder();
+
+            order.setId(new OrderId(market, key));
+
+            orders.add(order);
+        }
+
+
         return orders;
     }
 
@@ -357,6 +384,20 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     public boolean cancelOrder(OrderId order) {
 
+        GenericType<KrakenResponse<KrakenOrderCancelResult>> resultType = new GenericType<KrakenResponse<KrakenOrderCancelResult>>() {};
+
+        Form params = new Form();
+        params.param("txid", "*" + order.getIdentifier());
+
+        Entity payload = Entity.form(params);
+
+        KrakenResponse<KrakenOrderCancelResult> result = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(resultType);
+
+
+        // FIXME:
+        if(result != null && result.getError() == null) {
+            return result.getResult().isSuccess();
+        }
 
         return false;
     }

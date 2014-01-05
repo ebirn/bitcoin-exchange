@@ -1,11 +1,10 @@
 package at.outdated.bitcoin.exchange.api.client;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.Market;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
@@ -317,5 +316,23 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
 
         return null;
         //return performFundWithdrawal(volume, address);
+    }
+
+    //FIXME: remove these
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        return null;
+    }
+
+    //FIXME: remove these
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        return null;
+    }
+
+    //FIXME: remove these
+    @Override
+    public boolean cancelOrder(OrderId order) {
+        return false;
     }
 }
