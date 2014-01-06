@@ -24,7 +24,7 @@ public class BtcEMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.001, Currency.BTC))));
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
         addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NMC))));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.001, Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.PPC))));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
@@ -36,10 +36,13 @@ public class BtcEMarket extends Market {
 
         addAsset(Currency.LTC, Currency.BTC);
         addAsset(Currency.PPC, Currency.BTC);
+        addAsset(Currency.PPC, Currency.USD);
+
         addAsset(Currency.LTC, Currency.USD);
         addAsset(Currency.LTC, Currency.EUR);
 
         addAsset(Currency.NMC, Currency.BTC);
+        addAsset(Currency.NMC, Currency.USD);
 
         addAsset(Currency.EUR, Currency.USD);
     }

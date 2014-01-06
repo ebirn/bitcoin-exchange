@@ -24,6 +24,8 @@ public class KrakenMarket extends Market {
         addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
         addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.00002, Currency.XRP))));
 
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.005, Currency.NMC))));
+
         addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(0.09, Currency.EUR))));
         addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new ConstantFee(new CurrencyValue(30.0, Currency.USD))));
 
@@ -31,6 +33,7 @@ public class KrakenMarket extends Market {
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.XRP, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.NMC, TransferType.VIRTUAL));
 
         addDeposit(new TransferMethod(Currency.EUR, TransferType.BANK));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
@@ -44,6 +47,11 @@ public class KrakenMarket extends Market {
         addAsset(Currency.LTC, Currency.USD);
         addAsset(Currency.LTC, Currency.EUR);
         addAsset(Currency.LTC, Currency.XRP);
+
+        addAsset(Currency.BTC, Currency.NMC);
+        addAsset(Currency.NMC, Currency.USD);
+        addAsset(Currency.NMC, Currency.EUR);
+        addAsset(Currency.NMC, Currency.XRP);
     }
 
     @Override
