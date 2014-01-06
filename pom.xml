@@ -26,6 +26,8 @@
 	<module>vircurex</module>
         <module>bter</module>
         <module>icbit</module>
+        <module>coins-e</module>
+        <module>cryptsy</module>
     </modules>
 
 	<dependencies>
