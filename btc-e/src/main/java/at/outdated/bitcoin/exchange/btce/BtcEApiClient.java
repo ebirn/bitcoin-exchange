@@ -80,7 +80,7 @@ public class BtcEApiClient extends ExchangeApiClient {
             */
 
             //FIXME: this doesn't do anyting: account data parsing
-            JsonObject transResult = transResponse.getJsonObject("result");
+            JsonObject transResult = transResponse.getJsonObject("return");
             for(String key : transResult.keySet()) {
                 JsonObject jt = transResult.getJsonObject(key);
                 Currency curr = Currency.valueOf(jt.getString("currency"));

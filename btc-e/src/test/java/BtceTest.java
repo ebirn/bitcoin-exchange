@@ -7,6 +7,7 @@ import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.btce.BtcEApiClient;
 import at.outdated.bitcoin.exchange.btce.BtcEMarket;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class BtceTest extends BaseTest {
         client = new BtcEApiClient(market);
     }
 
+    @Ignore
     @Test
     public void  testPlaceOrder() {
 
@@ -41,6 +43,7 @@ public class BtceTest extends BaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testOpenOrders() {
 

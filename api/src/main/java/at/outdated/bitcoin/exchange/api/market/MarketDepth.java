@@ -48,19 +48,25 @@ public class MarketDepth {
     }
 
     public void addAsk(MarketOrder ask) {
+        ask.setAsset(asset);
         asks.add(ask);
     }
 
     public void addAsk(double volume, double price) {
-        addAsk(new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote())));
+        MarketOrder order = new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
+        order.setAsset(asset);
+        addAsk(order);
     }
 
     public void addBid(MarketOrder bid) {
+        bid.setAsset(asset);
         this.bids.add(bid);
     }
 
     public void addBid(double volume, double price) {
-        addBid(new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote())));
+        MarketOrder order = new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
+        order.setAsset(asset);
+        addBid(order);
     }
 
 

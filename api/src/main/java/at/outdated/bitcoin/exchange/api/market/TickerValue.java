@@ -23,6 +23,11 @@ public class TickerValue extends TimedValue<double[]> {
         this.timestamp = new Date();
     }
 
+    public TickerValue(AssetPair asset) {
+        this.timestamp = new Date();
+        this.asset = asset;
+    }
+
     public static final TickerValue createNanInstance(AssetPair curr) {
         TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, curr);
         return ticker;
