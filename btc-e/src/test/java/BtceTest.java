@@ -49,7 +49,6 @@ public class BtceTest extends BaseTest {
         for(MarketOrder order : openOrders) {
 
             boolean success = client.cancelOrder(order.getId());
-
             log.info("cancel order: {} - success: {}", order.getId(), success);
         }
 
