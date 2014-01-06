@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.btce;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -21,7 +22,11 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 // TODO: use fee api: https://hdbtce.kayako.com/Knowledgebase/Article/View/27/4/api-fee
@@ -111,6 +116,14 @@ public class BtcEApiClient extends ExchangeApiClient {
             }
         }  */
 
+            JsonObject jsonOrders = tradeResponse.getJsonObject("return");
+            for(String key : jsonOrders.keySet()) {
+
+                JsonObject jsonOrder = jsonOrders.getJsonObject(key);
+                MarketOrder order = parseOrder(jsonOrder);
+
+                order.setId(new OrderId(market, jsonOrder.getString("order_id")));
+            }
 
         }
 
@@ -231,4 +244,180 @@ public class BtcEApiClient extends ExchangeApiClient {
 
         return builder;
     }
+
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+        // CancelOrder
+
+        WebTarget tgt = client.target("https://btc-e.com/tapi");
+
+        Form data = new Form();
+
+        data.param("method", "CancelOrder");
+        data.param("order_id", order.getIdentifier());
+
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+
+        JsonObject jsonResponse = jsonFromString(raw);
+
+        if(jsonResponse.getInt("success") == 0) {
+            log.error("failed to cancel order: {}", order.getIdentifier());
+            return false;
+        }
+
+
+        int cancelledId = jsonResponse.getJsonObject("return").getInt("order_id");
+        if(cancelledId == Integer.parseInt(order.getIdentifier())) {
+            return true;
+        }
+
+        log.error("failed to cancel order: {} (unwknown)", order.getIdentifier());
+
+        return false;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+
+
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        nf.setMaximumFractionDigits(15);
+        nf.setMaximumFractionDigits(8);
+        nf.setMaximumIntegerDigits(15);
+
+
+        // method: Trade
+
+        WebTarget tgt = client.target("https://btc-e.com/tapi");
+
+        Form data = new Form();
+        data.param("method", "Trade");
+
+
+        String pairStr = asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase();
+
+        data.param("pair", pairStr); // btc_usd
+        data.param("type", decision.name().toLowerCase());
+        data.param("rate", nf.format(price.getValue()));
+        data.param("amount", nf.format(volume.getValue()));
+
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+
+        /*
+            {
+        "success":1,
+            "return":{
+                "received":0.1,
+                "remains":0,
+                "order_id":0,
+                "funds":{
+                    "usd":325,
+                    "btc":2.498,
+                    "sc":121.998,
+                    "ltc":0,
+                    "ruc":0,
+                    "nmc":0
+                }
+            }
+        }
+     */
+        JsonObject jsonOrderResult = jsonFromString(raw);
+
+        if(jsonOrderResult.getInt("success") == 0) {
+            log.error("failed to place order");
+            return null;
+        }
+
+        return new OrderId(market, jsonOrderResult.getJsonObject("return").getInt("order_id") + "");
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+
+        // ActiveOrders
+
+        /*
+        {
+	"success":1,
+	"return":{
+		"343152":{
+			"pair":"btc_usd",
+			"type":"sell",
+			"amount":1.00000000,
+			"rate":3.00000000,
+			"timestamp_created":1342448420,
+			"status":0
+		}
+	}
+}
+ */
+
+        WebTarget tgt = client.target("https://btc-e.com/tapi");
+
+        Form data = new Form();
+        data.param("method", "ActiveOrders");
+        //data.param("pair", "CancelOrder"); // btc_usd
+
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+
+
+        JsonObject jsonResult = jsonFromString(raw);
+        if(jsonResult.getInt("success") == 0) {
+            log.error("failed to get active orders");
+            return null;
+        }
+
+        List<MarketOrder> orders = new ArrayList<>();
+
+        JsonObject jsonOrders = jsonResult.getJsonObject("return");
+        for(String key : jsonOrders.keySet()) {
+
+
+
+            MarketOrder order = parseOrder(jsonOrders.getJsonObject(key));
+            order.setId(new OrderId(market, key));
+
+            orders.add(order);
+        }
+
+        return orders;
+    }
+
+
+    private MarketOrder parseOrder(JsonObject jsonOrder) {
+        /*
+        		"343152":{
+			"pair":"btc_usd",
+			"type":"sell",
+			"amount":1.00000000,
+			"rate":3.00000000,
+			"timestamp_created":1342448420,
+			"status":0
+		}
+         */
+        MarketOrder order = new MarketOrder();
+
+        String[] parts = jsonOrder.getString("pair").split("_");
+
+        Currency left = Currency.valueOf(parts[0].toUpperCase());
+        Currency right = Currency.valueOf(parts[1].toUpperCase());
+
+        AssetPair asset = market.getAsset(left, right);
+        order.setAsset(asset);
+
+        String typeStr = jsonOrder.getString("type");
+        order.setDecision(TradeDecision.valueOf(typeStr.toUpperCase()));
+
+
+        double price = jsonOrder.getJsonNumber("rate").doubleValue();
+        order.setPrice(new CurrencyValue(price, right));
+
+
+        double volume = jsonOrder.getJsonNumber("amount").doubleValue();
+        order.setVolume(new CurrencyValue(volume, left));
+
+        return order;
+    }
+
 }

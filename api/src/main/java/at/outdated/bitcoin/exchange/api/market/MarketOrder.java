@@ -56,4 +56,20 @@ public class MarketOrder {
     public void setId(OrderId id) {
         this.id = id;
     }
+
+    public AssetPair getAsset() {
+        return asset;
+    }
+
+    public void setAsset(AssetPair asset) {
+        this.asset = asset;
+    }
+
+    public TradeDecision getDecision() {
+        return decision;
+    }
+
+    public void setDecision(TradeDecision decision) {
+        this.decision = decision;
+    }
 }

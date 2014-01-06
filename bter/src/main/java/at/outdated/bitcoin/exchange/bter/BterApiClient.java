@@ -1,25 +1,28 @@
 package at.outdated.bitcoin.exchange.bter;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
-import at.outdated.bitcoin.exchange.api.market.Market;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ebirn on 11.10.13.
@@ -150,5 +153,176 @@ public class BterApiClient extends ExchangeApiClient {
         builder.header("SIGN", hexSignature);
 
         return builder;
+    }
+
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+
+        // https://bter.com/api/1/private/cancelorder
+
+        // param: order_id
+        WebTarget tgt = client.target("https://bter.com/api/1/private/cancelorder");
+
+        Form form = new Form();
+
+        form.param("order_id", order.getIdentifier());
+
+        Entity e = Entity.form(form);
+
+        String rawCancel = setupProtectedResource(tgt, e).post(e).readEntity(String.class);
+
+        JsonObject jsonCancel = jsonFromString(rawCancel);
+
+        if(jsonCancel.getBoolean("result")) {
+            return true;
+        }
+
+        log.info("failed to cancel order: {}", jsonCancel.getString("msg"));
+
+        return false;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+
+        WebTarget tgt = client.target("https://bter.com/api/1/private/cancelorder");
+
+        Form form = new Form();
+
+        String pairStr = asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase();
+
+        String type = "ERROR";
+        switch(decision) {
+            case BUY:
+                type = "BUY";
+                break;
+
+            case SELL:
+                type = "SELL";
+                break;
+        }
+
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        nf.setMaximumIntegerDigits(15);
+        nf.setMinimumFractionDigits(5);
+        nf.setMaximumFractionDigits(15);
+
+        form.param("pair", pairStr); // aaa_bbb
+        form.param("type", type); // sell / buy
+        form.param("rate", nf.format(price.getValue())); // price
+        form.param("amount", nf.format(volume.getValue()));  // volume
+
+        Entity e = Entity.form(form);
+
+        String rawOrder = setupProtectedResource(tgt, e).post(e).readEntity(String.class);
+
+
+        JsonObject jsonOrder = jsonFromString(rawOrder);
+
+        if(jsonOrder.getString("result").equalsIgnoreCase("true")) {
+            return new OrderId(market, jsonOrder.getString("order_id"));
+        }
+
+        log.error("failed to place order: {}", jsonOrder.getString("msg"));
+
+        return null;
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+
+        // https://bter.com/api/1/private/orderlist
+
+/*
+	{
+		"result":true,
+		"orders":[
+			{
+				"id":"15088",
+				"sell_type":"BTC",
+				"buy_type":"LTC",
+				"sell_amount":"0.39901357",
+				"buy_amount":"12.0"
+			},
+			{
+				"id":"15092",
+				"sell_type":"LTC",
+				"buy_type":"BTC",
+				"sell_amount":"13.0",
+				"buy_amount":"0.4210"
+			}
+			]
+		"msg":"Success"
+	}
+ */
+
+        WebTarget tgt = client.target("https://bter.com/api/1/private/orderlist");
+
+        Entity e = Entity.form(new Form());
+
+        String rawOpenOrders = setupProtectedResource(tgt, e).post(e).readEntity(String.class);
+
+        JsonObject jsonOpenOrders = jsonFromString(rawOpenOrders);
+
+        if(jsonOpenOrders.getBoolean("result") == false) {
+
+            log.warn("failed to list orders: {}", jsonOpenOrders.getString("msg"));
+
+            return new ArrayList<>();
+        }
+
+        List<MarketOrder> openOrders = new ArrayList<>();
+
+
+        JsonArray ordersArray = jsonOpenOrders.getJsonArray("orders");
+        for(int i=0; i< ordersArray.size(); i++) {
+            JsonObject jsonOrder = ordersArray.getJsonObject(i);
+
+            openOrders.add(parseOrder(jsonOrder));
+
+        }
+
+        return openOrders;
+    }
+
+
+    private MarketOrder parseOrder(JsonObject jsonOrder) {
+        MarketOrder order = new MarketOrder();
+
+
+        Currency sellCurr = Currency.valueOf(jsonOrder.getString("sell_type"));
+        double sellAmount = Double.parseDouble(jsonOrder.getString("sell_amount"));
+
+        Currency buyCurr = Currency.valueOf(jsonOrder.getString("buy_type"));
+        double buyAmount = Double.parseDouble(jsonOrder.getString("buy_amount"));
+
+        AssetPair asset = market.getAsset(sellCurr, buyCurr);
+
+        order.setId(new OrderId(market, jsonOrder.getString("id")));
+        order.setAsset(asset);
+
+        double price = buyAmount / sellAmount;
+
+        order.setPrice(new CurrencyValue(price, buyCurr));
+        order.setVolume(new CurrencyValue(sellAmount, sellCurr));
+
+
+        TradeDecision decision = null;
+
+        if(sellCurr == asset.getBase() && buyCurr == asset.getQuote()) {
+            decision = TradeDecision.SELL;
+        }
+        else if(buyCurr == asset.getBase() && sellCurr == asset.getQuote()){
+            decision = TradeDecision.BUY;
+        }
+        else {
+            decision = TradeDecision.GETHELP;
+        }
+
+        order.setDecision(decision);
+
+
+        return order;
     }
 }
