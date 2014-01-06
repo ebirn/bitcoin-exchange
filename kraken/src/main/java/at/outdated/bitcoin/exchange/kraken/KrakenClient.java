@@ -17,16 +17,20 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import java.security.MessageDigest;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -246,6 +250,10 @@ public class KrakenClient extends ExchangeApiClient {
         return baseStr;
     }
 
+    private String fixSymbol(AssetPair asset) {
+        return fixSymbol(asset.getBase()) + fixSymbol(asset.getQuote());
+    }
+
     private Currency parseCurrency(String currStr) {
         // remove prefix
         currStr = currStr.substring(1);
@@ -370,12 +378,69 @@ public class KrakenClient extends ExchangeApiClient {
          */
     @Override
     public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
-        String orderId = null;
 
         //  https://api.kraken.com/0/private/AddOrder
+        WebTarget orderTgt = client.target("https://api.kraken.com/0/private/AddOrder");
+
+        Form params = new Form();
+
+        String type = null;
+
+        switch(decision) {
+            case BUY:
+                type = "buy";
+                break;
+
+            case SELL:
+                type = "sell";
+                break;
+
+            default:
+                type = "ERROR";
+        }
+
+        params.param("pair", fixSymbol(asset));
+        params.param("type", type); // buy / sell
+        params.param("ordertype", "limit"); // for now we don't support anything else
+
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        nf.setMinimumFractionDigits(8);
+        nf.setMaximumIntegerDigits(8);
+        nf.setMaximumFractionDigits(15);
+
+        params.param("price", nf.format(price.getValue()));
+        params.param("volume", nf.format(volume.getValue()));
+
+        //params.param("validate", "true");
 
 
-        return new OrderId(market, orderId);
+        Entity entity = Entity.form(params);
+        String rawResult = setupProtectedResource(orderTgt, entity).buildPost(entity).invoke(String.class);
+
+        log.info("raw result: {}", rawResult);
+
+        JsonObject jsonResult = jsonFromString(rawResult);
+
+        JsonArray error = jsonResult.getJsonArray("error");
+        if(error.size() > 0) {
+            log.error("failed to add order: {}", error.getValuesAs(JsonString.class));
+            return null;
+        }
+
+
+        jsonResult = jsonResult.getJsonObject("result");
+
+        log.info("created order: {}", jsonResult.getJsonObject("descr").getString("order"));
+
+        List<String> txids = new ArrayList<>();
+        for(JsonString txid : jsonResult.getJsonArray("txid").getValuesAs(JsonString.class)) {
+
+            txids.add(txid.getString());
+        }
+
+        log.info("transaction ids: {}", txids);
+
+        return new OrderId(market, txids.get(0));
     }
 
     /*
@@ -384,21 +449,48 @@ public class KrakenClient extends ExchangeApiClient {
     @Override
     public boolean cancelOrder(OrderId order) {
 
-        GenericType<KrakenResponse<KrakenOrderCancelResult>> resultType = new GenericType<KrakenResponse<KrakenOrderCancelResult>>() {};
+        GenericType<KrakenResponse<KrakenOrderCancelResult>> resultType = new GenericType<KrakenResponse<KrakenOrderCancelResult>>() {
+
+
+        };
 
         Form params = new Form();
-        params.param("txid", "*" + order.getIdentifier());
+        params.param("txid", order.getIdentifier());
 
         Entity payload = Entity.form(params);
 
-        KrakenResponse<KrakenOrderCancelResult> result = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(resultType);
+        //KrakenResponse<KrakenOrderCancelResult> result = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(resultType);
+        String rawResult = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(String.class);
 
+        log.info("cancel result: {}", rawResult);
 
-        // FIXME:
-        if(result != null && result.getError() == null) {
-            return result.getResult().isSuccess();
+        JsonObject jsonResult = jsonFromString(rawResult);
+
+        JsonArray error = jsonResult.getJsonArray("error");
+        // there was an error, cannot delete order
+        if(error != null && error.size() > 0) {
+            log.warn("cancel error: {}", error.getValuesAs(JsonString.class));
+            return false;
         }
 
+        JsonObject result = jsonResult.getJsonObject("result");
+        // FIXME:
+        if(result != null) {
+
+            int count = result.getInt("count", 0);
+            int pending = 0;
+            JsonArray pendingArr = result.getJsonArray("pending");
+            if(pendingArr != null) {
+                pending = pendingArr.size();
+            }
+
+            int total = pending + count;
+
+            log.info("removed {} orders, (pending: {})", count, pending);
+            return total > 0;
+        }
+
+        log.warn("failed to cancel: {}", order);
         return false;
     }
 }

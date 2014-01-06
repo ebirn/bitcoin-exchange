@@ -61,17 +61,29 @@ public class KrakenTest extends BaseTest {
 
     */
 
+    @Test
+    public void placeOrder() {
+
+        AssetPair asset = new AssetPair(Currency.BTC, Currency.EUR);
+
+        CurrencyValue volume = new CurrencyValue(0.01, Currency.BTC);
+        CurrencyValue price = new CurrencyValue(0.01, Currency.EUR);
+
+        client.placeOrder(asset, TradeDecision.BUY, volume, price);
+
+    }
 
     @Test
     public void testOpenOrders() {
 
         List<MarketOrder> openOrders = client.getOpenOrders();
 
-
         for(MarketOrder order : openOrders) {
 
-            log.info("cancel order: {}", order.getId());
-            client.cancelOrder(order.getId());
+
+            boolean success = client.cancelOrder(order.getId());
+
+            log.info("cancel order: {} - success: {}", order.getId(), success);
         }
 
     }
