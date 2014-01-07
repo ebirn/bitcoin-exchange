@@ -23,6 +23,6 @@ public class CryptsyAccountInfo extends AccountInfo {
 
 
         // you sould never come here
-        return new SimplePercentageFee(1.0);
+        return null;
     }
 }

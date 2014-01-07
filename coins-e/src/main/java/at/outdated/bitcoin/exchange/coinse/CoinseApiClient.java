@@ -84,6 +84,7 @@ public class CoinseApiClient extends ExchangeApiClient implements TradeClient, M
 
         MarketDepth depth = new MarketDepth(asset);
 
+        // beginning lowest ask
         for(int i=0; i<jsonAsks.size(); i++) {
             JsonObject obj = jsonAsks.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));
@@ -92,6 +93,7 @@ public class CoinseApiClient extends ExchangeApiClient implements TradeClient, M
             depth.addAsk(volume, price);
         }
 
+        // beginning with highest bid
         for(int i=0; i<jsonBids.size(); i++) {
             JsonObject obj = jsonBids.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));

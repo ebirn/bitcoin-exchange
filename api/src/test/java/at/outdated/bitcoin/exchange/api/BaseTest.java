@@ -78,7 +78,7 @@ public abstract class BaseTest {
                 CurrencyAddress address = client.getDepositAddress(transferCurrency);
                 assertCurrencyAddress(address, transferCurrency);
 
-                log.info("deposit: {}", transferCurrency, address);
+                log.info("deposit: {} - {}", transferCurrency, address);
             }
         }
     }
