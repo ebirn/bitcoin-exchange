@@ -35,6 +35,31 @@ public class BterTest extends BaseTest {
 
     }
 
+    @Test
+    public void testListOpenOrders() {
+        List<MarketOrder> openOrders = client.getOpenOrders();
+
+        for(MarketOrder order : openOrders) {
+            log.info("open: {}", order);
+        }
+
+    }
+
+    @Test
+    public void testMultiCall() {
+
+        for(int i=0; i< 100; i++) {
+            try {
+                log.info("run: {}", (i+1));
+                testListOpenOrders();
+            }
+            catch(Exception e) {
+                log.warn("failed request", e);
+            }
+        }
+
+    }
+
     @Ignore
     @Test
     public void testOpenOrders() {

@@ -137,7 +137,7 @@ public class BterApiClient extends ExchangeApiClient {
         String hexSignature = null;
         try {
             Mac mac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secret_spec = new SecretKeySpec(getSecret().getBytes(), "HmacSHA512");
+            SecretKeySpec secret_spec = new SecretKeySpec(getSecret().getBytes("UTF-8"), "HmacSHA512");
             mac.init(secret_spec);
             mac.update(formData2String(form).getBytes());
 
