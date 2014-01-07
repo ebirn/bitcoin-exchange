@@ -109,7 +109,7 @@ public class CryptsyApiClient extends ExchangeApiClient implements MarketClient,
                 double price = Double.parseDouble(obj.getString("price"));
                 double volume = Double.parseDouble(obj.getString("quantity"));
 
-                depth.addBid(volume, price);
+                depth.addAsk(volume, price);
             }
 
             JsonArray jsonBuys = jsonDepth.getJsonArray("buyorders");
