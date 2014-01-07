@@ -95,33 +95,38 @@ public class CryptsyApiClient extends ExchangeApiClient implements MarketClient,
         WebTarget tgt = client.target("http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=" + marketNum);
 
         String raw = simpleGetRequest(tgt, String.class);
-        JsonObject root = jsonFromString(raw);
+        try {
+            JsonObject root = jsonFromString(raw);
 
-        JsonObject jsonDepth = root.getJsonObject("return").getJsonObject(asset.getBase().name());
+            JsonObject jsonDepth = root.getJsonObject("return").getJsonObject(asset.getBase().name());
 
 
-        MarketDepth depth = new MarketDepth(asset);
+            MarketDepth depth = new MarketDepth(asset);
 
-        JsonArray jsonSells = jsonDepth.getJsonArray("sellorders");
-        for(int i=0; i<jsonSells.size(); i++) {
-            JsonObject obj = jsonSells.getJsonObject(i);
-            double price = Double.parseDouble(obj.getString("price"));
-            double volume = Double.parseDouble(obj.getString("quantity"));
+            JsonArray jsonSells = jsonDepth.getJsonArray("sellorders");
+            for(int i=0; i<jsonSells.size(); i++) {
+                JsonObject obj = jsonSells.getJsonObject(i);
+                double price = Double.parseDouble(obj.getString("price"));
+                double volume = Double.parseDouble(obj.getString("quantity"));
 
-            depth.addBid(volume, price);
+                depth.addBid(volume, price);
+            }
+
+            JsonArray jsonBuys = jsonDepth.getJsonArray("buyorders");
+            for(int i=0; i<jsonBuys.size(); i++) {
+                JsonObject obj = jsonBuys.getJsonObject(i);
+                double price = Double.parseDouble(obj.getString("price"));
+                double volume = Double.parseDouble(obj.getString("quantity"));
+
+                depth.addAsk(volume, price);
+            }
+            return depth;
+        }
+        catch(Exception e) {
+            log.error("failed to parse market depth", e);
         }
 
-        JsonArray jsonBuys = jsonDepth.getJsonArray("buyorders");
-        for(int i=0; i<jsonBuys.size(); i++) {
-            JsonObject obj = jsonBuys.getJsonObject(i);
-            double price = Double.parseDouble(obj.getString("price"));
-            double volume = Double.parseDouble(obj.getString("quantity"));
-
-            depth.addAsk(volume, price);
-        }
-
-
-        return depth;
+        return new MarketDepth(asset);
     }
 
     @Override

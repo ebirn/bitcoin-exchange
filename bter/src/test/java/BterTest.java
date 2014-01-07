@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.bter.BterApiClient;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class BterTest extends BaseTest {
         client = new BterApiClient(market);
     }
 
+    @Ignore
     @Test
     public void  testPlaceOrder() {
 
@@ -33,6 +35,7 @@ public class BterTest extends BaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testOpenOrders() {
 
