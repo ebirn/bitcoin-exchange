@@ -4,10 +4,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
-import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -128,7 +125,17 @@ public abstract class BaseTest {
         Assert.assertNotNull(depth.getAsset());
 
         Assert.assertNotNull(depth.getAsks());
+        for(MarketOrder order : depth.getAsks()) {
+            Assert.assertEquals(order.getAsset(), depth.getAsset());
+            Assert.assertEquals(order.getDecision(), TradeDecision.BUY);
+        }
+
         Assert.assertNotNull(depth.getBids());
+        for(MarketOrder order : depth.getBids()) {
+            Assert.assertEquals(order.getAsset(), depth.getAsset());
+            Assert.assertEquals(order.getDecision(), TradeDecision.SELL);
+        }
+
     }
 
     protected void assertTicker(TickerValue ticker) {
