@@ -103,6 +103,7 @@ public class CryptsyApiClient extends ExchangeApiClient implements MarketClient,
 
             MarketDepth depth = new MarketDepth(asset);
 
+            //bid
             JsonArray jsonSells = jsonDepth.getJsonArray("sellorders");
             for(int i=0; i<jsonSells.size(); i++) {
                 JsonObject obj = jsonSells.getJsonObject(i);
@@ -112,6 +113,7 @@ public class CryptsyApiClient extends ExchangeApiClient implements MarketClient,
                 depth.addBid(volume, price);
             }
 
+            // ask
             JsonArray jsonBuys = jsonDepth.getJsonArray("buyorders");
             for(int i=0; i<jsonBuys.size(); i++) {
                 JsonObject obj = jsonBuys.getJsonObject(i);
