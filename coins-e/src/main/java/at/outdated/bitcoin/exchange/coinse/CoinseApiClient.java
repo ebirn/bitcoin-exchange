@@ -79,27 +79,35 @@ public class CoinseApiClient extends ExchangeApiClient implements TradeClient, M
 
         JsonObject jsonDepth = root.getJsonObject("marketdepth");
 
-        JsonArray jsonBids = jsonDepth.getJsonArray("bids");
-        JsonArray jsonAsks = jsonDepth.getJsonArray("asks");
+
+
 
         MarketDepth depth = new MarketDepth(asset);
 
+        // are these mixed up in the api / exchange site?
+
+        JsonArray jsonAsks = jsonDepth.getJsonArray("asks");
         // beginning lowest ask
         for(int i=0; i<jsonAsks.size(); i++) {
             JsonObject obj = jsonAsks.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));
             double volume = Double.parseDouble(obj.getString("cq"));
 
-            depth.addAsk(volume, price);
+            if(obj.getInt("n") > 0) {
+                depth.addAsk(volume, price);
+            }
         }
 
+        JsonArray jsonBids = jsonDepth.getJsonArray("bids");
         // beginning with highest bid
         for(int i=0; i<jsonBids.size(); i++) {
             JsonObject obj = jsonBids.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));
             double volume = Double.parseDouble(obj.getString("cq"));
 
-            depth.addBid(volume, price);
+            if(obj.getInt("n") > 0) {
+                depth.addBid(volume, price);
+            }
         }
 
         return depth;

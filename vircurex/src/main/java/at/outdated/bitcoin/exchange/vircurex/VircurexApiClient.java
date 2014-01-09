@@ -205,8 +205,7 @@ public class VircurexApiClient extends ExchangeApiClient {
 
         }
         catch(Exception e) {
-            e.printStackTrace();
-
+            log.error("failed to generate token string", e);
         }
 
         return token;

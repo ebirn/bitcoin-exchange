@@ -16,6 +16,7 @@ public abstract class Fee {
     public abstract CurrencyValue calculate(TradeDecision decision, CurrencyValue volume);
 
 
+    // what remains after paying the fee
     public CurrencyValue remaining(TradeDecision decision, CurrencyValue volume) {
 
         CurrencyValue remaining = new CurrencyValue(volume);
