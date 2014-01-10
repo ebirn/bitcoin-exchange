@@ -69,13 +69,48 @@ public class MarketDepth {
         addBid(order);
     }
 
-
     public Date getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int totalOrderCount() {
+        return bids.size() + asks.size();
+    }
+
+    public CurrencyValue totalOrderVolume() {
+
+        CurrencyValue total = new CurrencyValue(0.0, asset.getBase());
+
+        for(MarketOrder order : asks)
+            total.add(order.getVolume());
+
+        for(MarketOrder order : bids)
+            total.add(order.getVolume());
+
+        return total;
+    }
+
+    public CurrencyValue totalOrderPriceVolume() {
+        CurrencyValue total = new CurrencyValue(0.0, asset.getQuote());
+
+        for(MarketOrder order : asks) {
+            CurrencyValue priceVolume = new CurrencyValue(order.getPrice());
+            priceVolume.multiply(order.getVolume().getValue());
+            total.add(order.getVolume());
+        }
+
+
+        for(MarketOrder order : bids) {
+            CurrencyValue priceVolume = new CurrencyValue(order.getPrice());
+            priceVolume.multiply(order.getVolume().getValue());
+            total.add(order.getVolume());
+        }
+
+        return total;
     }
 
     private String orderSummary(List<MarketOrder> orders) {
