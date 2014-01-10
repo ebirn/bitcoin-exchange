@@ -122,135 +122,13 @@ public class MarketDepth {
 
         for(MarketOrder order : orders) {
             volumeSum.add(order.getVolume());
-
-            double volumePrice  = order.getPrice().getValue() * order.getVolume().getValue();
-            priceSum.add(volumePrice);
+            priceSum.add(order.getPriceVolume());
         }
 
         return orders.size() + " orders (vol: " + volumeSum + " @ " + priceSum + ")";
     }
 
-    public CurrencyValue getPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
 
-        CurrencyValue price = null;
-
-        if(volume.getCurrency() == asset.getBase()) {
-            price = getAssetOrderPrice(decision, volume);
-        }
-        else {
-            price = getReverseAssetOrderPrice(decision, volume);
-        }
-
-        return price;
-    }
-
-
-    public CurrencyValue getAssetOrderPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
-        assert(asset.getBase() == volume.getCurrency());
-
-        Currency returnCurrency = asset.getOther(volume.getCurrency());
-        List<MarketOrder> orders = null;
-
-        switch(decision) {
-            case BUY:
-                orders = getAsks();
-                break;
-
-            case SELL:
-                orders = getBids();
-                break;
-
-            default:
-                throw new IllegalArgumentException("cannot process TradeDecision " + decision);
-        }
-
-
-        CurrencyValue total = new CurrencyValue(0.0, returnCurrency);
-        double remaining = volume.getValue();
-
-        for(MarketOrder order : orders) {
-
-
-            assert(order.getVolume().getCurrency() == volume.getCurrency());
-
-            double orderPrice = order.getPrice().getValue();
-
-            double additiveVol = order.getVolume().getValue();
-            if(additiveVol > remaining) {
-                additiveVol = remaining;
-            }
-
-            // FIXME: this is probably wrong?
-            total.add(additiveVol * orderPrice);
-
-            remaining -= additiveVol;
-            if(remaining < 0.00000001) break;
-        }
-
-        // FIXME: this should actually be exact 0
-        // TODO: use my own exception, return missing difference in exception to recalculate with less volume (find maximum tradeable volume)
-        if(remaining > 0.00001) {
-            throw new IllegalStateException("Insufficient market depth");
-        }
-
-        return total;
-    }
-
-
-    protected CurrencyValue getReverseAssetOrderPrice(TradeDecision decision, CurrencyValue volume) throws IllegalStateException {
-        assert(asset.getQuote() == volume.getCurrency());
-
-        Currency returnCurrency = asset.getOther(volume.getCurrency());
-
-
-        List<MarketOrder> orders = null;
-
-        // this is inverse to "normal"
-        switch(decision) {
-            case BUY:
-                orders = getBids();
-                break;
-
-            case SELL:
-                orders = getAsks();
-                break;
-
-            default:
-                throw new IllegalArgumentException("cannot process TradeDecision " + decision);
-        }
-
-        CurrencyValue total = new CurrencyValue(0.0, returnCurrency);
-        double remaining = volume.getValue();
-
-        for(MarketOrder order : orders) {
-
-            // FIXME: what is the right thing here
-            assert(order.getPrice().getCurrency() == volume.getCurrency());
-
-            double orderPrice = order.getPrice().getValue();
-            double orderVolume = order.getVolume().getValue();
-            double fullPrice = order.getVolume().getValue() * orderPrice;
-
-            if(fullPrice > remaining) {
-                orderVolume = remaining / orderPrice;
-                fullPrice = orderVolume * orderPrice;
-            }
-
-            // FIXME: this is probably wrong?
-            total.add(orderVolume);
-
-            remaining -= fullPrice;
-            if(remaining < 0.000001) break;
-        }
-
-        // FIXME: this should actually be exact 0
-        // TODO: use my own exception, return missing difference in exception to recalculate with less volume (find maximum tradeable volume)
-        if(remaining > 0.000001) {
-            throw new IllegalStateException("Insufficient market depth");
-        }
-
-        return total;
-    }
 
     @Override
     public String toString() {
