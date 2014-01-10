@@ -150,4 +150,8 @@ public class CurrencyValue {
     public boolean isNegative() {
         return value < 0.0;
     }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
 }

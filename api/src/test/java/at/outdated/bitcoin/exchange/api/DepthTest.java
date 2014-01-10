@@ -41,7 +41,7 @@ public class DepthTest {
 
         log.info("depth: {}", depth);
 
-        CurrencyValue volume = new CurrencyValue(3.0, Currency.BTC);
+        CurrencyValue volume = new CurrencyValue(45.0, Currency.BTC);
 
         CurrencyValue buyPrice = depth.getPrice(TradeDecision.BUY, volume);
         log.info("buy {} for {}", volume, buyPrice);
@@ -56,14 +56,14 @@ public class DepthTest {
 
         Assert.assertTrue(" sell higher than buy? ", buyPrice.isMoreThan(sellPrice));
 
-        Assert.assertEquals("buy pice mismatch", 3204.3353, buyPrice.getValue(), 0.001);
-        Assert.assertEquals("sell pice mismatch", 3170.43, sellPrice.getValue(), 0.001);
+        Assert.assertEquals("buy pice mismatch", 48083.04550, buyPrice.getValue(), 0.001);
+        Assert.assertEquals("sell pice mismatch", 47312.33399, sellPrice.getValue(), 0.001);
     }
 
     @Test
     public void testDepthPriceReverseAssetOrder() {
 
-        CurrencyValue volume = new CurrencyValue(5600.0, Currency.USD);
+        CurrencyValue volume = new CurrencyValue(15600.0, Currency.USD);
 
         CurrencyValue buyPrice = depth.getPrice(TradeDecision.BUY, volume);
         log.info("buy {} for {}", volume, buyPrice);
@@ -77,49 +77,48 @@ public class DepthTest {
 
         Assert.assertTrue(" sell higher than buy? ", buyPrice.isMoreThan(sellPrice));
 
-        Assert.assertEquals("buy pice mismatch", 5.298965, buyPrice.getValue(), 0.001);
-        Assert.assertEquals("sell pice mismatch", 5.242858, sellPrice.getValue(), 0.001);
+        Assert.assertEquals("buy pice mismatch", 14.833323, buyPrice.getValue(), 0.001);
+        Assert.assertEquals("sell pice mismatch", 14.605015, sellPrice.getValue(), 0.001);
 
 
     }
 
-        private void bids() {
+    private void bids() {
         //["1056.81", "2.36020121"],
         depth.addBid(2.36020121, 1056.81);
 
-
         //["1054.80", "11.65030900"],
-        depth.addBid(11.65030900, 1056.81);
+        depth.addBid(11.65030900, 1054.80);
 
         //["1054.64", "0.04900000"],
-        depth.addBid(0.04900000, 1056.81);
+        depth.addBid(0.04900000, 054.64);
 
         //["1053.59", "0.06204956"],
-        depth.addBid(0.06204956, 1056.81);
+        depth.addBid(0.06204956, 1053.59);
 
         //["1052.20", "8.29972543"],
-        depth.addBid(8.29972543, 1056.81);
+        depth.addBid(8.29972543, 1052.20);
 
         //["1051.10", "1.00000000"],
-        depth.addBid(1.0, 1056.81);
+        depth.addBid(1.0, 1051.10);
 
         //["1051.00", "17.28495511"],
-        depth.addBid(17.28495511, 1056.81);
+        depth.addBid(17.28495511,1051.00);
 
         //["1050.80", "0.04400000"],
-        depth.addBid(0.04400000, 1056.81);
+        depth.addBid(0.04400000, 1050.80);
 
         //["1050.52", "10.04163161"],
-        depth.addBid(10.04163161, 1056.81);
+        depth.addBid(10.04163161, 1050.52);
 
         //["1050.00", "0.98854804"],
-        depth.addBid(0.98854804, 1056.81);
+        depth.addBid(0.98854804, 1050.00);
 
         //["1050.96", "0.04500000"],
         depth.addBid(0.04500000, 1050.96);
 
         //["1049.12", "0.03600000"],
-        depth.addBid(0.03600000, 049.12);
+        depth.addBid(0.03600000, 1049.12);
 
         //["1045.10", "10.05172184"],
         depth.addBid(10.05172184, 1045.10);

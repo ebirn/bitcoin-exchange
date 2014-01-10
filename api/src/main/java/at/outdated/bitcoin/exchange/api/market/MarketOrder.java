@@ -36,6 +36,10 @@ public class MarketOrder {
         this.price = price;
     }
 
+    public CurrencyValue getPriceVolume() {
+        return new CurrencyValue(price).multiply(volume.getValue());
+    }
+
     public CurrencyValue getVolume() {
         return volume;
     }
