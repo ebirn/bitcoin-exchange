@@ -89,7 +89,7 @@ public class VircurexMarket extends Market {
         addAsset(Currency.FTC, Currency.NMC);
         addAsset(Currency.FTC, Currency.NVC);
         addAsset(Currency.FTC, Currency.PPC);
-        addAsset(Currency.FTC, Currency.QRK);
+        // addAsset(Currency.FTC, Currency.QRK);
     }
 
     @Override
