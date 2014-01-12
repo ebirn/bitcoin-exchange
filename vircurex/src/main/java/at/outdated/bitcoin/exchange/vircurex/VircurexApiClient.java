@@ -133,14 +133,12 @@ public class VircurexApiClient extends ExchangeApiClient {
 
         }
         catch(ClassCastException cce) {
-            log.info("canot parse depth, probably empty?");
+            log.info("canot parse depth, probably empty?", cce);
             return null;
         }
         return depth;
     }
 
-
-    private Random rand = new Random();
 
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {

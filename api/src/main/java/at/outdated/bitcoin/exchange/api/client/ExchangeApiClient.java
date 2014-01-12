@@ -14,6 +14,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Form;
@@ -211,8 +212,11 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         catch (WebApplicationException wae) {
             handleApiError(wae);
         }
+        catch(ProcessingException pe) {
+            log.error("cannot process returned data", pe);
+        }
         catch(Exception e) {
-            log.error("unexpected exception: {}", e);
+            log.error("unexpected exception", e);
         }
         finally {
             updateApiLag(requestDate);
