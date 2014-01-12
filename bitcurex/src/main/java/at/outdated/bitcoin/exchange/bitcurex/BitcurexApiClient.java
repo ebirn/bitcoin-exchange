@@ -89,23 +89,34 @@ public class BitcurexApiClient extends ExchangeApiClient {
         Currency base = asset.getBase();
         Currency quote = asset.getQuote();
 
-        WebTarget depthTarget = client.target("https://{curr}.bitcurex.com/data/trades.json")
+        WebTarget depthTarget = client.target("https://{curr}.bitcurex.com/data/orderbook.json")
                 .resolveTemplate("curr", quote.name().toLowerCase());
 
         String raw = super.simpleGetRequest(depthTarget, String.class);
 
-        JsonArray rawDepth =  Json.createReader(new StringReader(raw)).readArray();
+        JsonObject root =  jsonFromString(raw);
 
         MarketDepth depth = new MarketDepth(asset);
 
+
+        double[][] bids = parseNestedArray(root.getJsonArray("bids"));
+
+        for(double[] bid : bids) {
+            depth.addBid(bid[1], bid[0]);
+        }
+
+        double[][] asks = parseNestedArray(root.getJsonArray("asks"));
+        for(double[] ask : asks) {
+            depth.addAsk(ask[1], ask[0]);
+        }
+        /*
         for(JsonValue v : rawDepth) {
             JsonObject trade = (JsonObject) v;
 
             double price = Double.parseDouble(trade.getString("price"));
             double volume = Double.parseDouble(trade.getString("amount"));
             int type = trade.getJsonNumber("type").intValue();
-            //trade.getJsonNumber("date");
-            //trade.getJsonNumber("tid");
+
 
             // sell
             if(type == 1) {
@@ -116,7 +127,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
                 depth.addBid(volume, price);
             }
         }
-
+*/
 
         return depth;
     }

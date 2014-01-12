@@ -45,6 +45,7 @@ public class BterTest extends BaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testMultiCall() {
 

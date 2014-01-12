@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -92,7 +94,11 @@ public class CurrencyValue {
 
     public CurrencyValue subtract(CurrencyValue other) {
         this.value -= other.value;
+        return this;
+    }
 
+    public CurrencyValue subtract(double other) {
+        this.value -= other;
         return this;
     }
 
@@ -132,10 +138,14 @@ public class CurrencyValue {
     }
 
     public String toString() {
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(2);
+        NumberFormat nf = NumberFormat.getInstance(Locale.US);
+        nf.setGroupingUsed(false);
+
         nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(7);
+
         nf.setMinimumIntegerDigits(1);
+
         return nf.format(value) + " " + currency.name();
     }
 

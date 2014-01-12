@@ -19,10 +19,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by ebirn on 11.10.13.
@@ -122,6 +119,8 @@ public class BterApiClient extends ExchangeApiClient {
         for(double[] bid : bids) {
             depth.addBid(bid[1], bid[0]);
         }
+
+        sortDepth(depth);
 
         return depth;
     }

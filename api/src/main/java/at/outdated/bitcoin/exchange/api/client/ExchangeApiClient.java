@@ -72,7 +72,13 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
 
 
     protected JsonObject jsonFromString(String s) {
-        return Json.createReader(new StringReader(s)).readObject();
+        try {
+            return Json.createReader(new StringReader(s)).readObject();
+        }
+        catch(Exception e) {
+            log.error("unparsable json: {}", s);
+            throw e;
+        }
     }
 
     protected JsonArray jsonArrayFromString(String s) {
@@ -316,6 +322,16 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
 
         return null;
         //return performFundWithdrawal(volume, address);
+    }
+
+    protected void sortDepth(MarketDepth depth) {
+        OrderComparator comparator = new OrderComparator();
+
+        comparator.setOrderType(OrderType.ASK);
+        Collections.sort(depth.getAsks(), comparator);
+
+        comparator.setOrderType(OrderType.BID);
+        Collections.sort(depth.getBids(), comparator);
     }
 
     //FIXME: remove these

@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.junit.*;
@@ -49,14 +50,6 @@ public abstract class BaseTest {
         }
     }
 
-
-    @Ignore
-    @Test
-    public void testDepthPrice() {
-
-        MarketDepth depth = new MarketDepth();
-
-    }
 
     @Test
     public void testAccountInfo() {
@@ -136,6 +129,32 @@ public abstract class BaseTest {
             Assert.assertEquals(order.getDecision(), TradeDecision.SELL);
         }
 
+        if(!depth.getAsks().isEmpty() && !depth.getBids().isEmpty()) {
+            Assume.assumeFalse("asks empty", depth.getAsks().isEmpty());
+            Assume.assumeFalse("bids empty", depth.getBids().isEmpty());
+
+
+            MarketOrder firstAsk = depth.getAsks().get(0);
+            MarketOrder firstBid = depth.getBids().get(0);
+
+            CurrencyValue askPrice = firstAsk.getPrice();
+            CurrencyValue bidPrice = firstBid.getPrice();
+
+            Assert.assertTrue(" sell higher than buy? ", askPrice.isMoreThan(bidPrice));
+
+            for(MarketOrder order : depth.getAsks()) {
+                Assert.assertTrue("ask price not ascending", askPrice.getValue() <= order.getPrice().getValue());
+                askPrice = order.getPrice();
+            }
+
+            for(MarketOrder order : depth.getBids()) {
+                Assert.assertTrue("bid price not descending", bidPrice.getValue() >= order.getPrice().getValue());
+                bidPrice = order.getPrice();
+            }
+        }
+        else {
+            log.info("market depth is empty, skipping bid/ask testing");
+        }
     }
 
     protected void assertTicker(TickerValue ticker) {

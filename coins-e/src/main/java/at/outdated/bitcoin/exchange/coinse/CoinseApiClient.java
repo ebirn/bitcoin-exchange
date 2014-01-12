@@ -91,7 +91,7 @@ public class CoinseApiClient extends ExchangeApiClient implements TradeClient, M
         for(int i=0; i<jsonAsks.size(); i++) {
             JsonObject obj = jsonAsks.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));
-            double volume = Double.parseDouble(obj.getString("cq"));
+            double volume = Double.parseDouble(obj.getString("q"));
 
             if(obj.getInt("n") > 0) {
                 depth.addAsk(volume, price);
@@ -103,7 +103,7 @@ public class CoinseApiClient extends ExchangeApiClient implements TradeClient, M
         for(int i=0; i<jsonBids.size(); i++) {
             JsonObject obj = jsonBids.getJsonObject(i);
             double price = Double.parseDouble(obj.getString("r"));
-            double volume = Double.parseDouble(obj.getString("cq"));
+            double volume = Double.parseDouble(obj.getString("q"));
 
             if(obj.getInt("n") > 0) {
                 depth.addBid(volume, price);

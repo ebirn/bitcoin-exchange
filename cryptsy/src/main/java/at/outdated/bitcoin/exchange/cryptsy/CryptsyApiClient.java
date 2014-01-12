@@ -159,7 +159,8 @@ public class CryptsyApiClient extends ExchangeApiClient implements MarketClient,
             return depth;
         }
         catch(Exception e) {
-            log.error("failed to parse market depth", e);
+            log.error("failed to parse market depth {}", asset);
+            log.error("", e);
         }
 
         return null;

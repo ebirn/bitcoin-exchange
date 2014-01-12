@@ -108,6 +108,8 @@ public class MtGoxClient extends ExchangeApiClient {
             depth.addBid(bid.amount, bid.price);
         }
 
+        sortDepth(depth);
+
         return depth;
     }
 

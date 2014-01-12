@@ -90,6 +90,8 @@ public class BitkonanApiClient extends ExchangeApiClient {
             depth.addAsk(volume, price);
         }
 
+        sortDepth(depth);
+
         return depth;
     }
 

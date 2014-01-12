@@ -41,21 +41,5 @@ public class BitkonanTest extends BaseTest {
 
     }
 
-    @Test
-    public void testDepth() {
-
-        MarketDepth d = client.getMarketDepth(new AssetPair(Currency.BTC, Currency.USD));
-
-
-        Assert.assertNotNull(d);
-    }
-
-    @Test
-    public void testAccountInfo() {
-
-        AccountInfo info = client.getAccountInfo();
-
-        Assert.assertNotNull(info);
-    }
 
 }
