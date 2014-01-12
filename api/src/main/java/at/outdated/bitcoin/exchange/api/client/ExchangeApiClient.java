@@ -323,7 +323,6 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
             throw new IllegalArgumentException("Currency mismatch");
         }
 
-
         return null;
         //return performFundWithdrawal(volume, address);
     }
@@ -337,6 +336,7 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         comparator.setOrderType(OrderType.BID);
         Collections.sort(depth.getBids(), comparator);
     }
+
 
     //FIXME: remove these
     @Override
@@ -355,4 +355,5 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     public boolean cancelOrder(OrderId order) {
         return false;
     }
+
 }

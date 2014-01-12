@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -16,10 +17,10 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
-import java.util.TimeZone;
+import java.util.*;
 
 
 /**
@@ -51,7 +52,9 @@ public class VircurexApiClient extends ExchangeApiClient {
         WebTarget balancesTgt = client.target("https://vircurex.com/api/get_balances.json");
 
         Form f = new Form();
+        f.param("word", getPropertyString("word.balance"));
         f.param("command", "get_balances");
+
         String rawBalances = protectedGetRequest(balancesTgt, String.class, Entity.form(f));
 
         JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
@@ -167,22 +170,49 @@ public class VircurexApiClient extends ExchangeApiClient {
                 throw new IllegalStateException("cannot setup secure request, missing user ID.");
             }
 
-            String word = getPropertyString("words.balance");
+            Form form = (Form) entity.getEntity();
+
+            String word = form.asMap().getFirst("word");
+            form.asMap().remove("word");
+
+
             if(word == null) {
                 throw new IllegalStateException("cannot setup secure request, missing secret word.");
             }
 
+            //List<String> params = form.asMap().get("params");
 
-            Form form = (Form) entity.getEntity();
+            String command = form.asMap().getFirst("command");
+            form.asMap().remove("command");
 
             res = res.queryParam("account", user)
                 .queryParam("id",txId)
-                .queryParam("token", buildToken(word, user, timestamp, txId, form.asMap().getFirst("command")))
-                .queryParam("timestamp",timestamp);
+                .queryParam("timestamp", timestamp);
+
+            ArrayList<String> tokenValues = new ArrayList<>();
+            tokenValues.add(word);
+            tokenValues.add(user);
+            tokenValues.add(timestamp);
+            tokenValues.add(txId);
+            tokenValues.add(command);
+
+            for(String key : form.asMap().keySet()) {
+                String value = form.asMap().getFirst(key);
+
+                tokenValues.add(value);
+                res = res.queryParam(key, value);
+            }
+
+            String[] tokenArr = new String[tokenValues.size()];
+            tokenValues.toArray(tokenArr);
+
+            String token = buildToken( tokenArr );
+            res = res.queryParam("token", token);
+
         }
 
         catch(Exception e) {
-            log.error("failed to setup secure request");
+            log.error("failed to setup secure request", e);
         }
 
         Invocation.Builder builder = res.request();
@@ -210,4 +240,108 @@ public class VircurexApiClient extends ExchangeApiClient {
     }
 
 
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        // read_orders
+        // we hardcode otype=1 for released orders (otype = 0 ... unreleased)
+
+        // wordkey: readorders
+
+        WebTarget tgt = client.target("https://vircurex.com/api/read_orders.json").queryParam("otype", "1");
+
+
+        Form f = new Form();
+        f.param("word", getPropertyString("word.readorders"));
+        f.param("command", "read_orders");
+
+        String raw = protectedGetRequest(tgt, String.class, Entity.form(f));
+
+        JsonObject root = jsonFromString(raw);
+
+        int status = root.getInt("status");
+        if(status != 0) {
+            log.info("failed to load order list, error: {}", root.getString("message"));
+            return null;
+        }
+
+        int numOrders = root.getInt("numberorders");
+
+
+
+        ArrayList<MarketOrder> orders = new ArrayList<>(numOrders);
+
+
+        return orders;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        // create_released_order
+        // wordkey: createorder
+
+        WebTarget tgt = client.target("https://vircurex.com/api/read_orders.json");
+
+        Form f = new Form();
+        f.param("word", getPropertyString("word.createorder"));
+        f.param("command", "create_released_order");
+
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        nf.setMinimumIntegerDigits(1);
+
+        nf.setMinimumFractionDigits(4);
+        nf.setMaximumFractionDigits(15);
+
+        f.param("ordertype", decision.name());
+        f.param("amount", nf.format(volume.getValue()));
+        f.param("currency1", asset.getBase().name());
+        f.param("unitprice", nf.format(price.getValue()));
+        f.param("currency2", asset.getBase().name());
+
+
+        // FIXME: missing params
+
+        String raw = protectedGetRequest(tgt, String.class, Entity.form(f));
+
+        JsonObject root = jsonFromString(raw);
+
+
+        return null;
+    }
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+
+        // delete_order
+        // wordkey: deleteorder
+
+
+        WebTarget tgt = client.target("https://vircurex.com/api/delete_order.json");
+
+        Form f = new Form();
+        f.param("word", getPropertyString("word.deleteorder"));
+        f.param("command", "delete_order");
+
+        //TODO: hopefully the map in Form keeps the params in order, this is needed for token generation
+        f.param("orderid", order.getIdentifier());
+        f.param("otype", "1");
+
+
+        String raw = protectedGetRequest(tgt, String.class, Entity.form(f));
+
+        JsonObject root = jsonFromString(raw);
+
+        int status = root.getInt("status");
+        if(status != 0) {
+            log.info("failed to cancel order: {} (id: {})", root.getString("statustext"), order.getIdentifier());
+            return false;
+        }
+
+
+        // at this point: status must be 0
+        // if(status == 0 && order.getIdentifier().equalsIgnoreCase(root.getString("orderid"))) {
+        //    return true;
+        //}
+
+        return true;
+    }
 }
