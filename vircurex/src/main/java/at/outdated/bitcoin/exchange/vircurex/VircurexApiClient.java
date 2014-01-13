@@ -230,7 +230,6 @@ public class VircurexApiClient extends ExchangeApiClient {
             String fullString = StringUtils.join(args, ";");
 
             token = Hex.encodeHexString(digest.digest(fullString.getBytes()));
-
         }
         catch(Exception e) {
             log.error("failed to generate token string", e);
@@ -270,6 +269,24 @@ public class VircurexApiClient extends ExchangeApiClient {
 
         ArrayList<MarketOrder> orders = new ArrayList<>(numOrders);
 
+        for(int i=1; i<=numOrders; i++) {
+
+            JsonObject jsonOrder = root.getJsonObject("order-" + i);
+
+            Currency c1 = Currency.valueOf(jsonOrder.getString("currency1"));
+            Currency c2 = Currency.valueOf(jsonOrder.getString("currency2"));
+
+            AssetPair asset = market.getAsset(c1, c2);
+
+            MarketOrder order = new MarketOrder();
+            order.setId(new OrderId(market, jsonOrder.getJsonNumber("orderid").toString()));
+            order.setAsset(asset);
+            order.setDecision(TradeDecision.valueOf(jsonOrder.getString("ordertype")));
+            order.setVolume(new CurrencyValue(Double.valueOf(jsonOrder.getString("quantity")), c1));
+            order.setPrice(new CurrencyValue(Double.valueOf(jsonOrder.getString("unitprice")), c2));
+
+            orders.add(order);
+        }
 
         return orders;
     }
@@ -277,13 +294,19 @@ public class VircurexApiClient extends ExchangeApiClient {
     @Override
     public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
         // create_released_order
+
+        // Input token:
+        // YourSecurityWord;YourUserName;Timestamp;ID;create_order;ordertype;amount;currency1;unitprice;currency2
+        // Output token:
+        // YourSecurityWord;YourUserName;Timestamp;create_order;order_id
+
         // wordkey: createorder
 
-        WebTarget tgt = client.target("https://api.vircurex.com/api/read_orders.json");
+        WebTarget tgt = client.target("https://api.vircurex.com/api/create_released_order.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.createorder"));
-        f.param("command", "create_released_order");
+        f.param("command", "create_order");
 
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         nf.setMinimumIntegerDigits(1);
@@ -295,7 +318,7 @@ public class VircurexApiClient extends ExchangeApiClient {
         f.param("amount", nf.format(volume.getValue()));
         f.param("currency1", asset.getBase().name());
         f.param("unitprice", nf.format(price.getValue()));
-        f.param("currency2", asset.getBase().name());
+        f.param("currency2", asset.getQuote().name());
 
 
         // FIXME: missing params
@@ -303,9 +326,21 @@ public class VircurexApiClient extends ExchangeApiClient {
         String raw = protectedGetRequest(tgt, String.class, Entity.form(f));
 
         JsonObject root = jsonFromString(raw);
+        int status = root.getInt("status");
+        if(status != 0) {
 
+            MarketOrder order = new MarketOrder();
+            order.setAsset(asset);
+            order.setDecision(decision);
+            order.setVolume(volume);
+            order.setPrice(price);
 
-        return null;
+            log.error("failed to place order: {} - ({})", order, root.getString("statustext"));
+            return null;
+        }
+
+        OrderId id = new OrderId(market, root.getString("orderid"));
+        return id;
     }
 
     @Override
