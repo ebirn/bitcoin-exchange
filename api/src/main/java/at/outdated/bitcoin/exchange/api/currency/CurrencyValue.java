@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -138,15 +140,7 @@ public class CurrencyValue {
     }
 
     public String toString() {
-        NumberFormat nf = NumberFormat.getInstance(Locale.US);
-        nf.setGroupingUsed(false);
-
-        nf.setMinimumFractionDigits(2);
-        nf.setMaximumFractionDigits(7);
-
-        nf.setMinimumIntegerDigits(1);
-
-        return nf.format(value) + " " + currency.name();
+        return valueToString() + " " + currency.name();
     }
 
     public boolean isPositive() {
@@ -163,5 +157,19 @@ public class CurrencyValue {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public String valueToString() {
+/*
+        NumberFormat fmt = NumberFormat.getNumberInstance(Locale.US);
+        fmt.setGroupingUsed(false);
+        fmt.setMinimumIntegerDigits(1);
+
+        fmt.setMinimumFractionDigits(4);
+        fmt.setMaximumFractionDigits(7);
+*/
+        BigDecimal number = new BigDecimal(value, new MathContext(7, RoundingMode.HALF_UP));
+
+        return number.toPlainString();
     }
 }

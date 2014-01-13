@@ -1,4 +1,4 @@
-package at.outdated.bitcoin.exchange.mtgox;
+package at.outdated.bitcoin.exchange.api.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.SimpleDateFormat;
@@ -12,7 +12,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 
-public class DateAdapter extends XmlAdapter<String, Date> {
+public class DateIso8601SpacedAdapter extends XmlAdapter<String, Date> {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

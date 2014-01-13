@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -23,9 +24,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -38,8 +42,6 @@ import java.util.ResourceBundle;
 public class BitstampClient extends ExchangeApiClient {
 
     SimpleDateFormat bitstampDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-
 
     public BitstampClient(Market market) {
         super(market);
@@ -293,5 +295,98 @@ public class BitstampClient extends ExchangeApiClient {
 
         return new CurrencyAddress(curr, address);
 
+    }
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+
+        // https://www.bitstamp.net/api/cancel_order/
+
+        WebTarget tgt = client.target("https://www.bitstamp.net/api/cancel_order/");
+
+        Form form = new Form();
+        form.param("id", order.getIdentifier());
+
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(form));
+
+        if(raw.equalsIgnoreCase("true")) {
+            return true;
+        }
+
+        JsonObject json = jsonFromString(raw);
+        log.error("failed to delete order {} - {}", order.getIdentifier(), json.getString("error"));
+        return false;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+
+        Form form = new Form();
+
+        form.param("amount", volume.valueToString());
+        form.param("price", price.valueToString());
+
+        WebTarget tgt = null;
+        switch(decision) {
+            case BUY:
+                tgt = client.target("https://www.bitstamp.net/api/buy/");
+                break;
+
+            case SELL:
+                tgt = client.target("https://www.bitstamp.net/api/sell/");
+                break;
+
+            default:
+                log.error("cannot place order to {}", decision);
+                return null;
+
+        }
+
+        //String raw = protectedPostRequest(tgt, String.class, Entity.form(form));
+        //return null;
+
+        BitstampOrder placedOrder = protectedPostRequest(tgt, BitstampOrder.class, Entity.form(form));
+        return new OrderId(market, Integer.toString(placedOrder.getId()));
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+
+        // https://www.bitstamp.net/api/open_orders/
+
+        WebTarget tgt = client.target("https://www.bitstamp.net/api/open_orders/");
+
+        GenericType<List<BitstampOrder>> orderType = new GenericType<List<BitstampOrder>>() {};
+        Entity<Form> entity = Entity.form(new Form());
+
+        List<BitstampOrder> bitstampOrders = setupProtectedResource(tgt, entity).post(entity, orderType);
+
+        List<MarketOrder> orders = new ArrayList<>();
+
+        for(BitstampOrder rawOrder : bitstampOrders) {
+            orders.add(convertOrder(rawOrder));
+        }
+
+        return orders;
+    }
+
+    MarketOrder convertOrder(BitstampOrder rawOrder) {
+        MarketOrder order = new MarketOrder();
+        order.setId(new OrderId(market, Integer.toString(rawOrder.getId())));
+
+        switch(rawOrder.getType()) {
+            case BUY:
+                order.setDecision(TradeDecision.BUY);
+                break;
+
+            case SELL:
+                order.setDecision(TradeDecision.SELL);
+        }
+
+        order.setPrice(new CurrencyValue(rawOrder.getPrice().doubleValue(), Currency.USD));
+        order.setVolume(new CurrencyValue(rawOrder.getAmount().doubleValue(), Currency.BTC));
+        order.setAsset(market.getAsset(Currency.BTC, Currency.USD));
+
+        return order;
     }
 }

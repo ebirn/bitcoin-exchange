@@ -138,9 +138,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
 
         log.debug("BITCUREX raw: " + resultStr);
 
-        R result = null;
-
-        result = BitcurexJsonResolver.convertFromJson(resultStr, resultClass);
+        R result = BitcurexJsonResolver.convertFromJson(resultStr, resultClass);
 
         return result;
     }

@@ -110,7 +110,7 @@ public abstract class BaseTest {
     protected void assertAccountInfo(AccountInfo info) {
 
         Assert.assertNotNull(info);
-        // TODO: more detailed checks
+        // FIXME: more detailed checks
     }
 
     protected void assertDepth(MarketDepth depth){

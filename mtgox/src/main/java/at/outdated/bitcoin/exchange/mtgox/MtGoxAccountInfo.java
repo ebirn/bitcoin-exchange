@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601SpacedAdapter;
 import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
@@ -12,7 +13,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -59,11 +59,11 @@ public class MtGoxAccountInfo extends AccountInfo {
     private double tradeFee = Double.MAX_VALUE;
 
     @XmlElement(name="Last_Login")
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(DateIso8601SpacedAdapter.class)
     private Date lastLogin;
 
     @XmlElement(name="Created")
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(DateIso8601SpacedAdapter.class)
     private Date created;
 
     @XmlElement(name="Language")
