@@ -49,7 +49,7 @@ public class VircurexApiClient extends ExchangeApiClient {
         Output token: YourSecurityWord;YourUserName;Timestamp;get_balances
          */
 
-        WebTarget balancesTgt = client.target("https://vircurex.com/api/get_balances.json");
+        WebTarget balancesTgt = client.target("https://api.vircurex.com/api/get_balances.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.balance"));
@@ -87,7 +87,7 @@ public class VircurexApiClient extends ExchangeApiClient {
     public TickerValue getTicker(AssetPair asset) {
 
         // get_info_for_1_currency
-        WebTarget tickerTgt = client.target("https://vircurex.com/api/get_info_for_1_currency.json")
+        WebTarget tickerTgt = client.target("https://api.vircurex.com/api/get_info_for_1_currency.json")
             .queryParam("base", asset.getBase())
             .queryParam("alt", asset.getQuote());
         // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
@@ -105,7 +105,7 @@ public class VircurexApiClient extends ExchangeApiClient {
     @Override
     public MarketDepth getMarketDepth(AssetPair asset) {
 
-        WebTarget depthTarget = client.target("https://vircurex.com/api/orderbook.json?base={base}&alt={quote}")
+        WebTarget depthTarget = client.target("https://api.vircurex.com/api/orderbook.json?base={base}&alt={quote}")
             .resolveTemplate("base", asset.getBase().name())
             .resolveTemplate("quote", asset.getQuote().name());
 
@@ -151,7 +151,7 @@ public class VircurexApiClient extends ExchangeApiClient {
          user_name = "MY_USER_NAME"
          secret_word = "123456789"
          tok = Digest::SHA2.hexdigest("#{secret_word};#{user_name};#{t};#{trx_id};create_order;sell;10;btc;50;nmc")
-         Order.call_https("https://vircurex.com","/api/create_order.json?account=#{user_name}&id=#{trx_id}&token=#{tok}&timestamp=#{t}&ordertype=sell&amount=10&currency1=btc&unitprice=50&currency2=nmc")
+         Order.call_https("https://api.vircurex.com","/api/create_order.json?account=#{user_name}&id=#{trx_id}&token=#{tok}&timestamp=#{t}&ordertype=sell&amount=10&currency1=btc&unitprice=50&currency2=nmc")
      */
 
         //FIXME to response authentication (check token)
@@ -247,7 +247,7 @@ public class VircurexApiClient extends ExchangeApiClient {
 
         // wordkey: readorders
 
-        WebTarget tgt = client.target("https://vircurex.com/api/read_orders.json").queryParam("otype", "1");
+        WebTarget tgt = client.target("https://api.vircurex.com/api/read_orders.json").queryParam("otype", "1");
 
 
         Form f = new Form();
@@ -279,7 +279,7 @@ public class VircurexApiClient extends ExchangeApiClient {
         // create_released_order
         // wordkey: createorder
 
-        WebTarget tgt = client.target("https://vircurex.com/api/read_orders.json");
+        WebTarget tgt = client.target("https://api.vircurex.com/api/read_orders.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.createorder"));
@@ -315,7 +315,7 @@ public class VircurexApiClient extends ExchangeApiClient {
         // wordkey: deleteorder
 
 
-        WebTarget tgt = client.target("https://vircurex.com/api/delete_order.json");
+        WebTarget tgt = client.target("https://api.vircurex.com/api/delete_order.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.deleteorder"));
