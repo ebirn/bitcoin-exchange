@@ -283,7 +283,6 @@ public class MtGoxClient extends ExchangeApiClient {
         orderData.append("price_int=").append(Long.toString( priceValue ));
 
         Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", orderData.toString());
-
         String raw = res.readEntity(String.class);
 /*
         type    "bid" or ask
