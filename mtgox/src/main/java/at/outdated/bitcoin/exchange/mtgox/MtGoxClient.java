@@ -12,6 +12,7 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -273,22 +274,28 @@ public class MtGoxClient extends ExchangeApiClient {
                 break;
         }
 
-        StringBuilder orderData = new StringBuilder();
-        orderData.append("type=").append(type).append(";");
+        List<String> orderData = new ArrayList<>();
+        orderData.add("type=" + type);
 
         long volumeValue = Math.round(volume.getValue() * multiplier.get(volume.getCurrency()));
         long priceValue =  Math.round(price.getValue() * multiplier.get(price.getCurrency()));
 
-        orderData.append("amount_int=").append(Long.toString( volumeValue )).append(";");
-        orderData.append("price_int=").append(Long.toString( priceValue ));
+        orderData.add("amount_int=" + Long.toString( volumeValue ));
+        orderData.add("price_int=" + Long.toString( priceValue ));
 
-        Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", orderData.toString());
-        String raw = res.readEntity(String.class);
+        Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", StringUtils.join(orderData, "&"));
+        MtgoxOrderPlaced placed = res.readEntity(MtgoxOrderPlaced.class);
+
+
+        if(placed.getResult().equalsIgnoreCase("success")) {
+            return new OrderId(market, placed.getData());
+        }
 /*
         type    "bid" or ask
         amount_int  amount of BTC to buy or sell, as an integer
         price_int   The price per bitcoin in the auxiliary currency, as an integer, optional if you wish to trade at the market price
   */
+        log.error("failed to place order");
         return null;
     }
 

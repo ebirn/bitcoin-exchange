@@ -52,7 +52,7 @@ public class MtgoxTest extends BaseTest {
     public void testPlaceOrder() {
 
         AssetPair asset = market.getAsset(Currency.BTC, Currency.USD);
-        CurrencyValue volume = new CurrencyValue(0.01, Currency.BTC);
+        CurrencyValue volume = new CurrencyValue(10.01, Currency.BTC);
         CurrencyValue price = new CurrencyValue(1000000, Currency.USD);
         TradeDecision decision = TradeDecision.SELL;
 
