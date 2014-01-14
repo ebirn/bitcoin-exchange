@@ -41,7 +41,7 @@ public class BitstampTest extends BaseTest {
     @Test
     public void testDeleteOrder() {
 
-        OrderId id = new OrderId(market, "15281268");
+        OrderId id = new OrderId(market, "123asdf456");
 
         boolean didIt = client.cancelOrder(id);
 

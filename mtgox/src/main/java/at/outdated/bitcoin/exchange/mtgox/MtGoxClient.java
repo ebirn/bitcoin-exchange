@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -12,15 +13,19 @@ import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,6 +49,8 @@ public class MtGoxClient extends ExchangeApiClient {
 
     private final String API_WITHDRAW = "MONEY/BITCOIN/SEND_SIMPLE";
     private final String API_LAG = "MONEY/ORDER/LAG";
+
+
     private final String API_ADD_ORDER = "BTCUSD/MONEY/ORDER/ADD";
 
     private final String SIGN_HASH_FUNCTION = "HmacSHA512";
@@ -227,6 +234,50 @@ public class MtGoxClient extends ExchangeApiClient {
 
 
     @Override
+    public boolean cancelOrder(OrderId order) {
+
+        // BTCUSD/MONEY/ORDER/cancel
+
+
+        Response res = signedRequest("BTCUSD/money/order/cancel", "oid="+order.getIdentifier());
+
+        String raw = res.readEntity(String.class);
+
+
+
+        return false;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+
+
+        String orderData = "";
+
+        Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", orderData);
+
+        String raw = res.readEntity(String.class);
+
+        return null;
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+
+        // this is stupid: the BTCUSD part doesn't do anything
+        Response res = signedRequest("BTCUSD/money/orders", "");
+
+        MtGoxOrderList orderList = res.readEntity(MtGoxOrderList.class);
+        List<MarketOrder> orders = new ArrayList<>();
+
+        for(MtGoxOrder mtGoxOrder : orderList.getData()) {
+            orders.add(converOrder(mtGoxOrder));
+        }
+
+        return orders;
+    }
+
+    @Override
     protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
 
 
@@ -238,4 +289,35 @@ public class MtGoxClient extends ExchangeApiClient {
 
         return new CurrencyAddress(curr, jo.getString("data"));
     }
+
+
+    MarketOrder converOrder(MtGoxOrder mtGoxOrder) {
+
+        MarketOrder order = new MarketOrder();
+        order.setId(new OrderId(market, mtGoxOrder.getOid()));
+
+        CurrencyValue volume = mtGoxOrder.getAmount();
+        order.setVolume(mtGoxOrder.getAmount());
+
+        CurrencyValue price = mtGoxOrder.getPrice();
+        order.setPrice(mtGoxOrder.getPrice());
+
+        AssetPair asset = market.getAsset(volume.getCurrency(), price.getCurrency());
+
+        order.setAsset(asset);
+
+        switch(mtGoxOrder.getType()) {
+            case BUY:
+                order.setDecision(TradeDecision.BUY);
+                break;
+
+            case SELL:
+                order.setDecision(TradeDecision.SELL);
+        }
+
+
+        return order;
+    }
+
+
 }
