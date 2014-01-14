@@ -40,7 +40,7 @@ public class MtgoxTest extends BaseTest {
     @Test
     public void testDeleteOrder() {
 
-        OrderId id = new OrderId(market, "xxx4b620152-a29f-482c-8ea8-880e17eb856cxxx");
+        OrderId id = new OrderId(market, "ea201296-06d2-4601-8979-cb849276e03e");
 
         boolean didIt = client.cancelOrder(id);
 
@@ -53,7 +53,7 @@ public class MtgoxTest extends BaseTest {
 
         AssetPair asset = market.getAsset(Currency.BTC, Currency.USD);
         CurrencyValue volume = new CurrencyValue(0.01, Currency.BTC);
-        CurrencyValue price = new CurrencyValue(10000, Currency.USD);
+        CurrencyValue price = new CurrencyValue(1000000, Currency.USD);
         TradeDecision decision = TradeDecision.SELL;
 
         MarketOrder order = new MarketOrder();
