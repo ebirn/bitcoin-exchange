@@ -22,10 +22,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,10 +55,17 @@ public class MtGoxClient extends ExchangeApiClient {
 
     private WebTarget apiBaseResource;
 
+    Map<Currency,Double> multiplier = new HashMap<>();
+
     public MtGoxClient(Market market) {
         super(market);
         client = ClientBuilder.newBuilder().register(MtGoxJSONResolver.class).build();
         apiBaseResource = client.target(API_BASE_URL);
+
+
+        multiplier.put(Currency.BTC, 1.0e8);
+        multiplier.put(Currency.USD, 1.0e5);
+        multiplier.put(Currency.EUR, 1.0e5);
     }
 
 
@@ -241,10 +245,20 @@ public class MtGoxClient extends ExchangeApiClient {
 
         Response res = signedRequest("BTCUSD/money/order/cancel", "oid="+order.getIdentifier());
 
-        String raw = res.readEntity(String.class);
+        if(res == null) {
+            log.error("failed to cancel order {} - request failed.", order.getIdentifier());
+            return false;
+        }
+
+        OrderDeletionResult result = res.readEntity(OrderDeletionResult.class);
 
 
+        if(result.getResult().equalsIgnoreCase("success") &&
+                result.getData().getOid().equalsIgnoreCase(order.getIdentifier())) {
+            return true;
+        }
 
+        log.error("failed to cancel order {}", order.getIdentifier());
         return false;
     }
 
@@ -252,12 +266,37 @@ public class MtGoxClient extends ExchangeApiClient {
     public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
 
 
-        String orderData = "";
+        String type = null;
+        switch(decision) {
+            case BUY:
+                type = "bid";
+                break;
 
-        Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", orderData);
+            case SELL:
+                type = "ask";
+                break;
+        }
+
+        StringBuilder orderData = new StringBuilder();
+        orderData.append("type=").append(type).append(";");
+
+
+
+        long volumeValue = Math.round(volume.getValue() * multiplier.get(volume.getCurrency()));
+        long priceValue =  Math.round(price.getValue() * multiplier.get(price.getCurrency()));
+
+        orderData.append("amount_int=").append(Long.toString( volumeValue )).append(";");
+        orderData.append("price_int=").append(Long.toString( priceValue ));
+
+
+        Response res = signedRequest("BTCUSD/MONEY/ORDER/ADD", orderData.toString());
 
         String raw = res.readEntity(String.class);
-
+/*
+        type    "bid" or ask
+        amount_int  amount of BTC to buy or sell, as an integer
+        price_int   The price per bitcoin in the auxiliary currency, as an integer, optional if you wish to trade at the market price
+  */
         return null;
     }
 
