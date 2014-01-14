@@ -18,15 +18,35 @@ public class Orders {
 
     @XmlElement
     @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    protected Number eurs;
+    Number eurs;
+
 
     @XmlElement
     @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    protected Number btcs;
+    Number plns;
+
+    @XmlElement
+    @XmlJavaTypeAdapter(StringNumberAdapter.class)
+    Number btcs;
 
 
     @XmlElement
-    protected List<BitcurexOrder> orders;
+    List<BitcurexOrder> orders;
 
 
+    public Number getEurs() {
+        return eurs;
+    }
+
+    public Number getBtcs() {
+        return btcs;
+    }
+
+    public List<BitcurexOrder> getOrders() {
+        return orders;
+    }
+
+    public Number getPlns() {
+        return plns;
+    }
 }

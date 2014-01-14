@@ -24,4 +24,20 @@ public class BitcurexOrder {
     @XmlElement
     @XmlJavaTypeAdapter(StringNumberAdapter.class)
     Number price;
+
+    public String getOid() {
+        return oid;
+    }
+
+    public OrderType getType() {
+        return type;
+    }
+
+    public Number getAmount() {
+        return amount;
+    }
+
+    public Number getPrice() {
+        return price;
+    }
 }

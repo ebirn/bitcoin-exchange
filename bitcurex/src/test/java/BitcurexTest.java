@@ -29,4 +29,53 @@ public class BitcurexTest extends BaseTest{
     }
 
 
+    @Test
+    public void testOpenOrders() {
+
+        List<MarketOrder> orders = client.getOpenOrders();
+
+        for(MarketOrder order : orders) {
+            log.info("{}: {}", order.getId().getIdentifier(), order);
+        }
+    }
+
+    @Test
+    public void testDeleteOrder() {
+
+        OrderId id = new OrderId(market, "xyz123asdf");
+
+        boolean didIt = client.cancelOrder(id);
+
+        log.info("removed order {}: {}", id.getIdentifier(), didIt);
+    }
+
+
+    @Test
+    public void testPlaceOrder() {
+
+        AssetPair asset = market.getAsset(Currency.BTC, Currency.USD);
+        CurrencyValue volume = new CurrencyValue(10.01, Currency.BTC);
+        CurrencyValue price = new CurrencyValue(1000000, Currency.USD);
+        TradeDecision decision = TradeDecision.SELL;
+
+        MarketOrder order = new MarketOrder();
+        order.setAsset(asset);
+        order.setVolume(volume);
+        order.setPrice(price);
+        order.setDecision(decision);
+
+        OrderId id = client.placeOrder(asset, decision, volume, price);
+
+        Assert.assertNotNull("order id is NULL", id);
+        Assert.assertNotNull("order identifier is NULL", id.getIdentifier());
+        Assert.assertFalse("order id identifier is empty", id.getIdentifier().isEmpty());
+
+        log.info("order placed, id: {}", id);
+
+        boolean success = client.cancelOrder(id);
+
+        log.info("removed order: {}", success);
+
+    }
+
 }

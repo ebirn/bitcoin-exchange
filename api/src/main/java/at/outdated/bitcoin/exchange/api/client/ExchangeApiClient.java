@@ -206,6 +206,9 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
             }
 
             Response response = builder.header("User-Agent", userAgent).method(httpMethod, payload);
+
+//            log.debug("response Content-Type: {}", response.getMediaType());
+
             result = response.readEntity(resultClass);
         }
         //

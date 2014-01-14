@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -7,23 +8,23 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.bitcurex.jaxb.BitcurexAccountInfo;
-import at.outdated.bitcoin.exchange.bitcurex.jaxb.BitcurexTickerValue;
-import at.outdated.bitcoin.exchange.bitcurex.jaxb.TransactionType;
+import at.outdated.bitcoin.exchange.bitcurex.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,8 +35,13 @@ import java.util.Date;
  */
 public class BitcurexApiClient extends ExchangeApiClient {
 
+    WebTarget tradeTarget, publicTarget;
+
     public BitcurexApiClient(Market market) {
         super(market);
+
+        tradeTarget = client.target("https://{quote}.bitcurex.com/api/0/");
+        publicTarget = client.target("https://{quote}.bitcurex.com/data");
     }
 
     // FIXME complete implementation!
@@ -48,18 +54,18 @@ public class BitcurexApiClient extends ExchangeApiClient {
         // getFunds
         // getTransactions
 
-        WebTarget fundsTarget = client.target("https://eur.bitcurex.com/api/0/getFunds");
+        WebTarget fundsTarget = tradeTarget.path("/getFunds").resolveTemplate("quote", Currency.EUR);
         Entity entity = Entity.form(new Form());
 
         Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
         String rawFunds = builder.post(entity, String.class);
 
         entity = Entity.form(new Form());
-        WebTarget ordersTarget = client.target("https://eur.bitcurex.com/api/0/getOrders");
+        WebTarget ordersTarget = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.EUR);
 
         String rawOrders =  setupProtectedResource(ordersTarget, entity).post(entity, String.class);
 
-        WebTarget transactionsTarget = client.target("https://eur.bitcurex.com/api/0/getTransactions");
+        WebTarget transactionsTarget = tradeTarget.path("/getTransactions").resolveTemplate("quote", Currency.EUR);
         Form form = new Form();
 
         form.param("type", "" + TransactionType.BTC_DEPOST.ordinal());
@@ -89,7 +95,7 @@ public class BitcurexApiClient extends ExchangeApiClient {
         Currency base = asset.getBase();
         Currency quote = asset.getQuote();
 
-        WebTarget depthTarget = client.target("https://{curr}.bitcurex.com/data/orderbook.json")
+        WebTarget depthTarget = publicTarget.path("/orderbook.json").resolveTemplate("quote", asset.getQuote())
                 .resolveTemplate("curr", quote.name().toLowerCase());
 
         String raw = super.simpleGetRequest(depthTarget, String.class);
@@ -150,7 +156,8 @@ public class BitcurexApiClient extends ExchangeApiClient {
             throw new IllegalArgumentException("unsupported currency");
         }
 
-        WebTarget tickerResource = client.target("https://" + asset.getQuote().name().toLowerCase() + ".bitcurex.com/data/ticker.json");
+
+        WebTarget tickerResource = publicTarget.path("/ticker.json").resolveTemplate("quote", asset.getQuote());
 
         BitcurexTickerValue bTicker = simpleGetRequest(tickerResource, BitcurexTickerValue.class);
 
@@ -208,5 +215,107 @@ public class BitcurexApiClient extends ExchangeApiClient {
         }
 
         return null;
+    }
+
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+
+        /*
+        cancelOrder - cancels sell/buy offer
+        POST: nonce=#&oid=#&type=#, returns: eurs, btcs, orders
+         */
+
+        WebTarget orderTgt = tradeTarget.path("cancelOrder").resolveTemplate("quote", Currency.EUR);
+
+
+        Form form = new Form();
+
+        form.param("oid", order.getIdentifier());
+
+        //TODO: to require this parameter is STUPID
+        form.param("type", "???");
+
+
+        boolean stillExisting = false;
+
+        String raw = protectedPostRequest(orderTgt, String.class, Entity.form(form));
+        log.info("raw cancel: {}", raw);
+        /*
+        Orders orders = protectedPostRequest(orderTgt, Orders.class, Entity.form(form));
+
+        for(BitcurexOrder o : orders.getOrders()) {
+            if(order.getIdentifier().equalsIgnoreCase(o.getOid())) {
+                stillExisting = true;
+                log.error("failed to delete order: {}", order.getIdentifier());
+                break;
+            }
+        }
+*/
+        return stillExisting;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+
+
+
+        /*
+        buyBTC - sets a buy offer BTC (BID)
+        POST: nonce=#&amount=#&price=#, returns: eurs, btcs, orders
+
+        sellBTC - sets a sell offer BTC (ASK)
+        POST: nonce=#&amount=#&price=#, returns: eurs, btcs, orders
+        * */
+
+
+        WebTarget orderTgt = tradeTarget.path(decision.name().toLowerCase() + "BTC").resolveTemplate("quote", asset.getQuote());
+
+
+        Form form = new Form();
+
+        form.param("amount", volume.valueToString());
+        form.param("price", volume.valueToString());
+
+        String raw = protectedPostRequest(orderTgt, String.class, Entity.form(form));
+
+
+
+        return null;
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        /*
+        getOrders - gets current active offers and balance
+        POST: nonce=#, returns: eurs, btcs, orders
+        */
+
+        WebTarget ordersTgtEur = tradeTarget.path("/getOrders").matrixParam("quote", Currency.EUR);
+        WebTarget ordersTgtPln = tradeTarget.path("/getOrders").matrixParam("quote", Currency.PLN);
+
+        Form form = new Form();
+
+        Future<Orders> ordersEur = asyncRequest(ordersTgtEur, Orders.class, HttpMethod.POST, Entity.form(form));
+        Future<Orders> ordersPln = asyncRequest(ordersTgtPln, Orders.class, HttpMethod.POST, Entity.form(form));
+
+
+        List<BitcurexOrder> allOrders = new ArrayList<>();
+        try {
+            allOrders.addAll(ordersEur.get().getOrders());
+            allOrders.addAll(ordersPln.get().getOrders());
+        }
+        catch(ExecutionException | InterruptedException e) {
+            log.error("failed to load orders", e);
+            return null;
+        }
+
+        List<MarketOrder> orders = new ArrayList<>();
+
+        for(BitcurexOrder o : allOrders) {
+
+        }
+
+        return orders;
     }
 }
