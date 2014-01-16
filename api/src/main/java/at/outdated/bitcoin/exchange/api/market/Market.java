@@ -68,6 +68,7 @@ public abstract class Market {
     //TODO actually implememt this: also: decide what should be implemented here,
     // what should be further service discorvery
     // exchange rate calculaters: service
+    // instantiation of the client is costly due to jersey client init
     public abstract ExchangeApiClient getApiClient();
 
 
