@@ -291,8 +291,8 @@ public class BitcurexApiClient extends ExchangeApiClient {
         POST: nonce=#, returns: eurs, btcs, orders
         */
 
-        WebTarget ordersTgtEur = tradeTarget.path("/getOrders").matrixParam("quote", Currency.EUR);
-        WebTarget ordersTgtPln = tradeTarget.path("/getOrders").matrixParam("quote", Currency.PLN);
+        WebTarget ordersTgtEur = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.EUR);
+        WebTarget ordersTgtPln = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.PLN);
 
         Form form = new Form();
 
