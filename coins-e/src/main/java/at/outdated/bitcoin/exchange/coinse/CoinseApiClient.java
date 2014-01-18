@@ -1,26 +1,30 @@
 package at.outdated.bitcoin.exchange.coinse;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.client.MarketClient;
 import at.outdated.bitcoin.exchange.api.client.TradeClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import java.util.List;
 
 /**
  * Created by ebirn on 06.01.14.
  */
-public class CoinseApiClient extends RestExchangeClient implements TradeClient, MarketClient {
+public class CoinseApiClient extends RestExchangeClient {
 
     public CoinseApiClient(Market market) {
         super(market);
 
-
+        tradeFee = new SimplePercentageFee("0.002");
     }
 
     @Override
@@ -119,5 +123,21 @@ public class CoinseApiClient extends RestExchangeClient implements TradeClient, 
     public AccountInfo getAccountInfo() {
 
         return new CoinseAccountInfo();
+    }
+
+    // FIXME
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        return null;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        return null;
+    }
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+        return false;
     }
 }

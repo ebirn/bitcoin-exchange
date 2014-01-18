@@ -10,6 +10,8 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import org.apache.commons.lang3.StringUtils;
@@ -65,6 +67,8 @@ public class MtGoxClient extends RestExchangeClient {
         multiplier.put(Currency.BTC, 1.0e8);
         multiplier.put(Currency.USD, 1.0e5);
         multiplier.put(Currency.EUR, 1.0e5);
+
+        tradeFee = new SimplePercentageFee("0.006");
     }
 
 
@@ -117,8 +121,6 @@ public class MtGoxClient extends RestExchangeClient {
         for(DepthEntry bid : rawDepth.getBids()) {
             depth.addBid(bid.amount, bid.price);
         }
-
-        sortDepth(depth);
 
         return depth;
     }

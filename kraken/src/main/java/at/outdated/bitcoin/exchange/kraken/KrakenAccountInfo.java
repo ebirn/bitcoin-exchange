@@ -15,6 +15,6 @@ public class KrakenAccountInfo extends AccountInfo {
     @Override
     public Fee getTradeFee(TradeDecision trade) {
 
-        return new SimplePercentageFee(0.003);
+        return new SimplePercentageFee(0.002);
     }
 }

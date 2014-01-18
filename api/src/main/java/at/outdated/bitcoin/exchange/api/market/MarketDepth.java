@@ -3,9 +3,7 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ebirn on 22.09.13.
@@ -16,8 +14,8 @@ public class MarketDepth {
 
     AssetPair asset;
 
-    List<MarketOrder> bids = new ArrayList<>();
-    List<MarketOrder> asks = new ArrayList<>();
+    SortedSet<MarketOrder> bids = new TreeSet<>(new OrderComparator(OrderType.BID));
+    SortedSet<MarketOrder> asks = new TreeSet<>(new OrderComparator(OrderType.ASK));
 
     public MarketDepth() {
 
@@ -39,12 +37,12 @@ public class MarketDepth {
         return asset;
     }
 
-    public List<MarketOrder> getBids() {
-        return bids;
+    public SortedSet<MarketOrder> getBids() {
+        return Collections.unmodifiableSortedSet(bids);
     }
 
-    public List<MarketOrder> getAsks() {
-        return asks;
+    public SortedSet<MarketOrder> getAsks() {
+        return Collections.unmodifiableSortedSet(bids);
     }
 
     public void addAsk(MarketOrder ask) {
@@ -113,12 +111,12 @@ public class MarketDepth {
         return total;
     }
 
-    private String orderSummary(List<MarketOrder> orders) {
+    private String orderSummary(SortedSet<MarketOrder> orders) {
 
         if(orders == null || orders.isEmpty()) return "none";
 
-        CurrencyValue volumeSum = new CurrencyValue(0.0, orders.get(0).getVolume().getCurrency());
-        CurrencyValue priceSum = new CurrencyValue(0.0, orders.get(0).getPrice().getCurrency());
+        CurrencyValue volumeSum = new CurrencyValue(0.0, orders.first().getVolume().getCurrency());
+        CurrencyValue priceSum = new CurrencyValue(0.0, orders.first().getPrice().getCurrency());
 
         for(MarketOrder order : orders) {
             volumeSum.add(order.getVolume());

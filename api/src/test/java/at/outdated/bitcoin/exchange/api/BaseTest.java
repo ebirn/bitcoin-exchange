@@ -134,8 +134,8 @@ public abstract class BaseTest {
             Assume.assumeFalse("bids empty", depth.getBids().isEmpty());
 
 
-            MarketOrder firstAsk = depth.getAsks().get(0);
-            MarketOrder firstBid = depth.getBids().get(0);
+            MarketOrder firstAsk = depth.getAsks().first();
+            MarketOrder firstBid = depth.getBids().first();
 
             CurrencyValue askPrice = firstAsk.getPrice();
             CurrencyValue bidPrice = firstBid.getPrice();

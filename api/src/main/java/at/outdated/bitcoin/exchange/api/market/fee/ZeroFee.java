@@ -10,6 +10,6 @@ package at.outdated.bitcoin.exchange.api.market.fee;
 public class ZeroFee extends ConstantFee {
 
     public ZeroFee() {
-        super(0.0);
+        super("0.0");
     }
 }

@@ -10,6 +10,7 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenOpenOrderResult;
 import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenOrderCancelResult;
 import at.outdated.bitcoin.exchange.kraken.jaxb.KrakenResponse;
@@ -46,6 +47,7 @@ public class KrakenClient extends RestExchangeClient {
 
     public KrakenClient(Market market) {
         super(market);
+        this.tradeFee = new SimplePercentageFee("0.002");
     }
 
     @Override

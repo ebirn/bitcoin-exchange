@@ -1,17 +1,17 @@
 package at.outdated.bitcoin.exchange.icbit;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.market.Market;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
-import at.outdated.bitcoin.exchange.api.market.MarketDepth;
-import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.websocket.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -85,5 +85,20 @@ public class IcbitClient extends RestExchangeClient {
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {
         return null;
+    }
+
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        return null;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        return null;
+    }
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+        return false;
     }
 }

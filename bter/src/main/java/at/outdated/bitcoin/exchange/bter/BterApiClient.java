@@ -7,6 +7,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -28,6 +29,8 @@ public class BterApiClient extends RestExchangeClient {
 
     public BterApiClient(Market market) {
         super(market);
+
+        tradeFee = new SimplePercentageFee("0.002");
     }
 
     @Override
@@ -119,8 +122,6 @@ public class BterApiClient extends RestExchangeClient {
         for(double[] bid : bids) {
             depth.addBid(bid[1], bid[0]);
         }
-
-        sortDepth(depth);
 
         return depth;
     }

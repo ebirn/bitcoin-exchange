@@ -14,16 +14,21 @@ import java.math.BigDecimal;
  */
 public class SimplePercentageFee extends Fee {
 
-    BigDecimal percentage = new BigDecimal(0.0);
+    BigDecimal percentage = new BigDecimal("0.0");
 
     public SimplePercentageFee() {
 
+    }
+
+    public SimplePercentageFee(String percentage) {
+        this.percentage = new BigDecimal(percentage);
     }
 
     public SimplePercentageFee(BigDecimal percentage) {
        this.percentage = percentage;
     }
 
+    @Deprecated
     public SimplePercentageFee(double percentage) {
         this.percentage = new BigDecimal(percentage);
     }

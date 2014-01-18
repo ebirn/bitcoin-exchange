@@ -23,16 +23,16 @@ public interface TradeClient {
     //public void getBalance();
     // public void getOpenBalance();
 
-    // public Fee getTradeFee();
-    // public Fee getDepositFee();
-    // public Fee getWithdrawalFee();
+    public Fee getTradeFee(TradeDecision trade);
+    public Fee getDepositFee();
+    public Fee getWithdrawalFee(Currency curr);
 
     public List<MarketOrder> getOpenOrders();
     public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price);
     public boolean cancelOrder(OrderId order);
 
     public CurrencyAddress getDepositAddress(Currency currency);
-    public String withdrawFunds(CurrencyValue volume, CurrencyAddress address);
+    public boolean withdrawFunds(CurrencyValue volume, CurrencyAddress address);
 
 
 }
