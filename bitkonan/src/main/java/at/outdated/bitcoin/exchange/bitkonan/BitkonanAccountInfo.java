@@ -14,12 +14,9 @@ import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
  */
 public class BitkonanAccountInfo extends AccountInfo {
 
-
-    Fee fee = new SimplePercentageFee(0.029);
-
     @Override
     public Fee getTradeFee(TradeDecision trade) {
 
-        return fee;  //To change body of implemented methods use File | Settings | File Templates.
+        return new SimplePercentageFee(0.0029);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

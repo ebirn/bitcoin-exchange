@@ -11,6 +11,13 @@ public class OrderComparator implements Comparator<MarketOrder> {
 
     OrderType orderType;
 
+    public OrderComparator() {
+    }
+
+    public OrderComparator(OrderType orderType) {
+        this.orderType = orderType;
+    }
+
     public void setOrderType(OrderType type) {
         this.orderType = type;
     }

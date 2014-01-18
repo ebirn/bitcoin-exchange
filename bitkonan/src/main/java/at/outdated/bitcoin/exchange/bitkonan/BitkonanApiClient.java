@@ -1,10 +1,13 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -14,6 +17,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -27,6 +31,8 @@ public class BitkonanApiClient extends RestExchangeClient {
 
     public BitkonanApiClient(Market market) {
         super(market);
+
+        tradeFee = new SimplePercentageFee("0.0029");
     }
 
     @Override
@@ -88,8 +94,6 @@ public class BitkonanApiClient extends RestExchangeClient {
             double volume = ask[1];
             depth.addAsk(volume, price);
         }
-
-        sortDepth(depth);
 
         return depth;
     }
@@ -169,5 +173,22 @@ public class BitkonanApiClient extends RestExchangeClient {
         }
 
         return builder;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    // FIXME: implement these
+    @Override
+    public List<MarketOrder> getOpenOrders() {
+        return null;
+    }
+
+    @Override
+    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+        return null;
+    }
+
+    @Override
+    public boolean cancelOrder(OrderId order) {
+        return false;
     }
 }

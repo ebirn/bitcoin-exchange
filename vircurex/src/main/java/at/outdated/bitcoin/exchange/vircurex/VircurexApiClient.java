@@ -8,6 +8,8 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +36,8 @@ public class VircurexApiClient extends RestExchangeClient {
 
     public VircurexApiClient(Market market) {
         super(market);
+
+        tradeFee =  new SimplePercentageFee("0.002");
     }
 
     @Override
@@ -138,6 +142,7 @@ public class VircurexApiClient extends RestExchangeClient {
             log.info("canot parse depth, probably empty?", cce);
             return null;
         }
+
         return depth;
     }
 
@@ -378,4 +383,5 @@ public class VircurexApiClient extends RestExchangeClient {
 
         return true;
     }
+
 }

@@ -5,6 +5,9 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
+import at.outdated.bitcoin.exchange.api.market.fee.InfiniteFee;
+import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
@@ -21,6 +24,8 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
     protected Logger log = LoggerFactory.getLogger("client");
     protected NumberTrack apiLagTrack = new NumberTrack(5);
     protected Market market;
+
+    protected Fee tradeFee = new InfiniteFee();
 
     public ExchangeClient(Market market) {
         log = LoggerFactory.getLogger("client." + market.getKey());
@@ -79,17 +84,6 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
         return new CurrencyAddress(curr, addrString);
     }
 
-    protected void sortDepth(MarketDepth depth) {
-        OrderComparator comparator = new OrderComparator();
-
-        comparator.setOrderType(OrderType.ASK);
-        Collections.sort(depth.getAsks(), comparator);
-
-        comparator.setOrderType(OrderType.BID);
-        Collections.sort(depth.getBids(), comparator);
-    }
-
-
     @Override
     public final CurrencyAddress getDepositAddress(Currency currency) {
 
@@ -110,7 +104,7 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
 
 
     @Override
-    public String withdrawFunds(CurrencyValue volume, CurrencyAddress address) {
+    public boolean withdrawFunds(CurrencyValue volume, CurrencyAddress address) {
 
         if(volume == null || address == null) {
             throw new IllegalArgumentException("parameters must not be null.");
@@ -120,29 +114,23 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
             throw new IllegalArgumentException("Currency mismatch");
         }
 
-        return null;
+        return false;
         //return performFundWithdrawal(volume, address);
     }
 
 
-
-
-
-    //FIXME: remove these
     @Override
-    public List<MarketOrder> getOpenOrders() {
-        return null;
+    public Fee getDepositFee() {
+        return new ZeroFee();
     }
 
-    //FIXME: remove these
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
-        return null;
+    public Fee getWithdrawalFee(Currency curr) {
+        return this.market.getDepositMethod(curr).getFee();
     }
 
-    //FIXME: remove these
     @Override
-    public boolean cancelOrder(OrderId order) {
-        return false;
+    public Fee getTradeFee(TradeDecision trade) {
+        return tradeFee;
     }
 }

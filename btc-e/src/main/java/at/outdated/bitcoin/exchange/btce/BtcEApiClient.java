@@ -7,6 +7,7 @@ import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -36,6 +37,8 @@ public class BtcEApiClient extends RestExchangeClient {
 
     public BtcEApiClient(Market market) {
         super(market);
+
+        tradeFee = new SimplePercentageFee("0.002");
     }
 
     @Override
@@ -126,7 +129,6 @@ public class BtcEApiClient extends RestExchangeClient {
             }
 
         }
-
 
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -225,7 +227,7 @@ public class BtcEApiClient extends RestExchangeClient {
             e.getEntity().param("nonce", Long.toString(nonce));
 
             String payload = formData2String(e.getEntity());
-            log.debug("encoded payload: {}", payload);
+            //log.debug("encoded payload: {}", payload);
 
             byte[] rawSignature = mac.doFinal(payload.getBytes("UTF-8"));
             String signature = new String(Hex.encodeHex(rawSignature));
@@ -233,10 +235,10 @@ public class BtcEApiClient extends RestExchangeClient {
             builder = tgt.request();
 
             builder.header("Key", apiKey);
-            log.debug("Key: {}", apiKey);
+            //log.debug("Key: {}", apiKey);
 
             builder.header("Sign", signature);
-            log.debug("Sign: {}", signature);
+            //log.debug("Sign: {}", signature);
         }
         catch (Exception e) {
             log.error("error: {}", e);
@@ -272,7 +274,7 @@ public class BtcEApiClient extends RestExchangeClient {
             return true;
         }
 
-        log.error("failed to cancel order: {} (unwknown)", order.getIdentifier());
+        log.error("failed to cancel order: {} (unknown)", order.getIdentifier());
 
         return false;
     }

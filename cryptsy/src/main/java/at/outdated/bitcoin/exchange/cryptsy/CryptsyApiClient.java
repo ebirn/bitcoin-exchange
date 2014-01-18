@@ -8,6 +8,8 @@ import at.outdated.bitcoin.exchange.api.client.TradeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.Fee;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -28,6 +30,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
     Map<AssetPair,Integer> marketId = new HashMap<>();
 
+    Fee buyFee, sellFee;
+
     public CryptsyApiClient(Market market) {
         super(market);
 
@@ -41,6 +45,9 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         setMarketNum(Currency.PPC, Currency.LTC, 125); // 125
         setMarketNum(Currency.QRK, Currency.LTC, 126); // 126
+
+        buyFee = new SimplePercentageFee("0.002");
+        sellFee = new SimplePercentageFee("0.003");
 
     }
 
@@ -134,7 +141,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
             JsonObject jsonDepth = root.getJsonObject("return").getJsonObject(asset.getBase().name());
 
-
             MarketDepth depth = new MarketDepth(asset);
 
             // ask = sell (first: lowest ask)
@@ -156,6 +162,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
                 depth.addBid(volume, price);
             }
+
             return depth;
         }
         catch(Exception e) {
@@ -301,6 +308,20 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             }
         }
 
+        return null;
+    }
+
+    public Fee getTradeFee(TradeDecision trade) {
+
+        switch(trade) {
+            case BUY:
+                return buyFee;
+
+            case SELL:
+                return sellFee;
+        }
+
+        // you sould never come here
         return null;
     }
 }

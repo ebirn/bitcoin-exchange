@@ -45,6 +45,9 @@ public class BitstampClient extends RestExchangeClient {
 
     public BitstampClient(Market market) {
         super(market);
+
+        // initial trading fee is higher
+        tradeFee = new SimplePercentageFee("0.006");
     }
 
     @Override
@@ -101,6 +104,7 @@ public class BitstampClient extends RestExchangeClient {
         String rawTransactions = protectedPostRequest(transactionsTgt, String.class, Entity.form(new Form()));
 
 
+        tradeFee = new SimplePercentageFee(balance.getFee().doubleValue() / 100.0);
         info.setFee(new SimplePercentageFee(balance.getFee().doubleValue() / 100.0));
 
         JsonArray jsonTransactions = jsonArrayFromString(rawTransactions);

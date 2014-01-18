@@ -133,7 +133,6 @@ public class BitcurexApiClient extends RestExchangeClient {
             }
         }
 */
-
         return depth;
     }
 
@@ -313,8 +312,30 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         for(BitcurexOrder o : allOrders) {
 
+            orders.add(convert(o));
         }
 
         return orders;
+    }
+
+    private MarketOrder convert(BitcurexOrder o) {
+
+        MarketOrder order = new MarketOrder();
+        order.setId(new OrderId(market, o.getOid()));
+
+
+        switch(o.getType()) {
+            case ASK:
+                order.setDecision(TradeDecision.SELL);
+                break;
+
+            case BID:
+                order.setDecision(TradeDecision.BUY);
+                break;
+        }
+
+        order.setVolume(new CurrencyValue(o.getAmount().doubleValue(), Currency.BTC));
+
+        return order;
     }
 }
