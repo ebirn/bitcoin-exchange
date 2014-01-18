@@ -1,11 +1,10 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
-import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 
@@ -93,7 +92,7 @@ public class VircurexMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new VircurexApiClient(this);
     }
 

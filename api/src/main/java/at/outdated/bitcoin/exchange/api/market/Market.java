@@ -1,8 +1,8 @@
 package at.outdated.bitcoin.exchange.api.market;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -69,7 +69,7 @@ public abstract class Market {
     // what should be further service discorvery
     // exchange rate calculaters: service
     // instantiation of the client is costly due to jersey client init
-    public abstract ExchangeApiClient getApiClient();
+    public abstract ExchangeClient createClient();
 
 
     public Collection<TransferMethod> getWithdrawalMethods() {

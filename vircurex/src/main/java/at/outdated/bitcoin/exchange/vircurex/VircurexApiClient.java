@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
@@ -17,7 +17,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.security.MessageDigest;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,7 +25,7 @@ import java.util.*;
 /**
  * Created by ebirn on 11.10.13.
  */
-public class VircurexApiClient extends ExchangeApiClient {
+public class VircurexApiClient extends RestExchangeClient {
 
     private enum OType {
         UNRELEASED,

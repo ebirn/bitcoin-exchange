@@ -1,14 +1,12 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
-
-import javax.swing.plaf.BorderUIResource;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +33,7 @@ public class MtGoxMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new MtGoxClient(this);
     }
 

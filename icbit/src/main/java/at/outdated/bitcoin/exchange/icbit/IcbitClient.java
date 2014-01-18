@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.icbit;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Created by ebirn on 31.10.13.
  */
-public class IcbitClient extends ExchangeApiClient {
+public class IcbitClient extends RestExchangeClient {
 
     Session session;
     IcbitWebsocketClient socketClient;

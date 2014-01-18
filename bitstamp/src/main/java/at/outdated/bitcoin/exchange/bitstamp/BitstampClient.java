@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -39,7 +39,7 @@ import java.util.ResourceBundle;
  * Time: 13:04
  * To change this template use File | Settings | File Templates.
  */
-public class BitstampClient extends ExchangeApiClient {
+public class BitstampClient extends RestExchangeClient {
 
     SimpleDateFormat bitstampDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

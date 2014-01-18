@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
@@ -20,7 +20,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -33,7 +32,7 @@ import java.util.concurrent.Future;
  * Time: 12:50
  * To change this template use File | Settings | File Templates.
  */
-public class BitcurexApiClient extends ExchangeApiClient {
+public class BitcurexApiClient extends RestExchangeClient {
 
     WebTarget tradeTarget, publicTarget;
 

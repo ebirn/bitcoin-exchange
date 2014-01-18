@@ -1,13 +1,12 @@
 
 package at.outdated.bitcoin.exchange.cryptsy;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
-import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferType;
 
@@ -58,7 +57,7 @@ public class CryptsyMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new CryptsyApiClient(this);
     }
 }

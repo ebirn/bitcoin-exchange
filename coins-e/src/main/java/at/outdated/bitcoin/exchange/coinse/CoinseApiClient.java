@@ -1,10 +1,9 @@
 package at.outdated.bitcoin.exchange.coinse;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.client.MarketClient;
 import at.outdated.bitcoin.exchange.api.client.TradeClient;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 
 import javax.json.JsonArray;
@@ -16,7 +15,7 @@ import javax.ws.rs.client.WebTarget;
 /**
  * Created by ebirn on 06.01.14.
  */
-public class CoinseApiClient extends ExchangeApiClient implements TradeClient, MarketClient {
+public class CoinseApiClient extends RestExchangeClient implements TradeClient, MarketClient {
 
     public CoinseApiClient(Market market) {
         super(market);

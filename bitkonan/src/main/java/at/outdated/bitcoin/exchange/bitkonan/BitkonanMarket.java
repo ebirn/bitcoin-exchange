@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
@@ -29,7 +29,7 @@ public class BitkonanMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new BitkonanApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -14,9 +14,7 @@ import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -33,7 +31,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 //FIXME: retro fit this class to the default class/client layout
-public class MtGoxClient extends ExchangeApiClient {
+public class MtGoxClient extends RestExchangeClient {
 
     private final String API_BASE_URL = "https://data.mtgox.com/api/2/";
 

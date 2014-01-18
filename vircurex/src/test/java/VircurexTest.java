@@ -20,7 +20,7 @@ public class VircurexTest extends BaseTest {
     @Override
     public void init() {
         market = Markets.getMarket("vircurex");
-        client = market.getApiClient();
+        client = market.createClient();
     }
 
     @Test

@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -32,7 +32,7 @@ import java.util.Locale;
 // TODO: use fee api: https://hdbtce.kayako.com/Knowledgebase/Article/View/27/4/api-fee
 //
 
-public class BtcEApiClient extends ExchangeApiClient {
+public class BtcEApiClient extends RestExchangeClient {
 
     public BtcEApiClient(Market market) {
         super(market);

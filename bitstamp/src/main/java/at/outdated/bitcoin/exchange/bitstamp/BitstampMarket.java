@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -40,7 +40,7 @@ public class BitstampMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new BitstampClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -1,10 +1,9 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import org.apache.commons.codec.binary.Hex;
 
@@ -24,7 +23,7 @@ import java.util.concurrent.Future;
  * Time: 23:43
  * To change this template use File | Settings | File Templates.
  */
-public class BitkonanApiClient extends ExchangeApiClient {
+public class BitkonanApiClient extends RestExchangeClient {
 
     public BitkonanApiClient(Market market) {
         super(market);

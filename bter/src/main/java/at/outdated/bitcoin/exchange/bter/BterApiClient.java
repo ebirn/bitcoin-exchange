@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Created by ebirn on 11.10.13.
  */
-public class BterApiClient extends ExchangeApiClient {
+public class BterApiClient extends RestExchangeClient {
 
     public BterApiClient(Market market) {
         super(market);

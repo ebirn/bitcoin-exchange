@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -32,7 +32,7 @@ public class BitcurexMarket extends Market {
     }
 
     @Override
-    public ExchangeApiClient getApiClient() {
+    public ExchangeClient createClient() {
         return new BitcurexApiClient(this);  //To change body of implemented methods use File | Settings | File Templates.
     }
 

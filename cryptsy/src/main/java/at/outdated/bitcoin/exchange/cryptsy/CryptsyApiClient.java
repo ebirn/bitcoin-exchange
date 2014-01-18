@@ -2,7 +2,7 @@ package at.outdated.bitcoin.exchange.cryptsy;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.client.MarketClient;
 import at.outdated.bitcoin.exchange.api.client.TradeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Created by ebirn on 06.01.14.
  */
-public class CryptsyApiClient extends ExchangeApiClient implements MarketClient, TradeClient {
+public class CryptsyApiClient extends RestExchangeClient implements MarketClient, TradeClient {
 
     Map<AssetPair,Integer> marketId = new HashMap<>();
 

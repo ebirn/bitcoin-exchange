@@ -1,14 +1,6 @@
 package at.outdated.bitcoin.exchange.api.client;
 
-import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
-import at.outdated.bitcoin.exchange.api.track.NumberTrack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -31,46 +23,15 @@ import java.util.concurrent.Future;
  * Time: 17:00
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ExchangeApiClient implements MarketClient, TradeClient {
-    protected Logger log = LoggerFactory.getLogger("client");
-
-    protected NumberTrack apiLagTrack = new NumberTrack(5);
+public abstract class RestExchangeClient extends ExchangeClient {
 
     protected Client client = ClientBuilder.newClient();
 
-    protected final String userAgent = "ExchangeApiClient/1.0a";
+    protected final String userAgent = "RestExchangeClient/1.0a";
 
-    protected Market market;
-
-    @Override
-    public double getQuote(Currency base, Currency quote) {
-
-        double rate = Double.NaN;
-
-        AssetPair asset = market.getAsset(base, quote);
-
-        if(asset != null) {
-            TickerValue ticker = getTicker(asset);
-
-            if(asset.getBase() == base) {
-                rate = ticker.getBid();
-            }
-            else {
-                rate = 1.0/ticker.getAsk();
-            }
-        }
-
-        return rate;
+    public RestExchangeClient(Market market) {
+        super(market);
     }
-
-    public abstract Number getLag();
-
-
-    public ExchangeApiClient(Market market) {
-        this.market = market;
-        log = LoggerFactory.getLogger("client." + market.getKey());
-    }
-
 
     protected JsonObject jsonFromString(String s) {
         try {
@@ -116,10 +77,6 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         }
 
         return resultArray;
-    }
-
-    final public double getApiLag() {
-        return apiLagTrack.getStatistics().getGeometricMean();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 
@@ -243,25 +200,6 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
     }
 
 
-
-    protected String getSecret() {
-        return getPropertyString("secret");
-    }
-
-    protected String getUserId() {
-       return getPropertyString("userid");
-    }
-
-    protected String getPropertyString(String key) {
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
-
-        String fullKey = market.getKey() + "." + key;
-        String value = bundle.getString(fullKey);
-
-        return value;
-    }
-
-
     // this is taken from Form MessageBodyWriter in Glassfish, should produce same output
     // necessary for API Sign headers
     protected String formData2String(Form form) {
@@ -286,77 +224,6 @@ public abstract class ExchangeApiClient implements MarketClient, TradeClient {
         }
 
         return sb.toString();
-    }
-
-    protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
-        String addrString = null;
-
-        addrString = getPropertyString("deposit."+curr.name().toLowerCase());
-
-        return new CurrencyAddress(curr, addrString);
-    }
-
-    @Override
-    public final CurrencyAddress getDepositAddress(Currency currency) {
-
-        TransferMethod withdrawal = market.getWithdrawalMethod(currency);
-
-        if(withdrawal == null) {
-            throw new IllegalArgumentException("cannot withdraw " + currency);
-        }
-
-        // TODO: make this better
-        if(withdrawal.getCurrency().isCrypto() == false) {
-            throw new IllegalArgumentException("currently only crypto currencies are supported, NOT " + currency);
-        }
-
-        return lookupUpDepositAddress(currency);
-    }
-
-    //protected abstract String performFundWithdrawal(CurrencyValue volume, CurrencyAddress address);
-
-    @Override
-    public String withdrawFunds(CurrencyValue volume, CurrencyAddress address) {
-
-        if(volume == null || address == null) {
-            throw new IllegalArgumentException("parameters must not be null.");
-        }
-
-        if(volume.getCurrency() != address.getReference()) {
-            throw new IllegalArgumentException("Currency mismatch");
-        }
-
-        return null;
-        //return performFundWithdrawal(volume, address);
-    }
-
-    protected void sortDepth(MarketDepth depth) {
-        OrderComparator comparator = new OrderComparator();
-
-        comparator.setOrderType(OrderType.ASK);
-        Collections.sort(depth.getAsks(), comparator);
-
-        comparator.setOrderType(OrderType.BID);
-        Collections.sort(depth.getBids(), comparator);
-    }
-
-
-    //FIXME: remove these
-    @Override
-    public List<MarketOrder> getOpenOrders() {
-        return null;
-    }
-
-    //FIXME: remove these
-    @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
-        return null;
-    }
-
-    //FIXME: remove these
-    @Override
-    public boolean cancelOrder(OrderId order) {
-        return false;
     }
 
 }

@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public abstract class BaseTest {
 
-    protected ExchangeApiClient client;
+    protected ExchangeClient client;
     protected Market market;
 
     protected Logger log = LoggerFactory.getLogger(getClass());

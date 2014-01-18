@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.kraken;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.client.ExchangeApiClient;
+import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
@@ -42,7 +42,7 @@ import java.util.Locale;
  */
 
 //FIXME: use GenericType in return values to do acutail jax/rs parsing
-public class KrakenClient extends ExchangeApiClient {
+public class KrakenClient extends RestExchangeClient {
 
     public KrakenClient(Market market) {
         super(market);
