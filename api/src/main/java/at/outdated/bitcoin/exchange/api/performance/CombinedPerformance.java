@@ -7,6 +7,8 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.math.BigDecimal;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ebirn
@@ -51,36 +53,36 @@ public class CombinedPerformance extends Performance {
 
 
     @Override
-    public double getPercent() {
+    public BigDecimal getPercent() {
 
         //double onePercent = getStartBalance() / 100.0;
         //return 1.0 + (getTotalDifference() / onePercent);
 
-        return (getTotalDifference() / getStartBalance());
+        return getTotalDifference().divide(getStartBalance()).getValue();
     }
 
     @Override
-    public double getTotalDifference() {
+    public CurrencyValue getTotalDifference() {
 
-        return getEndBalance()-getStartBalance();
+        return getEndBalance().subtract(getStartBalance());
     }
 
     @Override
-    public double getEndBalance() {
+    public CurrencyValue getEndBalance() {
 
-        double end = 0;
+        CurrencyValue end = new CurrencyValue(currency);
         for(Performance p : performances) {
-            end += calculator.calculate(new CurrencyValue(p.getEndBalance(), p.getCurrency()), currency).getValue();
+            end.add(calculator.calculate(p.getEndBalance(), currency));
         }
         return end;
     }
 
     @Override
-    public double getStartBalance() {
+    public CurrencyValue getStartBalance() {
 
-        double start = 0;
+        CurrencyValue start = new CurrencyValue(currency);
         for(Performance p : performances) {
-            start += calculator.calculate(new CurrencyValue(p.getStartBalance(), p.getCurrency()), currency).getValue();
+            start.add(calculator.calculate(p.getStartBalance(), currency));
         }
 
         return start;

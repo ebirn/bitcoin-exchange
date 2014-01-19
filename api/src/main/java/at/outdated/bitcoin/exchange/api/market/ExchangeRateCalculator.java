@@ -18,7 +18,6 @@ import java.util.Arrays;
 public class ExchangeRateCalculator {
 
     BigDecimal[][] rates;
-    MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
 
     public ExchangeRateCalculator() {
         int currencyCount = Currency.values().length;
@@ -27,7 +26,7 @@ public class ExchangeRateCalculator {
         rates = new BigDecimal[currencyCount][currencyCount];
 
         // set exchange rate for a currency with itself to 1
-        BigDecimal selfRate = new BigDecimal(1, mc);
+        BigDecimal selfRate = new BigDecimal(1, CurrencyValue.CURRENCY_MATH_CONTEXT);
 
         for(int i=0; i<currencyCount; i++) {
             // initialize rates with NaN
@@ -53,7 +52,7 @@ public class ExchangeRateCalculator {
         int fromIdx = from.ordinal();
         int toIdx = to.ordinal();
         rates[fromIdx][toIdx] = rate;
-        rates[toIdx][fromIdx] = (new BigDecimal(1.0, mc)).divide(rate, mc);
+        rates[toIdx][fromIdx] = (new BigDecimal(1.0, CurrencyValue.CURRENCY_MATH_CONTEXT)).divide(rate, CurrencyValue.CURRENCY_MATH_CONTEXT);
     }
 
     public CurrencyValue calculate(CurrencyValue value, Currency in) {
@@ -63,8 +62,8 @@ public class ExchangeRateCalculator {
 
 
         //FIXME: this is an incorrect hack: we must have a exchange path for all currencies
-        if(rate == null || Double.isNaN(rate.doubleValue()) || Double.isInfinite(rate.doubleValue())) rate = new BigDecimal(0.0, mc);
+        if(rate == null || Double.isNaN(rate.doubleValue()) || Double.isInfinite(rate.doubleValue())) rate = new BigDecimal(0.0, CurrencyValue.CURRENCY_MATH_CONTEXT);
 
-        return new CurrencyValue(value.getValue()*rate.doubleValue(), in);
+        return new CurrencyValue(value.getValue(), in).multiply(rate);
     }
 }

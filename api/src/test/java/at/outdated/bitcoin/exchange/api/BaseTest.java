@@ -143,12 +143,12 @@ public abstract class BaseTest {
             Assert.assertTrue(" sell higher than buy? ", askPrice.isMoreThan(bidPrice));
 
             for(MarketOrder order : depth.getAsks()) {
-                Assert.assertTrue("ask price not ascending", askPrice.getValue() <= order.getPrice().getValue());
+                Assert.assertTrue("ask price not ascending", askPrice.doubleValue() <= order.getPrice().doubleValue());
                 askPrice = order.getPrice();
             }
 
             for(MarketOrder order : depth.getBids()) {
-                Assert.assertTrue("bid price not descending", bidPrice.getValue() >= order.getPrice().getValue());
+                Assert.assertTrue("bid price not descending", bidPrice.doubleValue() >= order.getPrice().doubleValue());
                 bidPrice = order.getPrice();
             }
         }

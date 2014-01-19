@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 /**
@@ -19,13 +20,13 @@ public abstract class Performance {
     // throw Exception if transaction does not match performance currency
     abstract public void includeTransaction(WalletTransaction transaction) throws IllegalArgumentException;
 
-    abstract public double getPercent();
+    abstract public BigDecimal getPercent();
 
-    abstract public double getTotalDifference();
+    abstract public CurrencyValue getTotalDifference();
 
-    abstract public double getEndBalance();
+    abstract public CurrencyValue getEndBalance();
 
-    abstract public double getStartBalance();
+    abstract public CurrencyValue getStartBalance();
 
     abstract public Currency getCurrency();
 
@@ -35,21 +36,7 @@ public abstract class Performance {
 
         String percentChange = NumberFormat.getPercentInstance().format(getPercent());
 
-        /*
-        NumberFormat currencyFormat = NumberFormat.getInstance();
-        currencyFormat.setMinimumFractionDigits(2);
-        currencyFormat.setMaximumFractionDigits(2);
-
-        currencyFormat.setMinimumIntegerDigits(2);
-
-        String startBalance = currencyFormat.format(getStartBalance()) + " " + getCurrency();
-        String endBalance = currencyFormat.format(getEndBalance()) + " " + getCurrency();
-        String diff = currencyFormat.format(getTotalDifference()) + " " + getCurrency();
-        */
-
-        Currency c = getCurrency();
-
-        return "Performance: " + new CurrencyValue(getStartBalance(), c) + " -> " + new CurrencyValue(getEndBalance(), c) + " = " + new CurrencyValue(getTotalDifference(), c) + " (" + percentChange + ")";
+        return "Performance: " + getStartBalance() + " -> " + getEndBalance() + " = " + getTotalDifference() + " (" + percentChange + ")";
     }
 
 

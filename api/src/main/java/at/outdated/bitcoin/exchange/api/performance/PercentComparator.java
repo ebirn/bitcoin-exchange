@@ -14,9 +14,6 @@ public class PercentComparator implements Comparator<Performance>, Serializable 
 
     @Override
     public int compare(Performance o1, Performance o2) {
-
-
-        return Double.compare(o1.getPercent(), o2.getPercent());
-        //return Math.round((float)(o1.getPercent()-o2.getPercent())*100.0f);
+        return o1.getPercent().compareTo(o2.getPercent());
     }
 }

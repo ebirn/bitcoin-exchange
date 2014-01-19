@@ -34,37 +34,37 @@ public class TickerResponse {
     private Currency inCurrency;
 
     @XmlElement
-    private CurrencyValue high;
+    private MtGoxCurrencyValue high;
 
     @XmlElement
-    private CurrencyValue low;
+    private MtGoxCurrencyValue low;
 
     @XmlElement
-    private CurrencyValue avg;
+    private MtGoxCurrencyValue avg;
 
     @XmlElement
-    private CurrencyValue vwap;
+    private MtGoxCurrencyValue vwap;
 
     @XmlElement
-    private CurrencyValue vol;
+    private MtGoxCurrencyValue vol;
 
     @XmlElement
-    private CurrencyValue last_local;
+    private MtGoxCurrencyValue last_local;
 
     @XmlElement
-    private CurrencyValue last_orig;
+    private MtGoxCurrencyValue last_orig;
 
     @XmlElement
-    private CurrencyValue last_all;
+    private MtGoxCurrencyValue last_all;
 
     @XmlElement
-    private CurrencyValue last;
+    private MtGoxCurrencyValue last;
 
     @XmlElement
-    private CurrencyValue buy;
+    private MtGoxCurrencyValue buy;
 
     @XmlElement
-    private CurrencyValue sell;
+    private MtGoxCurrencyValue sell;
 
 
     public Date getTimestamp() {
@@ -80,47 +80,47 @@ public class TickerResponse {
     }
 
     public CurrencyValue getHigh() {
-        return high;
+        return high.convert();
     }
 
     public CurrencyValue getLow() {
-        return low;
+        return low.convert();
     }
 
     public CurrencyValue getAvg() {
-        return avg;
+        return avg.convert();
     }
 
     public CurrencyValue getVwap() {
-        return vwap;
+        return vwap.convert();
     }
 
     public CurrencyValue getVol() {
-        return vol;
+        return vol.convert();
     }
 
     public CurrencyValue getLast_local() {
-        return last_local;
+        return last_local.convert();
     }
 
     public CurrencyValue getLast_orig() {
-        return last_orig;
+        return last_orig.convert();
     }
 
     public CurrencyValue getLast_all() {
-        return last_all;
+        return last_all.convert();
     }
 
     public CurrencyValue getLast() {
-        return last;
+        return last.convert();
     }
 
     public CurrencyValue getBuy() {
-        return buy;
+        return buy.convert();
     }
 
     public CurrencyValue getSell() {
-        return sell;
+        return sell.convert();
     }
 
     public Currency getInCurrency() {
@@ -147,15 +147,15 @@ public class TickerResponse {
 
         value.setTimestamp(getTimestamp());
 
-        value.setLast(getLast().getValue());
+        value.setLast(getLast().doubleValue());
 
-        value.setAsk(getSell().getValue());
-        value.setBid(getBuy().getValue());
+        value.setAsk(getSell().doubleValue());
+        value.setBid(getBuy().doubleValue());
 
-        value.setLow(getLow().getValue());
-        value.setHigh(getHigh().getValue());
+        value.setLow(getLow().doubleValue());
+        value.setHigh(getHigh().doubleValue());
 
-        value.setVolume(getVol().getValue());
+        value.setVolume(getVol().doubleValue());
 
         value.setAsset(new AssetPair(item, inCurrency));
 

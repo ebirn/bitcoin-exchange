@@ -22,6 +22,7 @@ public interface TradeClient {
 
     //public void getBalance();
     // public void getOpenBalance();
+    // public void getOrders(Date since);
 
     public Fee getTradeFee(TradeDecision trade);
     public Fee getDepositFee();

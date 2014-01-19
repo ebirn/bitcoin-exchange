@@ -23,6 +23,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -56,7 +57,7 @@ public class MtGoxClient extends RestExchangeClient {
 
     private WebTarget apiBaseResource;
 
-    Map<Currency,Double> multiplier = new HashMap<>();
+    Map<Currency,BigDecimal> multiplier = new HashMap<>();
 
     public MtGoxClient(Market market) {
         super(market);
@@ -64,9 +65,9 @@ public class MtGoxClient extends RestExchangeClient {
         apiBaseResource = client.target(API_BASE_URL);
 
 
-        multiplier.put(Currency.BTC, 1.0e8);
-        multiplier.put(Currency.USD, 1.0e5);
-        multiplier.put(Currency.EUR, 1.0e5);
+        multiplier.put(Currency.BTC, new BigDecimal("1.0e8", CurrencyValue.CURRENCY_MATH_CONTEXT));
+        multiplier.put(Currency.USD, new BigDecimal("1.0e5", CurrencyValue.CURRENCY_MATH_CONTEXT));
+        multiplier.put(Currency.EUR, new BigDecimal("1.0e5", CurrencyValue.CURRENCY_MATH_CONTEXT));
 
         tradeFee = new SimplePercentageFee("0.006");
     }
@@ -277,8 +278,8 @@ public class MtGoxClient extends RestExchangeClient {
         List<String> orderData = new ArrayList<>();
         orderData.add("type=" + type);
 
-        long volumeValue = Math.round(volume.getValue() * multiplier.get(volume.getCurrency()));
-        long priceValue =  Math.round(price.getValue() * multiplier.get(price.getCurrency()));
+        long volumeValue = volume.getValue().multiply( multiplier.get(volume.getCurrency()) ).longValue();
+        long priceValue =  price.getValue().multiply(multiplier.get(price.getCurrency())).longValue();
 
         orderData.add("amount_int=" + Long.toString( volumeValue ));
         orderData.add("price_int=" + Long.toString( priceValue ));

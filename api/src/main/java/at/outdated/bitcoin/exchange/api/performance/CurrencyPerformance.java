@@ -3,7 +3,9 @@ package at.outdated.bitcoin.exchange.api.performance;
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +18,11 @@ import java.util.List;
  */
 public class CurrencyPerformance extends Performance {
 
-    protected double startBalance = 0.0;
+    protected CurrencyValue startBalance = null;
 
-    protected double endBalance = 0.0;
+    protected CurrencyValue endBalance = null;
 
-    at.outdated.bitcoin.exchange.api.currency.Currency currency;
+    Currency currency;
 
     boolean started = false;
 
@@ -46,7 +48,7 @@ public class CurrencyPerformance extends Performance {
 
 
 
-        double balance = transaction.getBalance().getValue();
+        CurrencyValue balance = transaction.getBalance();
 
         //System.out.println( transaction.getTimestamp() + ", " + type + ": balance: " + balance + ", transaction:" + transaction.getValue().getValue());
 
@@ -59,22 +61,22 @@ public class CurrencyPerformance extends Performance {
     }
 
     @Override
-    public double getPercent() {
-        return (getTotalDifference() / startBalance);
+    public BigDecimal getPercent() {
+        return new CurrencyValue(getTotalDifference()).divide(startBalance).getValue();
     }
 
     @Override
-    public double getTotalDifference() {
-        return endBalance-startBalance;
+    public CurrencyValue getTotalDifference() {
+        return new CurrencyValue(endBalance).subtract(startBalance);
     }
 
     @Override
-    public double getEndBalance() {
+    public CurrencyValue getEndBalance() {
         return endBalance;
     }
 
     @Override
-    public double getStartBalance() {
+    public CurrencyValue getStartBalance() {
         return startBalance;
     }
 

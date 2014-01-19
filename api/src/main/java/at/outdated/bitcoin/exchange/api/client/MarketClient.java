@@ -19,7 +19,7 @@ public interface MarketClient {
 
     MarketDepth getMarketDepth(AssetPair asset);
 
-    // get historice trade data
+    // get historic trade data
     //List<MarketOrder> getTrades(Date since);
 
     double getApiLag();

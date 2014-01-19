@@ -13,7 +13,7 @@ public class AbsoluteComparator implements Comparator<Performance> {
 
     @Override
     public int compare(Performance o1, Performance o2) {
-        return Double.compare(o1.getTotalDifference(), o2.getTotalDifference());
+        return o1.getTotalDifference().getValue().compareTo(o2.getTotalDifference().getValue());
         //return Math.round( (float)(o1.getTotalDifference()- o2.getTotalDifference())*100.0f );
     }
 }

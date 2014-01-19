@@ -20,123 +20,110 @@ import java.util.Locale;
  * Time: 20:15
  * To change this template use File | Settings | File Templates.
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CurrencyValue {
 
-    @XmlElement
-    private double value = 0.0;
+    public static final MathContext CURRENCY_MATH_CONTEXT = new MathContext(7, RoundingMode.HALF_UP);
 
-//    @XmlElement
-//    private long value_int = 0;
 
-    @XmlElement
-    private String display = "";
-
-    @XmlElement
-    private String display_short = "";
-
-    @XmlElement
-    private Currency currency = Currency.BTC;
+    private BigDecimal value = new BigDecimal("0.000000000");
+    private Currency currency = null;
 
     public CurrencyValue() {
 
     }
 
+    @Deprecated
     public CurrencyValue(double value, Currency curr) {
-        this.value = value;
+        this.value = new BigDecimal(value, CURRENCY_MATH_CONTEXT);
         //this.value_int = (long)(value * curr.getDivide());
         currency = curr;
     }
 
-    /*
-    //public CurrencyValue(long value, Currency curr) {
-        value_int = value;
-        //this.value = ((double)value / curr.getDivide());
+    public CurrencyValue(BigDecimal value, Currency curr) {
+        this.value = value;
         currency = curr;
     }
-*/
+
+    public CurrencyValue(Currency curr) {
+        this.value = new BigDecimal(0.0, CURRENCY_MATH_CONTEXT);
+        //this.value_int = (long)(value * curr.getDivide());
+        currency = curr;
+    }
 
     public CurrencyValue(CurrencyValue value) {
         this.currency = value.currency;
-    //    this.value_int = value.value_int;
         this.value = value.value;
-        this.display_short = value.display_short;
-        this.display = value.display;
     }
 
-    public double getValue() {
-        return value;
+    public double doubleValue() {
+        return value.doubleValue();
     }
 
-
-    public String getDisplay() {
-        return StringEscapeUtils.unescapeJava(display);
-    }
-
-    public String getDisplayShort() {
-        return StringEscapeUtils.unescapeJava(display_short);
-    }
 
     public Currency getCurrency() {
         return currency;
     }
 
     public CurrencyValue add(CurrencyValue other) {
-        this.value += other.value;
+        checkArgument(other);
+        this.value = this.value.add(other.value, CURRENCY_MATH_CONTEXT);
 
         return this;
     }
 
-    public CurrencyValue add(double other) {
-        this.value += other;
+    public CurrencyValue add(BigDecimal other) {
+        this.value = this.value.add(other, CURRENCY_MATH_CONTEXT);
 
         return this;
     }
 
     public CurrencyValue subtract(CurrencyValue other) {
-        this.value -= other.value;
+
+        checkArgument(other);
+        this.value = this.value.subtract(other.value, CURRENCY_MATH_CONTEXT);
         return this;
     }
 
-    public CurrencyValue subtract(double other) {
-        this.value -= other;
-        return this;
-    }
-
-    public CurrencyValue multiply(long mul) {
-        value *= (double) mul;
-
+    public CurrencyValue subtract(BigDecimal other) {
+        this.value = this.value.subtract(other, CURRENCY_MATH_CONTEXT);
         return this;
     }
 
     public CurrencyValue multiply(BigDecimal mul) {
-        value *= mul.doubleValue();
+        value = this.value.multiply(mul, CURRENCY_MATH_CONTEXT);
 
         return this;
     }
 
-    public CurrencyValue multiply(double mul) {
-        value *= mul;
+    public CurrencyValue multiply(CurrencyValue other) {
+        checkArgument(other);
+        this.value = this.value.multiply(other.value, CURRENCY_MATH_CONTEXT);
 
         return this;
     }
 
-    public CurrencyValue divide(double div) {
-        value /= div;
+    public CurrencyValue divide(CurrencyValue other) {
+        checkArgument(other);
+        this.value = this.value.divide(other.value, CURRENCY_MATH_CONTEXT);
+        return this;
+    }
+    public CurrencyValue divide(BigDecimal div) {
+        this.value = this.value.divide(div, CURRENCY_MATH_CONTEXT);
         return this;
     }
 
-    public BigDecimal asDecimal() {
-        return new BigDecimal(value);
+    private void checkArgument(CurrencyValue other) {
+        if(this.currency != other.currency) {
+            throw new IllegalArgumentException("currency mismatch");
+        }
     }
 
     public boolean isMoreThan(CurrencyValue other) {
-        return this.value > other.value;
+        return value.compareTo(other.value) > 0;
     }
 
     public boolean isLessThan(CurrencyValue other) {
-        return this.value < other.value;
+        return value.compareTo(other.value) < 0;
     }
 
     public String toString() {
@@ -144,32 +131,26 @@ public class CurrencyValue {
     }
 
     public boolean isPositive() {
-        return value > 0.0;
+        return value.compareTo(BigDecimal.ZERO) > 0;
     }
 
     public boolean isNonNegative() {
-        return value >= 0.0;
+        return value.compareTo(BigDecimal.ZERO) >= 0;
     }
 
     public boolean isNegative() {
-        return value < 0.0;
+        return value.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    public void setValue(double value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 
+    public BigDecimal getValue() {
+        return value;
+    }
+
     public String valueToString() {
-/*
-        NumberFormat fmt = NumberFormat.getNumberInstance(Locale.US);
-        fmt.setGroupingUsed(false);
-        fmt.setMinimumIntegerDigits(1);
-
-        fmt.setMinimumFractionDigits(4);
-        fmt.setMaximumFractionDigits(7);
-*/
-        BigDecimal number = new BigDecimal(value, new MathContext(7, RoundingMode.HALF_UP));
-
-        return number.toPlainString();
+        return value.toPlainString();
     }
 }

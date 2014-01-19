@@ -19,7 +19,7 @@ public class ConstantFee extends Fee {
     Currency currency;
 
     public ConstantFee(CurrencyValue currencyFee) {
-        this.constantFee = new BigDecimal(currencyFee.getValue());
+        this.constantFee = currencyFee.getValue();
         this.currency = currencyFee.getCurrency();
     }
 
