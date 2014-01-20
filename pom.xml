@@ -28,6 +28,8 @@
         <module>icbit</module>
         <module>coins-e</module>
         <module>cryptsy</module>
+        <module>tests</module>
+        <module>all</module>
     </modules>
 
 	<dependencies>

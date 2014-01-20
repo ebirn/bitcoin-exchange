@@ -1,33 +1,25 @@
-package at.outdated.bitcoin.exchange.api;
+package at.outdated.bitcoin.exchange;
 
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
-import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
-import org.junit.*;
-import org.slf4j.Logger;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 /**
- * Created by ebirn on 29.10.13.
+ * Created by ebirn on 20.01.14.
  */
-public abstract class BaseTest {
+@RunWith(value=Parameterized.class)
+public class MarketTest extends BaseTest {
 
-    protected ExchangeClient client;
-    protected Market market;
-
-    protected Logger log = LoggerFactory.getLogger(getClass());
-
-    @Before
-    public abstract void init();
+    public MarketTest(Market m) {
+        super(m);
+        log = LoggerFactory.getLogger("test.market." + m.getKey());
+        log.info("MarketTest: {}", m.getKey());
+    }
 
     @Test
     public void testAllTickers() {
@@ -51,67 +43,6 @@ public abstract class BaseTest {
     }
 
 
-    @Test
-    public void testAccountInfo() {
-        AccountInfo info = client.getAccountInfo();
-
-        assertAccountInfo(info);
-    }
-
-
-
-    @Test
-    public void testDepositAddress() {
-
-        for(TransferMethod method : market.getDepositMethods()) {
-            Currency transferCurrency = method.getCurrency();
-
-            if(transferCurrency.isCrypto()) {
-
-                CurrencyAddress address = client.getDepositAddress(transferCurrency);
-                assertCurrencyAddress(address, transferCurrency);
-
-                log.info("deposit: {} - {}", transferCurrency, address);
-            }
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidDepositCurrency() {
-
-        Set<Currency> invalidCurrencies = new HashSet();
-        invalidCurrencies.addAll(Arrays.asList(Currency.values()));
-
-
-        for(TransferMethod m : market.getDepositMethods()) {
-            invalidCurrencies.remove(m.getCurrency());
-        }
-
-        Iterator<Currency> ci = invalidCurrencies.iterator();
-        while(ci.hasNext()) {
-            Currency c = ci.next();
-            if(!c.isCrypto())
-                ci.remove();
-        }
-
-        boolean hasInvalids = !invalidCurrencies.isEmpty();
-        Assume.assumeTrue("can deposit all currencies, cannot test invalid curr", hasInvalids);
-
-        //TODO: is this if necessary at all?
-        if(hasInvalids) {
-            Currency invalid = invalidCurrencies.iterator().next();
-
-            // this must throw up
-            client.getDepositAddress(invalid);
-        }
-
-    }
-
-    protected void assertAccountInfo(AccountInfo info) {
-
-        Assert.assertNotNull(info);
-        // FIXME: more detailed checks
-    }
 
     protected void assertDepth(MarketDepth depth){
         Assert.assertNotNull(depth);
@@ -168,12 +99,5 @@ public abstract class BaseTest {
 
         Assert.assertNotNull(ticker.getAsset());
 
-    }
-
-
-    protected void assertCurrencyAddress(CurrencyAddress address, Currency currency) {
-
-        Assert.assertNotNull("currency address is NULL", address);
-        Assert.assertEquals("currency mismatch", currency, address.getReference());
     }
 }

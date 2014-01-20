@@ -29,7 +29,10 @@ public interface TradeClient {
     public Fee getWithdrawalFee(Currency curr);
 
     public List<MarketOrder> getOpenOrders();
+
+    public OrderId placeOrder(MarketOrder order);
     public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price);
+
     public boolean cancelOrder(OrderId order);
 
     public CurrencyAddress getDepositAddress(Currency currency);

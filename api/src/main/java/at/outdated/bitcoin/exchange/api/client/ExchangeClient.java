@@ -120,6 +120,11 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
 
 
     @Override
+    public OrderId placeOrder(MarketOrder order) {
+        return placeOrder(order.getAsset(), order.getDecision(), order.getVolume(), order.getPrice());
+    }
+
+    @Override
     public Fee getDepositFee() {
         return new ZeroFee();
     }

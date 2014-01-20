@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>at.outdated.bitcoin.exchange</groupId>
+        <version>1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>all</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <import.version>${project.version}</import.version>
+    </properties>
+
+    <!--
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>at.outdated.bitcoin.exchange</groupId>
+                <artifactId>api</artifactId>
+                <version>${import.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>at.outdated.bitcoin.exchange</groupId>
+                <artifactId>bitstamp</artifactId>
+                <version>${import.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>at.outdated.bitcoin.exchange</groupId>
+                <artifactId>bitcurex</artifactId>
+                <version>${import.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>at.outdated.bitcoin.exchange</groupId>
+                <artifactId>bitkonan</artifactId>
+                <version>${import.version}</version>
+                <type>jar</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+-->
+    <dependencies>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>bitstamp</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>bitcurex</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>bitkonan</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>btc-e</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>bter</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>coins-e</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>cryptsy</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>kraken</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>mtgox</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>vircurex</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
+
+    </dependencies>
+
+</project>
