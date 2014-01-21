@@ -99,18 +99,6 @@ public class BitkonanApiClient extends RestExchangeClient {
     }
 
     @Override
-    protected <R> R simpleGetRequest(WebTarget target, Class<R> resultClass) {
-
-        R result = null;
-
-        String resultStr = super.simpleGetRequest(target, String.class);
-
-        result = BitkonanJsonResolver.convertFromJson(resultStr, resultClass);
-
-        return result;
-    }
-
-    @Override
     public TickerValue getTicker(AssetPair asset) {
 
 

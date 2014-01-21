@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
+import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
@@ -37,8 +38,10 @@ public class BtcEApiClient extends RestExchangeClient {
 
     public BtcEApiClient(Market market) {
         super(market);
+        client.register(JsonEnforcingFilter.class);
 
         tradeFee = new SimplePercentageFee("0.002");
+
     }
 
     @Override
@@ -53,15 +56,13 @@ public class BtcEApiClient extends RestExchangeClient {
 
         data = new MultivaluedHashMap<>();
         data.add("method", "getInfo");
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
-        //log.debug("raw info: {}", raw);
-        InfoResponse infoRes = BtcEJsonResolver.convertFromJson(raw, InfoResponse.class);
+        InfoResponse infoRes = protectedPostRequest(tgt, InfoResponse.class, Entity.form(data));
 
         AccountInfo info = infoRes.result;
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TransHistory");
-        raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
 
         //log.debug("raw transactions: {}", raw);
         JsonObject transResponse = jsonFromString(raw);
@@ -168,20 +169,6 @@ public class BtcEApiClient extends RestExchangeClient {
         }
 
         return depth;
-    }
-
-
-    @Override
-    protected <R> R simpleGetRequest(WebTarget target, Class<R> resultClass) {
-
-        R result = null;
-
-        String resultStr = super.simpleGetRequest(target, String.class);
-
-        //log.debug("BTC-E raw: " + resultStr);
-        result = BtcEJsonResolver.convertFromJson(resultStr, resultClass);
-
-        return result;
     }
 
     @Override

@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
+import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
@@ -38,6 +39,8 @@ public class BitcurexApiClient extends RestExchangeClient {
 
     public BitcurexApiClient(Market market) {
         super(market);
+
+        client.register(JsonEnforcingFilter.class);
 
         tradeTarget = client.target("https://{quote}.bitcurex.com/api/0/");
         publicTarget = client.target("https://{quote}.bitcurex.com/data");
@@ -134,17 +137,6 @@ public class BitcurexApiClient extends RestExchangeClient {
         }
 */
         return depth;
-    }
-
-    @Override
-    protected <R> R simpleGetRequest(WebTarget resource, Class<R> resultClass) {
-        String resultStr =  super.simpleGetRequest(resource, String.class);
-
-        log.debug("BITCUREX raw: " + resultStr);
-
-        R result = BitcurexJsonResolver.convertFromJson(resultStr, resultClass);
-
-        return result;
     }
 
     @Override

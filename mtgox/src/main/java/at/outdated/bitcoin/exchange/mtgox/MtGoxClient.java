@@ -61,9 +61,7 @@ public class MtGoxClient extends RestExchangeClient {
 
     public MtGoxClient(Market market) {
         super(market);
-        client = ClientBuilder.newBuilder().register(MtGoxJSONResolver.class).build();
         apiBaseResource = client.target(API_BASE_URL);
-
 
         multiplier.put(Currency.BTC, new BigDecimal("1.0e8", CurrencyValue.CURRENCY_MATH_CONTEXT));
         multiplier.put(Currency.USD, new BigDecimal("1.0e5", CurrencyValue.CURRENCY_MATH_CONTEXT));
