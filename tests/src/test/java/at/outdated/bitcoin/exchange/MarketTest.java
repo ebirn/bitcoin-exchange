@@ -9,14 +9,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 /**
  * Created by ebirn on 20.01.14.
  */
 @RunWith(value=Parameterized.class)
 public class MarketTest extends BaseTest {
 
-    public MarketTest(Market m) {
-        super(m);
+    @Parameterized.Parameters(name = "{0}MarketTest")
+    public static Collection<Object[]> getMarketParams() {
+        return BaseTest.getMarketParams();
+    }
+
+
+    public MarketTest(String key, Market m) {
+        super(key, m);
         log = LoggerFactory.getLogger("test.market." + m.getKey());
         log.info("MarketTest: {}", m.getKey());
     }

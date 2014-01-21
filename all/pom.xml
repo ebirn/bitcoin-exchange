@@ -49,6 +49,12 @@
     </dependencyManagement>
 -->
     <dependencies>
+        <dependency>
+            <groupId>at.outdated.bitcoin.exchange</groupId>
+            <artifactId>api</artifactId>
+            <version>${import.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>at.outdated.bitcoin.exchange</groupId>

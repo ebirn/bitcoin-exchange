@@ -27,9 +27,14 @@ public class TradeTest extends BaseTest {
     protected MarketOrder validOrder;
     protected MarketOrder invalidOrder;
 
+    @Parameterized.Parameters(name = "{0}TradeTest")
+    public static Collection<Object[]> getMarketParams() {
+        return BaseTest.getMarketParams();
+    }
 
-    public TradeTest(Market m) {
-        super(m);
+
+    public TradeTest(String key, Market m) {
+        super(key, m);
     }
 
     @Test
