@@ -2,7 +2,8 @@ package at.outdated.bitcoin.exchange.api.market.fee;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
+
 
 import java.math.BigDecimal;
 
@@ -36,10 +37,10 @@ public class ConstantFee extends Fee {
     }
 
     @Override
-    public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
+    public CurrencyValue calculate(OrderType type, CurrencyValue volume) {
 
         Currency feeCurrency = currency == null ? volume.getCurrency() : currency;
 
-        return new CurrencyValue(constantFee.doubleValue(), feeCurrency);  //To change body of implemented methods use File | Settings | File Templates.
+        return new CurrencyValue(constantFee, feeCurrency);  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

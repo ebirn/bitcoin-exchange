@@ -3,8 +3,6 @@ package at.outdated.bitcoin.exchange.coinse;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.client.MarketClient;
-import at.outdated.bitcoin.exchange.api.client.TradeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
@@ -132,7 +130,7 @@ public class CoinseApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
         return null;
     }
 

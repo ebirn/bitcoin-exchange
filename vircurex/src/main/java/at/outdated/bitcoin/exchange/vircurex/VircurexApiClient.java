@@ -8,7 +8,6 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +17,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -285,9 +285,22 @@ public class VircurexApiClient extends RestExchangeClient {
             MarketOrder order = new MarketOrder();
             order.setId(new OrderId(market, jsonOrder.getJsonNumber("orderid").toString()));
             order.setAsset(asset);
-            order.setDecision(TradeDecision.valueOf(jsonOrder.getString("ordertype")));
-            order.setVolume(new CurrencyValue(Double.valueOf(jsonOrder.getString("quantity")), c1));
-            order.setPrice(new CurrencyValue(Double.valueOf(jsonOrder.getString("unitprice")), c2));
+
+            switch(jsonOrder.getString("ordertype")) {
+                case "SELL":
+                    order.setType(OrderType.ASK);
+                    break;
+
+                case "BUY":
+                    order.setType(OrderType.BID);
+                    break;
+
+                default:
+                    order.setType(OrderType.UNDEF);
+            }
+
+            order.setVolume(new CurrencyValue(new BigDecimal(jsonOrder.getString("quantity")), c1));
+            order.setPrice(new CurrencyValue(new BigDecimal(jsonOrder.getString("unitprice")), c2));
 
             orders.add(order);
         }
@@ -296,7 +309,7 @@ public class VircurexApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
         // create_released_order
 
         // Input token:
@@ -318,7 +331,16 @@ public class VircurexApiClient extends RestExchangeClient {
         nf.setMinimumFractionDigits(4);
         nf.setMaximumFractionDigits(15);
 
-        f.param("ordertype", decision.name());
+        switch(type) {
+            case ASK:
+                f.param("ordertype", "SELL");
+                break;
+
+            case BID:
+                f.param("ordertype", "BUY");
+                break;
+        }
+
         f.param("amount", nf.format(volume.getValue()));
         f.param("currency1", asset.getBase().name());
         f.param("unitprice", nf.format(price.getValue()));
@@ -335,7 +357,7 @@ public class VircurexApiClient extends RestExchangeClient {
 
             MarketOrder order = new MarketOrder();
             order.setAsset(asset);
-            order.setDecision(decision);
+            order.setType(type);
             order.setVolume(volume);
             order.setPrice(price);
 

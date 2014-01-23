@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import java.math.BigDecimal;
 
@@ -34,7 +34,7 @@ public class SimplePercentageFee extends Fee {
     }
 
     @Override
-    public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
+    public CurrencyValue calculate(OrderType type, CurrencyValue volume) {
 
         CurrencyValue fee = new CurrencyValue(volume);
         fee.multiply(percentage);

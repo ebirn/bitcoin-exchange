@@ -5,7 +5,6 @@ import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-
 import javax.websocket.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -93,7 +92,7 @@ public class IcbitClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
         return null;
     }
 

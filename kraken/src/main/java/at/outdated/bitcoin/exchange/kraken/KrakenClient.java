@@ -379,39 +379,34 @@ public class KrakenClient extends RestExchangeClient {
         see also: https://www.kraken.com/help/api#add-standard-order
          */
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         //  https://api.kraken.com/0/private/AddOrder
         WebTarget orderTgt = client.target("https://api.kraken.com/0/private/AddOrder");
 
         Form params = new Form();
 
-        String type = null;
+        String typeStr = null;
 
-        switch(decision) {
-            case BUY:
-                type = "buy";
+        switch(type) {
+            case BID:
+                typeStr = "buy";
                 break;
 
-            case SELL:
-                type = "sell";
+            case ASK:
+                typeStr = "sell";
                 break;
 
             default:
-                type = "ERROR";
+                typeStr = "ERROR";
         }
 
         params.param("pair", fixSymbol(asset));
-        params.param("type", type); // buy / sell
+        params.param("type", typeStr); // buy / sell
         params.param("ordertype", "limit"); // for now we don't support anything else
 
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-        nf.setMinimumFractionDigits(8);
-        nf.setMaximumIntegerDigits(8);
-        nf.setMaximumFractionDigits(15);
-
-        params.param("price", nf.format(price.getValue()));
-        params.param("volume", nf.format(volume.getValue()));
+        params.param("price", price.valueToString());
+        params.param("volume", volume.valueToString());
 
         //params.param("validate", "true");
 

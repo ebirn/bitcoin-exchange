@@ -15,14 +15,14 @@ public class MarketOrder {
     protected CurrencyValue price;
     protected CurrencyValue volume;
 
-    protected TradeDecision decision;
+    protected OrderType type;
 
     public MarketOrder() {
 
     }
 
-    public MarketOrder(TradeDecision decision, CurrencyValue volume,  CurrencyValue price) {
-        this.decision = decision;
+    public MarketOrder(OrderType type, CurrencyValue volume,  CurrencyValue price) {
+        this.type = this.type;
         this.volume = volume;
         this.price = price;
     }
@@ -50,7 +50,7 @@ public class MarketOrder {
 
     @Override
     public String toString() {
-        return "Order: " + decision + " " + volume  + " @ " + price;
+        return "Order: " + type + " " + volume  + " @ " + price;
     }
 
     public OrderId getId() {
@@ -69,11 +69,11 @@ public class MarketOrder {
         this.asset = asset;
     }
 
-    public TradeDecision getDecision() {
-        return decision;
+    public OrderType getType() {
+        return type;
     }
 
-    public void setDecision(TradeDecision decision) {
-        this.decision = decision;
+    public void setType(OrderType type) {
+        this.type = type;
     }
 }

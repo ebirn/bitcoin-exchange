@@ -20,6 +20,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.nio.channels.spi.AbstractSelectionKey;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -200,7 +201,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
 
 /*
@@ -219,12 +220,12 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         nf.setMaximumIntegerDigits(15);
 
         String typeStr = "ERROR";
-        switch(decision) {
-            case BUY:
+        switch(type) {
+            case BID:
                 typeStr = "Buy";
                 break;
 
-            case SELL:
+            case ASK:
                 typeStr = "Sell";
                 break;
         }
@@ -284,12 +285,12 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
                 order.setPrice(new CurrencyValue(Double.parseDouble(jsonOrder.getString("price")), asset.getQuote()));
 
-                TradeDecision d = TradeDecision.GETHELP;
+                OrderType type = OrderType.UNDEF;
                 String dStr = jsonOrder.getString("ordertype");
-                if(dStr.equalsIgnoreCase("Buy")) d = TradeDecision.BUY;
-                if(dStr.equalsIgnoreCase("Sell")) d = TradeDecision.SELL;
+                if(dStr.equalsIgnoreCase("Buy")) type = OrderType.BID;
+                if(dStr.equalsIgnoreCase("Sell")) type = OrderType.ASK;
 
-                order.setDecision(d);
+                order.setType(type);
 
                 orders.add(order);
             }
@@ -311,13 +312,14 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         return null;
     }
 
-    public Fee getTradeFee(TradeDecision trade) {
+    @Override
+    public Fee getTradeFee(OrderType trade) {
 
         switch(trade) {
-            case BUY:
+            case BID:
                 return buyFee;
 
-            case SELL:
+            case ASK:
                 return sellFee;
         }
 

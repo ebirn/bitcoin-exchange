@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,15 +13,15 @@ import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 public abstract class Fee {
 
 
-    public abstract CurrencyValue calculate(TradeDecision decision, CurrencyValue volume);
+    public abstract CurrencyValue calculate(OrderType type, CurrencyValue volume);
 
 
     // what remains after paying the fee
-    public CurrencyValue remaining(TradeDecision decision, CurrencyValue volume) {
+    public CurrencyValue remaining(OrderType type, CurrencyValue volume) {
 
         CurrencyValue remaining = new CurrencyValue(volume);
 
-        CurrencyValue fee = calculate(decision, volume);
+        CurrencyValue fee = calculate(type, volume);
 
         remaining.subtract(fee);
 

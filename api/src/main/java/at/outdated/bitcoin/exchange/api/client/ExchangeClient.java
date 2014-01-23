@@ -13,8 +13,6 @@ import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -121,7 +119,7 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
 
     @Override
     public OrderId placeOrder(MarketOrder order) {
-        return placeOrder(order.getAsset(), order.getDecision(), order.getVolume(), order.getPrice());
+        return placeOrder(order.getAsset(), order.getType(), order.getVolume(), order.getPrice());
     }
 
     @Override
@@ -134,8 +132,13 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
         return this.market.getDepositMethod(curr).getFee();
     }
 
+    /**
+     *  trading fee per ordertype (in most implementations BID/ASK is identical)
+     * @param trade
+     * @return trading fee for the market
+     */
     @Override
-    public Fee getTradeFee(TradeDecision trade) {
+    public Fee getTradeFee(OrderType trade) {
         return tradeFee;
     }
 }

@@ -4,7 +4,7 @@ import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.market.ExchangeRateCalculator;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.performance.CombinedPerformance;
 import at.outdated.bitcoin.exchange.api.performance.Performance;
@@ -25,9 +25,9 @@ public abstract class AccountInfo {
 
     protected CurrencyContainer<Wallet> wallets = new CurrencyContainer<>();
 
-    abstract public Fee getTradeFee(TradeDecision trade);
+    abstract public Fee getTradeFee(OrderType trade);
 
-    public CurrencyValue getTradeFee(TradeDecision trade, CurrencyValue volume) {
+    public CurrencyValue getTradeFee(OrderType trade, CurrencyValue volume) {
         return getTradeFee(trade).calculate(trade, volume);
     }
 

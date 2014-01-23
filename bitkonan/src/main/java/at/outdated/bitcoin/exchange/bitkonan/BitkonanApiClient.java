@@ -171,7 +171,7 @@ public class BitkonanApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
         return null;
     }
 

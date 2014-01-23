@@ -4,7 +4,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -51,11 +51,11 @@ public class KrakenDepthValue {
         return depth;
     }
 
-    private void addOrders(TradeDecision dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
-        for(double[] askVal : raw) {
+    private void addOrders(OrderType dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
+        for(double[] val : raw) {
 
-            CurrencyValue price = new CurrencyValue(askVal[0], quote);
-            CurrencyValue volume = new CurrencyValue(askVal[1], base);
+            CurrencyValue price = new CurrencyValue(val[0], quote);
+            CurrencyValue volume = new CurrencyValue(val[1], base);
 
             orders.add(new MarketOrder(dec, volume, price));
         }

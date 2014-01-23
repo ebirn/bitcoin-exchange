@@ -58,14 +58,14 @@ public class MarketTest extends BaseTest {
 
         Assert.assertNotNull(depth.getAsks());
         for(MarketOrder order : depth.getAsks()) {
-            Assert.assertEquals(order.getAsset(), depth.getAsset());
-            Assert.assertEquals(order.getDecision(), TradeDecision.BUY);
+            Assert.assertEquals(depth.getAsset(), order.getAsset());
+            Assert.assertEquals(OrderType.ASK, order.getType());
         }
 
         Assert.assertNotNull(depth.getBids());
         for(MarketOrder order : depth.getBids()) {
-            Assert.assertEquals(order.getAsset(), depth.getAsset());
-            Assert.assertEquals(order.getDecision(), TradeDecision.SELL);
+            Assert.assertEquals(depth.getAsset(), order.getAsset());
+            Assert.assertEquals(OrderType.BID, order.getType());
         }
 
         if(!depth.getAsks().isEmpty() && !depth.getBids().isEmpty()) {

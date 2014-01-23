@@ -19,6 +19,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -184,7 +185,7 @@ public class BterApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         WebTarget tgt = client.target("https://bter.com/api/1/private/cancelorder");
 
@@ -192,26 +193,21 @@ public class BterApiClient extends RestExchangeClient {
 
         String pairStr = asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase();
 
-        String type = "ERROR";
-        switch(decision) {
-            case BUY:
-                type = "BUY";
+        switch(type) {
+            case BID:
+                form.param("type", "BUY"); // sell / buy"BUY";
                 break;
 
-            case SELL:
-                type = "SELL";
+            case ASK:
+                form.param("type", "SELL"); // sell / buy"BUY";
                 break;
         }
 
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-        nf.setMaximumIntegerDigits(15);
-        nf.setMinimumFractionDigits(5);
-        nf.setMaximumFractionDigits(15);
 
         form.param("pair", pairStr); // aaa_bbb
-        form.param("type", type); // sell / buy
-        form.param("rate", nf.format(price.getValue())); // price
-        form.param("amount", nf.format(volume.getValue()));  // volume
+
+        form.param("rate", price.valueToString()); // price
+        form.param("amount", volume.valueToString());  // volume
 
         Entity e = Entity.form(form);
 
@@ -292,35 +288,35 @@ public class BterApiClient extends RestExchangeClient {
 
 
         Currency sellCurr = Currency.valueOf(jsonOrder.getString("sell_type"));
-        double sellAmount = Double.parseDouble(jsonOrder.getString("sell_amount"));
+        BigDecimal sellAmount = new BigDecimal(jsonOrder.getString("sell_amount"));
 
         Currency buyCurr = Currency.valueOf(jsonOrder.getString("buy_type"));
-        double buyAmount = Double.parseDouble(jsonOrder.getString("buy_amount"));
+        BigDecimal buyAmount = new BigDecimal(jsonOrder.getString("buy_amount"));
 
         AssetPair asset = market.getAsset(sellCurr, buyCurr);
 
         order.setId(new OrderId(market, jsonOrder.getString("id")));
         order.setAsset(asset);
 
-        double price = buyAmount / sellAmount;
+        BigDecimal price = buyAmount.divide(sellAmount);
 
         order.setPrice(new CurrencyValue(price, buyCurr));
         order.setVolume(new CurrencyValue(sellAmount, sellCurr));
 
 
-        TradeDecision decision = null;
+        OrderType type = null;
 
         if(sellCurr == asset.getBase() && buyCurr == asset.getQuote()) {
-            decision = TradeDecision.SELL;
+            type = OrderType.ASK;
         }
         else if(buyCurr == asset.getBase() && sellCurr == asset.getQuote()){
-            decision = TradeDecision.BUY;
+            type = OrderType.BID;
         }
         else {
-            decision = TradeDecision.GETHELP;
+            type = OrderType.UNDEF;
         }
 
-        order.setDecision(decision);
+        order.setType(type);
 
 
         return order;

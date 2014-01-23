@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.coinse;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 
@@ -11,7 +11,7 @@ import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 public class CoinseAccountInfo extends AccountInfo {
 
     @Override
-    public Fee getTradeFee(TradeDecision trade) {
+    public Fee getTradeFee(OrderType type) {
         return new SimplePercentageFee(0.002);
     }
 }

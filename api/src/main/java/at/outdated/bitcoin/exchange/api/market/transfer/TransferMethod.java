@@ -12,11 +12,10 @@ public class TransferMethod {
 
     protected Fee fee = new ZeroFee();
 
-    protected Currency currency;
+    protected Currency currency = null;
+    protected CurrencyAddress address = null;
 
-    protected TransferType transfer = TransferType.OTHER;
-
-    protected CurrencyAddress address;
+    protected TransferType transfer = null;
 
     public TransferMethod() {
     }

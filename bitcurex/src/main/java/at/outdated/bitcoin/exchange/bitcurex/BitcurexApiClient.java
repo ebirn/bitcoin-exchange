@@ -9,6 +9,7 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
 
@@ -70,7 +71,7 @@ public class BitcurexApiClient extends RestExchangeClient {
         WebTarget transactionsTarget = tradeTarget.path("/getTransactions").resolveTemplate("quote", Currency.EUR);
         Form form = new Form();
 
-        form.param("type", "" + TransactionType.BTC_DEPOST.ordinal());
+        form.param("type", "" + BitcurexTransactionType.BTC_DEPOST.ordinal());
         entity = Entity.form(form);
         String rawTransactions =  setupProtectedResource(transactionsTarget, entity).post(entity, String.class);
 
@@ -246,7 +247,7 @@ public class BitcurexApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
 
 
@@ -259,7 +260,7 @@ public class BitcurexApiClient extends RestExchangeClient {
         * */
 
 
-        WebTarget orderTgt = tradeTarget.path(decision.name().toLowerCase() + "BTC").resolveTemplate("quote", asset.getQuote());
+        WebTarget orderTgt = tradeTarget.path(type.verb() + "BTC").resolveTemplate("quote", asset.getQuote());
 
 
         Form form = new Form();
@@ -318,11 +319,11 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         switch(o.getType()) {
             case ASK:
-                order.setDecision(TradeDecision.SELL);
+                order.setType(OrderType.ASK);
                 break;
 
             case BID:
-                order.setDecision(TradeDecision.BUY);
+                order.setType(OrderType.ASK);
                 break;
         }
 

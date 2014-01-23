@@ -128,7 +128,7 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
     }
 
     public String toString() {
-        return valueToString() + " " + currency.name();
+        return valueToString() + " " + currency;
     }
 
     public boolean isPositive() {

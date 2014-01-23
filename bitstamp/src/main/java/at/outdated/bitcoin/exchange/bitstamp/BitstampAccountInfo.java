@@ -1,7 +1,7 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 
 /**
@@ -20,7 +20,7 @@ public class BitstampAccountInfo extends AccountInfo {
     }
 
     @Override
-    public Fee getTradeFee(TradeDecision trade) {
+    public Fee getTradeFee(OrderType trade) {
         return fee;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

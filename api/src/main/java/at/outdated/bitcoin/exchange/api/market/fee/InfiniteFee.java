@@ -1,7 +1,10 @@
 package at.outdated.bitcoin.exchange.api.market.fee;
 
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
+
+import java.math.BigDecimal;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +16,7 @@ import at.outdated.bitcoin.exchange.api.market.TradeDecision;
 public class InfiniteFee extends Fee {
 
     @Override
-    public CurrencyValue calculate(TradeDecision decision, CurrencyValue volume) {
-        return new CurrencyValue(Double.POSITIVE_INFINITY, volume.getCurrency());
+    public CurrencyValue calculate(OrderType orderType, CurrencyValue volume) {
+        return new CurrencyValue(new BigDecimal("10e100"), volume.getCurrency());
     }
 }

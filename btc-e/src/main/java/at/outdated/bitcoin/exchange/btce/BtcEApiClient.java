@@ -10,7 +10,6 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;
@@ -24,11 +23,9 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 // TODO: use fee api: https://hdbtce.kayako.com/Knowledgebase/Article/View/27/4/api-fee
@@ -267,14 +264,7 @@ public class BtcEApiClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
-
-
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-        nf.setMaximumFractionDigits(15);
-        nf.setMaximumFractionDigits(8);
-        nf.setMaximumIntegerDigits(15);
-
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         // method: Trade
 
@@ -287,9 +277,21 @@ public class BtcEApiClient extends RestExchangeClient {
         String pairStr = asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase();
 
         data.param("pair", pairStr); // btc_usd
-        data.param("type", decision.name().toLowerCase());
-        data.param("rate", nf.format(price.getValue()));
-        data.param("amount", nf.format(volume.getValue()));
+
+        switch(type) {
+            case ASK:
+                data.param("type", "sell");
+                break;
+
+            case BID:
+                data.param("type", " buy");
+                break;
+        }
+
+
+
+        data.param("rate", price.valueToString());
+        data.param("amount", volume.valueToString());
 
         String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
 
@@ -395,9 +397,7 @@ public class BtcEApiClient extends RestExchangeClient {
         AssetPair asset = market.getAsset(left, right);
         order.setAsset(asset);
 
-        String typeStr = jsonOrder.getString("type");
-        order.setDecision(TradeDecision.valueOf(typeStr.toUpperCase()));
-
+        order.setType(OrderType.parse(jsonOrder.getString("type")));
 
         double price = jsonOrder.getJsonNumber("rate").doubleValue();
         order.setPrice(new CurrencyValue(price, right));

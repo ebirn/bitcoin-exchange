@@ -323,7 +323,7 @@ public class BitstampClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         Form form = new Form();
 
@@ -331,17 +331,17 @@ public class BitstampClient extends RestExchangeClient {
         form.param("price", price.valueToString());
 
         WebTarget tgt = null;
-        switch(decision) {
-            case BUY:
+        switch(type) {
+            case BID:
                 tgt = client.target("https://www.bitstamp.net/api/buy/");
                 break;
 
-            case SELL:
+            case ASK:
                 tgt = client.target("https://www.bitstamp.net/api/sell/");
                 break;
 
             default:
-                log.error("cannot place order to {}", decision);
+                log.error("cannot place order to {}", type);
                 return null;
 
         }
@@ -380,11 +380,11 @@ public class BitstampClient extends RestExchangeClient {
 
         switch(rawOrder.getType()) {
             case BUY:
-                order.setDecision(TradeDecision.BUY);
+                order.setType(OrderType.BID);
                 break;
 
             case SELL:
-                order.setDecision(TradeDecision.SELL);
+                order.setType(OrderType.ASK);
         }
 
         order.setPrice(new CurrencyValue(rawOrder.getPrice().doubleValue(), Currency.USD));

@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlEnum;
  * Created by ebirn on 20.10.13.
  */
 @XmlEnum
-public enum TransactionType {
+public enum BitcurexTransactionType {
 
     /*
     <option value="">--- select type ---</option>

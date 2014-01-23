@@ -47,22 +47,24 @@ public class MarketDepth {
 
     public void addAsk(MarketOrder ask) {
         ask.setAsset(asset);
+        ask.setType(OrderType.ASK);
         asks.add(ask);
     }
 
     public void addAsk(double volume, double price) {
-        MarketOrder order = new MarketOrder(TradeDecision.BUY, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
+        MarketOrder order = new MarketOrder(OrderType.ASK, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
         order.setAsset(asset);
         addAsk(order);
     }
 
     public void addBid(MarketOrder bid) {
         bid.setAsset(asset);
+        bid.setType(OrderType.BID);
         this.bids.add(bid);
     }
 
     public void addBid(double volume, double price) {
-        MarketOrder order = new MarketOrder(TradeDecision.SELL, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
+        MarketOrder order = new MarketOrder(OrderType.BID, new CurrencyValue(volume, asset.getBase()), new CurrencyValue(price, asset.getQuote()));
         order.setAsset(asset);
         addBid(order);
     }
@@ -81,7 +83,7 @@ public class MarketDepth {
 
     public CurrencyValue totalOrderVolume() {
 
-        CurrencyValue total = new CurrencyValue(0.0, asset.getBase());
+        CurrencyValue total = new CurrencyValue(asset.getBase());
 
         for(MarketOrder order : asks)
             total.add(order.getVolume());
@@ -93,7 +95,7 @@ public class MarketDepth {
     }
 
     public CurrencyValue totalOrderPriceVolume() {
-        CurrencyValue total = new CurrencyValue(0.0, asset.getQuote());
+        CurrencyValue total = new CurrencyValue(asset.getQuote());
 
         for(MarketOrder order : asks) {
             CurrencyValue priceVolume = new CurrencyValue(order.getPrice());
@@ -115,8 +117,8 @@ public class MarketDepth {
 
         if(orders == null || orders.isEmpty()) return "none";
 
-        CurrencyValue volumeSum = new CurrencyValue(0.0, orders.first().getVolume().getCurrency());
-        CurrencyValue priceSum = new CurrencyValue(0.0, orders.first().getPrice().getCurrency());
+        CurrencyValue volumeSum = new CurrencyValue(orders.first().getVolume().getCurrency());
+        CurrencyValue priceSum = new CurrencyValue(orders.first().getPrice().getCurrency());
 
         for(MarketOrder order : orders) {
             volumeSum.add(order.getVolume());

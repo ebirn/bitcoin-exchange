@@ -15,7 +15,7 @@ public class BitcurexOrder {
     String oid;
 
     @XmlElement
-    OrderType type;
+    BitcurexOrderType type;
 
     @XmlElement
     @XmlJavaTypeAdapter(StringNumberAdapter.class)
@@ -29,7 +29,7 @@ public class BitcurexOrder {
         return oid;
     }
 
-    public OrderType getType() {
+    public BitcurexOrderType getType() {
         return type;
     }
 

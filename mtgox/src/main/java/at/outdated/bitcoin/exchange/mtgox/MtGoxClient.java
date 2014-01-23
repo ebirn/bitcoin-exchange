@@ -10,14 +10,12 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import at.outdated.bitcoin.exchange.mtgox.auth.Nonce;
 import at.outdated.bitcoin.exchange.mtgox.auth.RequestAuth;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.json.JsonObject;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -260,21 +258,10 @@ public class MtGoxClient extends RestExchangeClient {
     }
 
     @Override
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price) {
-
-        String type = null;
-        switch(decision) {
-            case BUY:
-                type = "bid";
-                break;
-
-            case SELL:
-                type = "ask";
-                break;
-        }
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         List<String> orderData = new ArrayList<>();
-        orderData.add("type=" + type);
+        orderData.add("type=" + type.name().toLowerCase());
 
         long volumeValue = volume.getValue().multiply( multiplier.get(volume.getCurrency()) ).longValue();
         long priceValue =  price.getValue().multiply(multiplier.get(price.getCurrency())).longValue();
@@ -345,11 +332,11 @@ public class MtGoxClient extends RestExchangeClient {
 
         switch(mtGoxOrder.getType()) {
             case BUY:
-                order.setDecision(TradeDecision.BUY);
+                order.setType(OrderType.BID);
                 break;
 
             case SELL:
-                order.setDecision(TradeDecision.SELL);
+                order.setType(OrderType.ASK);
         }
 
 

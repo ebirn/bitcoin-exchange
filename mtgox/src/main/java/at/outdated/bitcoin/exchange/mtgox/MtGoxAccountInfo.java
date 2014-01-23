@@ -5,14 +5,15 @@ import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601SpacedAdapter;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -56,7 +57,8 @@ public class MtGoxAccountInfo extends AccountInfo {
     private long index;
 
     @XmlElement(name="Trade_Fee")
-    private double tradeFee = Double.MAX_VALUE;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    private BigDecimal tradeFee;
 
     @XmlElement(name="Last_Login")
     @XmlJavaTypeAdapter(DateIso8601SpacedAdapter.class)
@@ -84,9 +86,9 @@ public class MtGoxAccountInfo extends AccountInfo {
     }
 
     @Override
-    public Fee getTradeFee(TradeDecision trade) {
-
-        return new SimplePercentageFee(tradeFee / 100.0);
+    public Fee getTradeFee(OrderType trade) {
+        BigDecimal div = new BigDecimal("100.0", CurrencyValue.CURRENCY_MATH_CONTEXT);
+        return new SimplePercentageFee(tradeFee.divide(div));
 
     }
 

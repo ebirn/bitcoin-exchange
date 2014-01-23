@@ -7,7 +7,7 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.TradeDecision;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 
 import java.util.List;
@@ -24,14 +24,14 @@ public interface TradeClient {
     // public void getOpenBalance();
     // public void getOrders(Date since);
 
-    public Fee getTradeFee(TradeDecision trade);
+    public Fee getTradeFee(OrderType trade);
     public Fee getDepositFee();
     public Fee getWithdrawalFee(Currency curr);
 
     public List<MarketOrder> getOpenOrders();
 
     public OrderId placeOrder(MarketOrder order);
-    public OrderId placeOrder(AssetPair asset, TradeDecision decision, CurrencyValue volume, CurrencyValue price);
+    public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price);
 
     public boolean cancelOrder(OrderId order);
 
