@@ -51,16 +51,25 @@ public class AssetPair {
     @Override
     public boolean equals(Object obj) {
 
-        if(obj.getClass() != getClass()) return false;
+        boolean isEquals = false;
 
-        EqualsBuilder builder = new EqualsBuilder();
+        if(this == obj) {
+            isEquals = true;
+        }
+        else if(obj.getClass() != getClass()) {
+            isEquals = false;
+        }
+        else {
+            EqualsBuilder builder = new EqualsBuilder();
 
-        AssetPair other = (AssetPair) obj;
+            AssetPair other = (AssetPair) obj;
 
-        builder.append(this.base, other.base);
-        builder.append(this.quote, other.quote);
+            builder.append(this.base, other.base);
+            builder.append(this.quote, other.quote);
 
-        return builder.isEquals();
+            isEquals = builder.isEquals();
+        }
+        return isEquals;
     }
 
     @Override

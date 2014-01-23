@@ -1,6 +1,9 @@
 package at.outdated.bitcoin.exchange.api.currency;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,7 +23,7 @@ import java.util.Locale;
  * Time: 20:15
  * To change this template use File | Settings | File Templates.
  */
-public class CurrencyValue {
+public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
 
     public static final MathContext CURRENCY_MATH_CONTEXT = new MathContext(7, RoundingMode.HALF_UP);
 
@@ -35,19 +38,17 @@ public class CurrencyValue {
     @Deprecated
     public CurrencyValue(double value, Currency curr) {
         this.value = new BigDecimal(value, CURRENCY_MATH_CONTEXT);
-        //this.value_int = (long)(value * curr.getDivide());
-        currency = curr;
+        this.currency = curr;
     }
 
     public CurrencyValue(BigDecimal value, Currency curr) {
         this.value = value;
-        currency = curr;
+        this.currency = curr;
     }
 
     public CurrencyValue(Currency curr) {
-        this.value = new BigDecimal(0.0, CURRENCY_MATH_CONTEXT);
-        //this.value_int = (long)(value * curr.getDivide());
-        currency = curr;
+        this.value = new BigDecimal("0.0", CURRENCY_MATH_CONTEXT);
+        this.currency = curr;
     }
 
     public CurrencyValue(CurrencyValue value) {
@@ -152,5 +153,56 @@ public class CurrencyValue {
 
     public String valueToString() {
         return value.toPlainString();
+    }
+
+    @Override
+    public int hashCode() {
+
+        HashCodeBuilder builder = new HashCodeBuilder();
+
+        builder.append(currency);
+        builder.append(value);
+
+        return builder.toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        boolean isEquals = false;
+
+        if(this == obj) {
+            isEquals = true;
+        }
+        else if(obj.getClass() != getClass()) {
+            isEquals = false;
+        }
+        else {
+            CurrencyValue other = (CurrencyValue) obj;
+            isEquals = (this.currency == other.currency) && (value.compareTo(other.value) == 0);
+        }
+        return isEquals;
+
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return copy();
+    }
+
+    public CurrencyValue copy() {
+        return new CurrencyValue(value, currency);
+    }
+
+
+    @Override
+    public int compareTo(CurrencyValue o) {
+
+        CompareToBuilder builder = new CompareToBuilder();
+
+        builder.append(currency, o.currency);
+        builder.append(value, o.value);
+
+        return builder.toComparison();
     }
 }
