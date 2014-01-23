@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.api.client;
 
-import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.*;
 
 import javax.json.Json;
