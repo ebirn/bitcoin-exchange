@@ -22,7 +22,7 @@ public class MarketOrder {
     }
 
     public MarketOrder(OrderType type, CurrencyValue volume,  CurrencyValue price) {
-        this.type = this.type;
+        this.type = type;
         this.volume = volume;
         this.price = price;
     }
