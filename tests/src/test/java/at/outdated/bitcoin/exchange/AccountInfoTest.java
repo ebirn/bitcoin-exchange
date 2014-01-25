@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange;
 
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.Markets;
@@ -53,6 +54,17 @@ public class AccountInfoTest extends BaseTest {
         log.info("balance on {}", market);
         for(Currency c : market.getCurrencies()) {
             log.info("  available: {}   | open {}", balance.getAvailable(c), balance.getOpen(c));
+        }
+
+    }
+
+    @Test
+    public void listTransactions() {
+
+        List<WalletTransaction> transactions = client.getTransactions();
+
+        for(WalletTransaction wt : transactions) {
+            log.info("transaction: {}", wt);
         }
 
     }

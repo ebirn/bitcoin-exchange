@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -96,6 +97,27 @@ public class BitcurexApiClient extends RestExchangeClient {
     }
 
     @Override
+    public List<WalletTransaction> getTransactions() {
+        WebTarget transactionsTarget = tradeTarget.path("/getTransactions").resolveTemplate("quote", Currency.EUR);
+        Form form = new Form();
+
+        form.param("type", "" + BitcurexTransactionType.BTC_DEPOST.ordinal());
+        Entity<Form> entity = Entity.form(form);
+        String rawTransactions =  setupProtectedResource(transactionsTarget, entity).post(entity, String.class);
+
+        JsonObject jsonTransactions = jsonFromString(rawTransactions);
+
+        //FIXME implementation does nothing
+
+        log.error("finish implementation!");
+
+        List<WalletTransaction> list = new ArrayList<>();
+
+
+        return list;
+    }
+
+    @Override
     public Balance getBalance() {
 
         WebTarget fundsTarget = tradeTarget.path("/getFunds").resolveTemplate("quote", Currency.EUR);
@@ -139,25 +161,7 @@ public class BitcurexApiClient extends RestExchangeClient {
         for(double[] ask : asks) {
             depth.addAsk(ask[1], ask[0]);
         }
-        /*
-        for(JsonValue v : rawDepth) {
-            JsonObject trade = (JsonObject) v;
 
-            double price = Double.parseDouble(trade.getString("price"));
-            double volume = Double.parseDouble(trade.getString("amount"));
-            int type = trade.getJsonNumber("type").intValue();
-
-
-            // sell
-            if(type == 1) {
-                depth.addAsk(volume, price);
-            }
-            // buy
-            else {
-                depth.addBid(volume, price);
-            }
-        }
-*/
         return depth;
     }
 

@@ -1,13 +1,10 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.*;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
-import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -116,7 +113,6 @@ public class MtGoxClient extends RestExchangeClient {
 
         Balance balance = new Balance(market);
 
-
         for(Currency c : wallets.getCurrencies()) {
             Wallet w = wallets.getWallet(c);
 
@@ -125,6 +121,37 @@ public class MtGoxClient extends RestExchangeClient {
         }
 
         return balance;
+    }
+
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        Response res = signedRequest(API_GET_INFO, "");
+
+        if(res == null) {
+            log.warn("failed to get account info");
+            return null;
+        }
+
+        MtGoxAccountInfo accountInfo = res.readEntity(ApiAccountInfo.class).getData();
+
+
+        List<WalletTransaction> list = new ArrayList<>();
+        // fix up wallte structure, load transaction data
+        MtGoxWallets wallets = accountInfo.getWallets();
+        for(Currency c : wallets.getCurrencies()) {
+            Wallet w = wallets.getWallet(c);
+
+            MtGoxWalletHistory history = this.getWalletHistory(c);
+
+            for(MtGoxWalletTransaction t : history.getTransactions()) {
+                list.add(t);
+            }
+        }
+
+        Collections.sort(list, new WalletTransactionTimestampComparator());
+
+        return list;
     }
 
     @Override

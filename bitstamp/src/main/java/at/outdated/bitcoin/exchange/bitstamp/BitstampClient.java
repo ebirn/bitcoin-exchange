@@ -23,6 +23,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,9 +41,12 @@ public class BitstampClient extends RestExchangeClient {
 
     SimpleDateFormat bitstampDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    WebTarget baseTarget;
+
     public BitstampClient(Market market) {
         super(market);
 
+        this.baseTarget = client.target("https://www.bitstamp.net/api/");
         // initial trading fee is higher
         tradeFee = new SimplePercentageFee("0.006");
     }
@@ -94,12 +98,11 @@ public class BitstampClient extends RestExchangeClient {
         balanceForm.param("offset", "0");
         balanceForm.param("limit", "1000");
 
-        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
+        WebTarget balanceResource = baseTarget.path("/balance/");
         BitstampAccountBalance balance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(balanceForm));
 
-        WebTarget transactionsTgt = client.target("https://www.bitstamp.net/api/user_transactions/");
+        WebTarget transactionsTgt = baseTarget.path("/user_transactions/");
         String rawTransactions = protectedPostRequest(transactionsTgt, String.class, Entity.form(new Form()));
-
 
         tradeFee = new SimplePercentageFee(balance.getFee().doubleValue() / 100.0);
         info.setFee(new SimplePercentageFee(balance.getFee().doubleValue() / 100.0));
@@ -123,9 +126,10 @@ public class BitstampClient extends RestExchangeClient {
                 long id = jt.getJsonNumber("id").longValue();
                 Date timestamp = bitstampDate.parse(jt.getString("datetime"));
 
+                /*
                 switch(type) {
                     case 0: // deposit
-                        parseDeposit(info, usd, btc, fee, timestamp, id, orderId);
+                        parseDeposit(list, info, usd, btc, fee, timestamp, id, orderId);
                         break;
 
                     case 1: //withdrawal
@@ -139,7 +143,8 @@ public class BitstampClient extends RestExchangeClient {
                     default:
                         throw new IllegalArgumentException("unknown transaction type");
                 }
-                //getAccountInfo().getWallet()
+                // getAccountInfo().getWallet()
+                */
             }
             // rethrow possoble problems
             catch(IllegalArgumentException iae) {
@@ -159,6 +164,63 @@ public class BitstampClient extends RestExchangeClient {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        WebTarget transactionsTgt = baseTarget.path("/user_transactions/");
+        String rawTransactions = protectedPostRequest(transactionsTgt, String.class, Entity.form(new Form()));
+
+        JsonArray jsonTransactions = jsonArrayFromString(rawTransactions);
+
+        List<WalletTransaction> list = new ArrayList<>();
+        for(int i=0; i<jsonTransactions.size(); i++) {
+            try {
+                JsonObject jt = jsonTransactions.getJsonObject(i);
+                long orderId = -1L;
+
+                if(jt.get("order_id").getValueType() == JsonValue.ValueType.NUMBER)
+                    orderId = jt.getJsonNumber("order_id").longValue();
+
+                double usd = Double.parseDouble(jt.getString("usd"));
+                double btc = Double.parseDouble(jt.getString("btc"));
+                double btc_usd = Double.parseDouble(jt.getString("btc_usd"));
+                double fee = Double.parseDouble(jt.getString("fee"));
+
+                int type = jt.getInt("type");
+                long id = jt.getJsonNumber("id").longValue();
+                Date timestamp = bitstampDate.parse(jt.getString("datetime"));
+
+                switch(type) {
+                    case 0: // deposit
+                        parseDeposit(list, usd, btc, fee, timestamp, id, orderId);
+                        break;
+
+                    case 1: //withdrawal
+                        parseWithdrawal(list, usd, btc, fee, timestamp, id, orderId);
+                        break;
+
+                    case 2: //trade
+                        parseTrade(list, usd, btc, fee, timestamp, id, orderId);
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("unknown transaction type");
+                }
+                //getAccountInfo().getWallet()
+            }
+            // rethrow possoble problems
+            catch(IllegalArgumentException iae) {
+                throw iae;
+            }
+            // unknown errors are a problem
+            catch(Exception e) {
+                log.error("error parsing transaction", e);
+            }
+
+        }
+
+        return list;
+    }
 
     @Override
     public Balance getBalance() {
@@ -167,7 +229,7 @@ public class BitstampClient extends RestExchangeClient {
         balanceForm.param("offset", "0");
         balanceForm.param("limit", "1000");
 
-        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
+        WebTarget balanceResource = baseTarget.path("/balance/");
         BitstampAccountBalance bitstampBalance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(balanceForm));
 
         Balance balance = new Balance(market);
@@ -177,6 +239,9 @@ public class BitstampClient extends RestExchangeClient {
 
         balance.setAvailable(new CurrencyValue(bitstampBalance.usdAvailable, Currency.USD));
         balance.setOpen(new CurrencyValue(bitstampBalance.usdReserved, Currency.USD));
+
+        //tradeFee = new SimplePercentageFee("0.006");
+        tradeFee = new SimplePercentageFee(bitstampBalance.fee.divide(new BigDecimal(100.0)));
 
         return balance;
     }
@@ -188,7 +253,7 @@ public class BitstampClient extends RestExchangeClient {
 
         // https://www.bitstamp.net/api/order_book/
 
-        WebTarget depthTarget = client.target("https://www.bitstamp.net/api/order_book/");
+        WebTarget depthTarget = baseTarget.path("/order_book/");
 
         String depthString = simpleGetRequest(depthTarget, String.class);
 
@@ -214,7 +279,7 @@ public class BitstampClient extends RestExchangeClient {
     @Override
     public TickerValue getTicker(AssetPair asset) {
 
-        WebTarget tickerResource = client.target("https://www.bitstamp.net/api/ticker/");
+        WebTarget tickerResource = baseTarget.path("/ticker/");
         BitstampTickerValue bticker = simpleGetRequest(tickerResource, BitstampTickerValue.class);
 
         TickerValue ticker = null;
@@ -222,7 +287,6 @@ public class BitstampClient extends RestExchangeClient {
             ticker = bticker.getTickerValue();
             ticker.setAsset(asset);
         }
-
 
         return ticker;
     }
@@ -238,19 +302,18 @@ public class BitstampClient extends RestExchangeClient {
     }
 
 
-    private void parseDeposit(AccountInfo info, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseDeposit(List<WalletTransaction> list , double usd, double btc, double fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
+        if(usd != 0.0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.USD, usd, timestamp));
 
-        if(usd != 0.0) parseTransaction(info, TransactionType.DEPOSIT, Currency.USD, usd, timestamp, descr);
+        if(btc != 0.0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.BTC, btc, timestamp));
 
-        if(btc != 0.0) parseTransaction(info, TransactionType.DEPOSIT, Currency.BTC, btc, timestamp, descr);
-
-        if(fee > 0.0) parseTransaction(info, TransactionType.FEE, Currency.USD, fee, timestamp, descr);
+        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
     }
 
-    private void parseTrade(AccountInfo info, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseTrade(List<WalletTransaction> list, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
@@ -259,38 +322,39 @@ public class BitstampClient extends RestExchangeClient {
             if(usd < 0.0)  transactionType = TransactionType.OUT;
             else transactionType = TransactionType.IN;
 
-            parseTransaction(info, transactionType, Currency.USD, usd, timestamp, descr);
+            list.add(parseTransaction(id, orderId, transactionType, Currency.USD, usd, timestamp));
         }
 
         if(btc != 0.0) {
             if(btc<0.0)  transactionType = TransactionType.OUT;
             else transactionType = TransactionType.IN;
 
-            parseTransaction(info, transactionType, Currency.BTC, btc, timestamp, descr);
+            list.add(parseTransaction(id, orderId, transactionType, Currency.BTC, btc, timestamp));
         }
 
-        if(fee > 0.0) parseTransaction(info, TransactionType.FEE, Currency.USD, fee, timestamp, descr);
+        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
 
     }
 
-    private void parseWithdrawal(AccountInfo info, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseWithdrawal(List<WalletTransaction> list, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
-        if(usd != 0.0) parseTransaction(info, TransactionType.WITHDRAW, Currency.USD, usd, timestamp, descr);
+        if(usd != 0.0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.USD, usd, timestamp));
 
-        if(btc != 0.0) parseTransaction(info, TransactionType.WITHDRAW, Currency.BTC, btc, timestamp, descr);
+        if(btc != 0.0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.BTC, btc, timestamp));
 
-        if(fee > 0.0) parseTransaction(info, TransactionType.FEE, Currency.USD, fee, timestamp, descr);
+        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
     }
 
-    private void parseTransaction(AccountInfo info, TransactionType type, Currency curr, double volume, Date timestamp, String descr) {
+    private WalletTransaction parseTransaction(long id, long orderId, TransactionType type, Currency curr, double volume, Date timestamp) {
 
         WalletTransaction transaction = new WalletTransaction(type, new CurrencyValue(Math.abs(volume), curr));
-        transaction.setInfo(descr);
-        transaction.setDatestamp(timestamp);
+        transaction.setId(new OrderId(market, Long.toString(id)));
+        transaction.setInfo(Long.toString(orderId));
+        transaction.setTimestamp(timestamp);
 
-        info.getWallet(curr).addTransaction(transaction);
+        return transaction;
     }
 
     @Override
@@ -303,12 +367,12 @@ public class BitstampClient extends RestExchangeClient {
 
         switch(curr) {
             case BTC:
-                address = setupProtectedResource(client.target("https://www.bitstamp.net/api/bitcoin_deposit_address/"), e).post(e, String.class);
+                address = setupProtectedResource(baseTarget.path("bitcoin_deposit_address/"), e).post(e, String.class);
                 address = address.replace("\"", "");
                 break;
 
             case XRP:
-                address = setupProtectedResource(client.target("https://www.bitstamp.net/api/ripple_address/"), e).post(e, BitstampAddress.class).getAddress();
+                address = setupProtectedResource(baseTarget.path("/ripple_address/"), e).post(e, BitstampAddress.class).getAddress();
                 break;
 
             default:
@@ -324,7 +388,7 @@ public class BitstampClient extends RestExchangeClient {
 
         // https://www.bitstamp.net/api/cancel_order/
 
-        WebTarget tgt = client.target("https://www.bitstamp.net/api/cancel_order/");
+        WebTarget tgt = baseTarget.path("/cancel_order/");
 
         Form form = new Form();
         form.param("id", order.getIdentifier());
@@ -351,11 +415,11 @@ public class BitstampClient extends RestExchangeClient {
         WebTarget tgt = null;
         switch(type) {
             case BID:
-                tgt = client.target("https://www.bitstamp.net/api/buy/");
+                tgt = baseTarget.path("/buy/");
                 break;
 
             case ASK:
-                tgt = client.target("https://www.bitstamp.net/api/sell/");
+                tgt = baseTarget.path("/sell/");
                 break;
 
             default:
@@ -376,7 +440,7 @@ public class BitstampClient extends RestExchangeClient {
 
         // https://www.bitstamp.net/api/open_orders/
 
-        WebTarget tgt = client.target("https://www.bitstamp.net/api/open_orders/");
+        WebTarget tgt = baseTarget.path("/open_orders/");
 
         GenericType<List<BitstampOrder>> orderType = new GenericType<List<BitstampOrder>>() {};
         Entity<Form> entity = Entity.form(new Form());

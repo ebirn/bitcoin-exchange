@@ -121,6 +121,53 @@ public class KrakenClient extends RestExchangeClient {
     }
 
     @Override
+    public List<WalletTransaction> getTransactions() {
+
+        List<WalletTransaction> transactions = new ArrayList<>();
+
+        /*
+        WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
+        String rawTradeHistory = protectedPostRequest(tradeHistoryTgt, String.class, Entity.form(new Form()));
+        //log.debug("tradeHistory: {}", rawTradeHistory);
+
+        JsonObject jsonTrades = jsonFromString(rawTradeHistory).getJsonObject("result").getJsonObject("trades");
+        if(jsonTrades != null) {
+            for(String tradeKey : jsonTrades.keySet()) {
+                // TODO finish this
+                /
+                 {"ordertxid":"OC4SIM-XHDES-M4ODB5",
+                  "pair":"XXBTZEUR",
+                  "time":1383578321.69,
+                  "type":"buy",
+                  "ordertype":"limit",
+                  "price":"156.00000",
+                  "cost":"0.04000",
+                  "fee":"0.00008",
+                  "vol":"0.00025641",
+                  "margin":"0.00000",
+                  "misc":""}
+
+                /
+
+                JsonObject trade = jsonTrades.getJsonObject(tradeKey);
+
+                log.debug("TRADE: {}", trade);
+            }
+        }
+*/
+
+        WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
+        String rawLedger = protectedPostRequest(ledgerTgt, String.class, Entity.form(new Form()));
+        //log.debug("ledger: {}", rawLedger);
+        JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
+        if(jsonLedger != null) {
+            transactions.addAll(parseLedger(new KrakenAccountInfo(), jsonLedger));
+        }
+
+        return transactions;
+    }
+
+    @Override
     public TickerValue getTicker(AssetPair asset) {
 
         String currencyKey = fixSymbol(asset.getBase()) + fixSymbol(asset.getQuote());
@@ -131,8 +178,6 @@ public class KrakenClient extends RestExchangeClient {
        String tickerRaw = simpleGetRequest(webResource, String.class);
 
         JsonObject jsonTicker = jsonFromString(tickerRaw);
-
-
 
         JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(currencyKey);
 
@@ -312,29 +357,34 @@ public class KrakenClient extends RestExchangeClient {
     }
 
 
-    private void parseLedger(AccountInfo accountInfo, JsonObject jsonLedger) {
+    private List<WalletTransaction> parseLedger(AccountInfo accountInfo, JsonObject jsonLedger) {
+
+        List<WalletTransaction> transactions = new ArrayList<>();
+
         for(String ledgerKey : jsonLedger.keySet()) {
 
             JsonObject ledger = jsonLedger.getJsonObject(ledgerKey);
 
+            WalletTransaction trans = new WalletTransaction();
+
+            String aclass = ledger.getString("aclass");
+            Currency curr = parseCurrency(ledger.getString("asset"));
 
             String refId = ledger.getString("refid");
             Date timestamp = new Date((long)(1000.0 * ledger.getJsonNumber("time").doubleValue()));
-            TransactionType type = parseLedgerType(ledger.getString("type"));
-            String aclass = ledger.getString("aclass");
+            trans.setTimestamp(timestamp);
 
-            Currency curr = parseCurrency(ledger.getString("asset"));
-
-            double amount = Double.parseDouble(ledger.getString("amount"));
-            double fee = Double.parseDouble(ledger.getString("fee"));
-            double balance = Double.parseDouble(ledger.getString("balance"));
-
-            WalletTransaction trans = new WalletTransaction();
-            //trans.setBalance();
-            trans.setDatestamp(timestamp);
-            trans.setType(type);
-            trans.setValue(new CurrencyValue(amount, curr));
+            trans.setValue(new CurrencyValue(new BigDecimal(ledger.getString("amount"), CurrencyValue.CURRENCY_MATH_CONTEXT).abs(), curr));
             trans.setInfo(refId);
+            trans.setBalance(new CurrencyValue(new BigDecimal(ledger.getString("balance"), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
+
+            TransactionType type = parseLedgerType(ledger.getString("type"));
+            trans.setType(type);
+            if(type == TransactionType.IN) {
+                if(trans.getValue().isNegative()) {
+                    trans.setType(TransactionType.OUT);
+                }
+            }
 
             Wallet w = accountInfo.getWallet(curr);
             if(w==null) {
@@ -343,19 +393,23 @@ public class KrakenClient extends RestExchangeClient {
             }
 
             w.addTransaction(trans);
+            transactions.add(trans);
 
 
             // only add implicit fee entry if fee was actually paid
-            if(fee > 0.0) {
+            if(!ledger.isNull("fee")) {
                 WalletTransaction feeTransaction = new WalletTransaction();
-                feeTransaction.setDatestamp(timestamp);
+                feeTransaction.setTimestamp(timestamp);
                 feeTransaction.setType(TransactionType.FEE);
-                feeTransaction.setValue(new CurrencyValue(fee, curr));
+                feeTransaction.setValue(new CurrencyValue(new BigDecimal(ledger.getString("fee"), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
                 feeTransaction.setInfo(refId);
                 w.addTransaction(feeTransaction);
+                transactions.add(feeTransaction);
             }
 
         }
+
+        return transactions;
     }
 
     /*

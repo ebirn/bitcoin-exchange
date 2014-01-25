@@ -3,6 +3,8 @@ package at.outdated.bitcoin.exchange.cryptsy;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.client.MarketClient;
 import at.outdated.bitcoin.exchange.api.client.TradeClient;
@@ -22,8 +24,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import java.math.BigDecimal;
-import java.nio.channels.spi.AbstractSelectionKey;
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -37,6 +40,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
     WebTarget publicBase = client.target("http://pubapi.cryptsy.com/api.php");
 
     Fee buyFee, sellFee;
+
+    DateFormat dateFormat;
 
     public CryptsyApiClient(Market market) {
         super(market);
@@ -55,6 +60,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         buyFee = new SimplePercentageFee("0.002");
         sellFee = new SimplePercentageFee("0.003");
 
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
     private void setMarketNum(Currency base, Currency quote, int marketNum) {
@@ -140,6 +146,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         int marketNum = marketId.get(asset);
         // http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=
+
         WebTarget tgt = publicBase.queryParam("method", "singleorderdata").queryParam("marketid", marketNum);
 
         String raw = simpleGetRequest(tgt, String.class);
@@ -231,6 +238,160 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         log.error("failed to load balances");
 
         return null;
+    }
+
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        List<WalletTransaction> transactions = new ArrayList<>();
+
+        Form form = new Form();
+        form.param("method", "allmytrades");
+
+        String rawTrades = protectedPostRequest(tradeBase, String.class, Entity.form(form));
+        /*
+            tradeid	An integer identifier for this trade
+            tradetype	Type of trade (Buy/Sell)
+            datetime	Server datetime trade occurred
+            marketid	The market in which the trade occurred
+            tradeprice	The price the trade occurred at
+            quantity	Quantity traded
+            total	Total value of trade (tradeprice * quantity) - Does not include fees
+            fee	Fee Charged for this Trade
+            initiate_ordertype	The type of order which initiated this trade
+            order_id	Original order id this trade was executed against
+         */
+        JsonObject rootTrades = jsonFromString(rawTrades);
+
+        if(rootTrades.getString("success").equalsIgnoreCase("1")) {
+
+            JsonArray jsonOrdersList = rootTrades.getJsonArray("return");
+            for(int i=0; i<jsonOrdersList.size(); i++) {
+
+
+                JsonObject jsonOrder = jsonOrdersList.getJsonObject(i);
+
+                Date timestamp =  null;
+                try {
+                    timestamp = dateFormat.parse(jsonOrder.getString("datetime"));
+                }
+                catch(Exception e) {
+                    log.error("failed to parse date", e);
+                }
+
+                WalletTransaction transLeft = new WalletTransaction();
+
+                transLeft.setId(new OrderId(market, jsonOrder.getString("tradeid")));
+                transLeft.setTimestamp(timestamp);
+                transLeft.setInfo(jsonOrder.getString("order_id"));
+
+                AssetPair asset = assetForMarketId(Integer.parseInt(jsonOrder.getString("marketid")));
+
+                transLeft.setValue(new CurrencyValue(Double.parseDouble(jsonOrder.getString("quantity")), asset.getBase()));
+
+                String dStr = jsonOrder.getString("tradetype");
+                if(dStr.equalsIgnoreCase("Buy")) transLeft.setType(TransactionType.IN);
+                if(dStr.equalsIgnoreCase("Sell"))  transLeft.setType(TransactionType.OUT);
+
+
+                transactions.add(transLeft);
+
+                /*****************************************************************/
+
+                WalletTransaction transRight = new WalletTransaction();
+
+                transRight.setId(new OrderId(market, jsonOrder.getString("tradeid")));
+                transRight.setTimestamp(timestamp);
+
+                transRight.setValue(new CurrencyValue(Double.parseDouble(jsonOrder.getString("tradeprice")), asset.getQuote()));
+                transRight.setInfo(jsonOrder.getString("order_id"));
+
+                dStr = jsonOrder.getString("tradetype");
+                if(dStr.equalsIgnoreCase("Buy")) transRight.setType(TransactionType.OUT);
+                if(dStr.equalsIgnoreCase("Sell"))  transRight.setType(TransactionType.IN);
+
+                transactions.add(transRight);
+            }
+
+        }
+        else {
+            log.error("cannot parse trades");
+        }
+
+        /*
+
+            currency	Name of currency account
+            timestamp	The timestamp the activity posted
+            datetime	The datetime the activity posted
+            timezone	Server timezone
+            type	Type of activity. (Deposit / Withdrawal)
+            address	Address to which the deposit posted or Withdrawal was sent
+            amount	Amount of transaction (Not including any fees)
+            fee	Fee (If any) Charged for this Transaction (Generally only on Withdrawals)
+            trxid	Network Transaction ID (If available)
+
+         */
+
+        form = new Form();
+        form.param("method", "mytransactions");
+
+        String rawTransactions = protectedPostRequest(tradeBase, String.class, Entity.form(form));
+
+        JsonObject rootTransactions = jsonFromString(rawTransactions);
+
+        if(rootTransactions.getString("success").equalsIgnoreCase("1")) {
+
+            JsonArray transactionList = rootTransactions.getJsonArray("return");
+            for(int i=0; i<transactionList.size(); i++) {
+                JsonObject jsonTransaction = transactionList.getJsonObject(i);
+
+                try {
+
+                    WalletTransaction trans = new WalletTransaction();
+                    trans.setId(new OrderId(market, jsonTransaction.getString("trxid")));
+
+                    Date timestamp = new Date(jsonTransaction.getInt("timestamp") * 1000);
+                    trans.setTimestamp(timestamp);
+
+                    Currency curr = Currency.valueOf(jsonTransaction.getString("currency"));
+
+                    trans.setValue(new CurrencyValue(new BigDecimal(jsonTransaction.getString("amount"), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
+
+                    switch(jsonTransaction.getString("type")) {
+                        case "Deposit":
+                            trans.setType(TransactionType.DEPOSIT);
+                            break;
+
+                        case "Withdrawal":
+                            trans.setType(TransactionType.WITHDRAW);
+                            break;
+                    }
+
+                    transactions.add(trans);
+
+                    String feeStr = jsonTransaction.getString("fee", null);
+                    if(feeStr != null) {
+                        WalletTransaction feeTrans = new WalletTransaction();
+                        feeTrans.setValue(new CurrencyValue(new BigDecimal(feeStr, CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
+                        feeTrans.setTimestamp(timestamp);
+                        feeTrans.setId(trans.getId());
+                        feeTrans.setType(TransactionType.FEE);
+
+                        transactions.add(feeTrans);
+                    }
+
+                    trans.setInfo("adress:" + jsonTransaction.getString("address"));
+                }
+                catch(Exception e) {
+                    log.error("cannot process transaction: {}", transactionList.getJsonObject(i));
+                }
+            }
+        }
+        else {
+            log.error("failed to process transaction list");
+        }
+
+        return transactions;
     }
 
     @Override

@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -17,6 +18,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -72,11 +74,18 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         JsonObject jsonBalance = jsonFromString(rawBalance);
 
+        log.error("not implemented yet!");
 
         Balance balance = new Balance(market);
 
 
         return balance;
+    }
+
+    @Override
+    public List<WalletTransaction> getTransactions() {
+        log.error("not implemented yet!");
+        return new ArrayList<>();
     }
 
     @Override

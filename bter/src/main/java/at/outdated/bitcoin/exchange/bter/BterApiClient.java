@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -29,8 +30,13 @@ import java.util.*;
  */
 public class BterApiClient extends RestExchangeClient {
 
+    WebTarget baseTarget, privateTarget;
+
     public BterApiClient(Market market) {
         super(market);
+
+        baseTarget = client.target("https://bter.com/api/1/");
+        privateTarget = baseTarget.path("/private/");
 
         tradeFee = new SimplePercentageFee("0.002");
     }
@@ -39,15 +45,12 @@ public class BterApiClient extends RestExchangeClient {
     public AccountInfo getAccountInfo() {
 
 
-        WebTarget fundsTarget = client.target("https://bter.com/api/1/private/getfunds");
-
-
+        WebTarget fundsTarget = privateTarget.path("/getfunds");
         String rawFunds = protectedPostRequest(fundsTarget, String.class, Entity.form(new Form()));
 
         JsonObject jsonFunds = jsonFromString(rawFunds);
 
         BterAccountInfo info = new BterAccountInfo();
-
 
         if(jsonFunds.get("available_funds").getValueType() == JsonValue.ValueType.OBJECT) {
             JsonObject funds = jsonFunds.getJsonObject("available_funds");
@@ -75,13 +78,18 @@ public class BterApiClient extends RestExchangeClient {
             log.info("no funds available");
         }
 
-
         return info;
     }
 
     @Override
+    public List<WalletTransaction> getTransactions() {
+        log.warn("transaction list not implemented");
+        return new ArrayList<>();
+    }
+
+    @Override
     public Balance getBalance() {
-        WebTarget fundsTarget = client.target("https://bter.com/api/1/private/getfunds");
+        WebTarget fundsTarget = privateTarget.path("/getfunds");
 
 
         String rawFunds = protectedPostRequest(fundsTarget, String.class, Entity.form(new Form()));

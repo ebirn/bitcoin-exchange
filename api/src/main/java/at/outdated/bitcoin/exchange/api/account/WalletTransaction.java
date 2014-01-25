@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.api.account;
 
+import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,56 +15,42 @@ import java.util.Date;
  * Time: 20:23
  * To change this template use File | Settings | File Templates.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public class WalletTransaction implements Comparable<WalletTransaction> {
 
-    /*
-        "Index": "16",
-        "Date": 1366218001,
-        "Type": "deposit",
-        "Value":   **Currency Object**,
-        "Balance": **Currency Object**,
-        "Info": "1BitcoinAddress789fhjka890jkl",
-        "Link":[
-        "123456789-0abc-def0-1234-567890abcdef",
-        "Money_Bitcoin_Block_Tx_Out",
-        "1BitcoinTransaction780gfsd8970fg:9"]
-    */
 
-    @XmlElement(name = "Date")
-    private long datestamp;
 
-    @XmlElement(name = "Info")
+    private Date timestamp;
+
+    private OrderId id;
+
     private String info;
 
-
-    @XmlElement(name="Type")
     private TransactionType type;
 
-    @XmlElement(name="Value")
     private CurrencyValue value;
 
-    @XmlElement(name="Balance")
     private CurrencyValue balance;
 
 
     public WalletTransaction() {
-        this.datestamp = (new Date()).getTime()/1000L;
+
     }
 
     public WalletTransaction(TransactionType type, CurrencyValue volume) {
-        this.datestamp = (new Date()).getTime()/1000L;
-
         this.type = type;
         this.value = volume;
-
     }
 
     public Date getTimestamp() {
-        Date ts = new Date();
-        ts.setTime(this.datestamp * 1000L);
+        return timestamp;
+    }
 
-        return ts;
+    public void setId(OrderId id) {
+        this.id = id;
+    }
+
+    public OrderId getId() {
+        return id;
     }
 
     public String getInfo() {
@@ -99,8 +86,8 @@ public class WalletTransaction implements Comparable<WalletTransaction> {
         this.type = type;
     }
 
-    public void setDatestamp(Date datestamp) {
-        this.datestamp = datestamp.getTime()/1000L;
+    public void setTimestamp(Date datestamp) {
+        this.timestamp = datestamp;
     }
 
     public void setInfo(String info) {

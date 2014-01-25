@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.vircurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -30,6 +31,8 @@ import java.util.*;
  */
 public class VircurexApiClient extends RestExchangeClient {
 
+    WebTarget baseTarget;
+
     private enum OType {
         UNRELEASED,
         RELEASED;
@@ -38,6 +41,7 @@ public class VircurexApiClient extends RestExchangeClient {
     public VircurexApiClient(Market market) {
         super(market);
 
+        baseTarget = client.target("https://api.vircurex.com/api/");
         tradeFee =  new SimplePercentageFee("0.002");
     }
 
@@ -53,7 +57,7 @@ public class VircurexApiClient extends RestExchangeClient {
         Output token: YourSecurityWord;YourUserName;Timestamp;get_balances
          */
 
-        WebTarget balancesTgt = client.target("https://api.vircurex.com/api/get_balances.json");
+        WebTarget balancesTgt = baseTarget.path("/get_balances.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.balance"));
@@ -90,7 +94,7 @@ public class VircurexApiClient extends RestExchangeClient {
     @Override
     public Balance getBalance() {
 
-        WebTarget balancesTgt = client.target("https://api.vircurex.com/api/get_balances.json");
+        WebTarget balancesTgt = baseTarget.path("/get_balances.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.balance"));
@@ -122,12 +126,23 @@ public class VircurexApiClient extends RestExchangeClient {
     }
 
 
+    // TODO: find out what we can do here
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        log.warn("this method has not been implemented.");
+        // command: read_orderexecutions
+
+        List<WalletTransaction> list = new ArrayList<>();
+
+        return list;
+    }
 
     @Override
     public TickerValue getTicker(AssetPair asset) {
 
         // get_info_for_1_currency
-        WebTarget tickerTgt = client.target("https://api.vircurex.com/api/get_info_for_1_currency.json")
+        WebTarget tickerTgt = baseTarget.path("/get_info_for_1_currency.json")
             .queryParam("base", asset.getBase())
             .queryParam("alt", asset.getQuote());
         // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
@@ -145,7 +160,7 @@ public class VircurexApiClient extends RestExchangeClient {
     @Override
     public MarketDepth getMarketDepth(AssetPair asset) {
 
-        WebTarget depthTarget = client.target("https://api.vircurex.com/api/orderbook.json?base={base}&alt={quote}")
+        WebTarget depthTarget = baseTarget.path("/orderbook.json?base={base}&alt={quote}")
             .resolveTemplate("base", asset.getBase().name())
             .resolveTemplate("quote", asset.getQuote().name());
 
@@ -287,7 +302,7 @@ public class VircurexApiClient extends RestExchangeClient {
 
         // wordkey: readorders
 
-        WebTarget tgt = client.target("https://api.vircurex.com/api/read_orders.json").queryParam("otype", "1");
+        WebTarget tgt = baseTarget.path("/read_orders.json").queryParam("otype", "1");
 
 
         Form f = new Form();
@@ -356,7 +371,7 @@ public class VircurexApiClient extends RestExchangeClient {
 
         // wordkey: createorder
 
-        WebTarget tgt = client.target("https://api.vircurex.com/api/create_released_order.json");
+        WebTarget tgt = baseTarget.path("/create_released_order.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.createorder"));
@@ -413,7 +428,7 @@ public class VircurexApiClient extends RestExchangeClient {
         // wordkey: deleteorder
 
 
-        WebTarget tgt = client.target("https://api.vircurex.com/api/delete_order.json");
+        WebTarget tgt = baseTarget.path("/delete_order.json");
 
         Form f = new Form();
         f.param("word", getPropertyString("word.deleteorder"));

@@ -2,6 +2,8 @@ package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.TransactionType;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -134,7 +136,121 @@ public class BtcEApiClient extends RestExchangeClient {
 
         }
 
-        return info;  //To change body of implemented methods use File | Settings | File Templates.
+        return info;
+    }
+
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        List<WalletTransaction> list = new ArrayList<>();
+
+        MultivaluedMap<String,String> data = new MultivaluedHashMap<>();
+        data.add("method", "TransHistory");
+        String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
+
+        //log.debug("raw transactions: {}", raw);
+        JsonObject transResponse = jsonFromString(raw);
+        if(transResponse.getInt("success") == 1) {
+            /*
+            {
+                "success":1,
+                "return":{
+                    "1081672":{
+                        "type":1,
+                        "amount":1.00000000,
+                        "currency":"BTC",
+                        "desc":"BTC Payment",
+                        "status":2,
+                        "timestamp":1342448420
+                    }
+                }
+            }
+            */
+
+            //FIXME: this doesn't do anyting: account data parsing
+            JsonObject transResult = transResponse.getJsonObject("return");
+            for(String key : transResult.keySet()) {
+                JsonObject jt = transResult.getJsonObject(key);
+                Currency curr = Currency.valueOf(jt.getString("currency"));
+
+                double volume = jt.getJsonNumber("amount").doubleValue();
+                Date timestamp = new Date(jt.getJsonNumber("timestamp").longValue() * 1000L);
+                String desc = jt.getString("desc");
+
+
+                WalletTransaction t = new WalletTransaction();
+                t.setId(new OrderId(market, key));
+                t.setTimestamp(timestamp);
+                t.setInfo(desc);
+                t.setValue(new CurrencyValue(volume, curr));
+
+                // FIXME IN / OUT? can volume be negative?
+                t.setType(TransactionType.IN);
+
+                list.add(t);
+            }
+        }else {
+            log.error("failed to parse past transactions");
+        }
+
+
+
+        data = new MultivaluedHashMap<>();
+        data.add("method", "TradeHistory");
+        raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
+        //log.debug("raw trades: {}", raw);
+        JsonObject tradeResponse = jsonFromString(raw);
+        if(tradeResponse.getInt("success") == 1) {
+        /*
+                {
+            "success":1,
+            "return":{
+                "166830":{
+                    "pair":"btc_usd",
+                    "type":"sell",
+                    "amount":1,
+                    "rate":1,
+                    "order_id":343148,
+                    "is_your_order":1,
+                    "timestamp":1342445793
+                }
+            }
+        }  */
+
+            JsonObject jsonOrders = tradeResponse.getJsonObject("return");
+            for(String key : jsonOrders.keySet()) {
+
+                JsonObject jsonOrder = jsonOrders.getJsonObject(key);
+                MarketOrder order = parseOrder(jsonOrder);
+
+                WalletTransaction t = new WalletTransaction();
+
+                t.setId(new OrderId(market, key));
+
+                Date timestamp = new Date(jsonOrder.getJsonNumber("timestamp").longValue() * 1000L);
+                t.setTimestamp(timestamp);
+
+                switch(order.getType()) {
+                    case ASK:
+                        t.setType(TransactionType.OUT);
+                        break;
+
+                    case BID:
+                        t.setType(TransactionType.IN);
+                        break;
+                }
+
+                t.setValue(order.getVolume());
+                t.setInfo("order: " + jsonOrder.getString("order_id", "none"));
+            }
+
+        }
+        else {
+            log.error("failed to parse past orders");
+        }
+
+
+        return list;
     }
 
     @Override
@@ -364,20 +480,19 @@ public class BtcEApiClient extends RestExchangeClient {
 
         /*
         {
-	"success":1,
-	"return":{
-		"343152":{
-			"pair":"btc_usd",
-			"type":"sell",
-			"amount":1.00000000,
-			"rate":3.00000000,
-			"timestamp_created":1342448420,
-			"status":0
-		}
-	}
-}
- */
-
+            "success":1,
+            "return":{
+                "343152":{
+                    "pair":"btc_usd",
+                    "type":"sell",
+                    "amount":1.00000000,
+                    "rate":3.00000000,
+                    "timestamp_created":1342448420,
+                    "status":0
+                }
+            }
+            }
+        */
         Form data = new Form();
         data.param("method", "ActiveOrders");
         //data.param("pair", "CancelOrder"); // btc_usd
@@ -395,8 +510,6 @@ public class BtcEApiClient extends RestExchangeClient {
 
         JsonObject jsonOrders = jsonResult.getJsonObject("return");
         for(String key : jsonOrders.keySet()) {
-
-
 
             MarketOrder order = parseOrder(jsonOrders.getJsonObject(key));
             order.setId(new OrderId(market, key));

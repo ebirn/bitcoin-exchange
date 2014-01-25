@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange.api.client;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -23,7 +24,7 @@ public interface TradeClient {
     public AccountInfo getAccountInfo();
 
     public Balance getBalance();
-    //public void getTransactions(Date since);
+    public List<WalletTransaction> getTransactions();
 
     //public void updateFees();
     public Fee getTradeFee(OrderType trade);

@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange.coinse;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
@@ -20,6 +21,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Request;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,9 +121,6 @@ public class CoinseApiClient extends RestExchangeClient {
 
         JsonObject jsonDepth = root.getJsonObject("marketdepth");
 
-
-
-
         MarketDepth depth = new MarketDepth(asset);
 
         // are these mixed up in the api / exchange site?
@@ -160,6 +159,14 @@ public class CoinseApiClient extends RestExchangeClient {
     public AccountInfo getAccountInfo() {
 
         return new CoinseAccountInfo();
+    }
+
+    @Override
+    public List<WalletTransaction> getTransactions() {
+
+        log.warn("transaction list not supported by api");
+
+        return new ArrayList<>();
     }
 
     @Override
