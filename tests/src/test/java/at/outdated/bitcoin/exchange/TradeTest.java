@@ -37,22 +37,7 @@ public class TradeTest extends BaseTest {
         super(key, m);
     }
 
-    @Test
-    public void testAccountInfo() {
-        AccountInfo info = client.getAccountInfo();
 
-        assertAccountInfo(info);
-    }
-
-    @Test
-    public void testOpenOrders() {
-
-        List<MarketOrder> orders = client.getOpenOrders();
-
-        for(MarketOrder order : orders) {
-            log.info("{}", order);
-        }
-    }
 
     @Test(expected=AssertionError.class)
     public void testCancelInvalidOrderId() {
@@ -145,11 +130,4 @@ public class TradeTest extends BaseTest {
 
     }
 
-
-
-    protected void assertAccountInfo(AccountInfo info) {
-
-        Assert.assertNotNull(info);
-        // FIXME: more detailed checks
-    }
 }

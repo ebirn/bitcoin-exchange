@@ -25,14 +25,19 @@ public abstract class BaseTest {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
+    protected static Object[] marketParams(Market m) {
+
+        String niceKey = StringUtils.capitalize(m.getKey());
+
+        return new Object[] { niceKey, m };
+    }
+
     public static Collection<Object[]> getMarketParams() {
 
         ArrayList<Object[]> params = new ArrayList<>();
         for(Market m : Markets.allMarkets()) {
 
-            String niceKey = StringUtils.capitalize(m.getKey());
-
-            params.add(new Object[]{ niceKey, m });
+            params.add(marketParams(m));
         }
 
         return params;

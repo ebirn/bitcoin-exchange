@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -85,6 +86,42 @@ public class VircurexApiClient extends RestExchangeClient {
 
         return info;
     }
+
+    @Override
+    public Balance getBalance() {
+
+        WebTarget balancesTgt = client.target("https://api.vircurex.com/api/get_balances.json");
+
+        Form f = new Form();
+        f.param("word", getPropertyString("word.balance"));
+        f.param("command", "get_balances");
+
+        String rawBalances = protectedGetRequest(balancesTgt, String.class, Entity.form(f));
+
+        JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
+
+        Balance balance = new Balance(market);
+        for(String currKey : jsonBalances.keySet()) {
+
+            try {
+                Currency curr = Currency.valueOf(currKey);
+                double balanceValue = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("balance"));
+                double availableValue = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("availablebalance"));
+
+
+                balance.setAvailable(new CurrencyValue(availableValue, curr));
+                balance.setOpen(new CurrencyValue(balanceValue - availableValue, curr));
+
+            }
+            catch(Exception e) {
+                log.error("failed to retrieve balance {}", currKey);
+            }
+        }
+
+        return balance;
+    }
+
+
 
     @Override
     public TickerValue getTicker(AssetPair asset) {

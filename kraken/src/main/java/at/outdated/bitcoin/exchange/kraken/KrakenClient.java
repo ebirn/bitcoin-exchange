@@ -1,12 +1,9 @@
 package at.outdated.bitcoin.exchange.kraken;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.*;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.account.TransactionType;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
-import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -26,6 +23,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -100,6 +98,26 @@ public class KrakenClient extends RestExchangeClient {
         WebTarget feeTgt = client.target("https://api.kraken.com/0/public/AssetPairs?info=fees");
 
         return accountInfo;
+    }
+
+    @Override
+    public Balance getBalance() {
+        WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
+        String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));
+        //log.debug("balance: {}", rawBalance);
+
+        JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
+
+        Balance balance = new Balance(market);
+
+        if(balances != null) {
+            for(String currKey : balances.keySet()) {
+                Currency curr = parseCurrency(currKey);
+                balance.setAvailable(new CurrencyValue(new BigDecimal(balances.getString(currKey), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
+            }
+        }
+
+        return balance;
     }
 
     @Override

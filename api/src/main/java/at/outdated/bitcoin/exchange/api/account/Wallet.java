@@ -19,12 +19,10 @@ import java.util.List;
 
 public class Wallet {
 
-
     protected CurrencyValue balance;
     protected CurrencyValue openOrders;
 
     protected Currency currency;
-
     protected List<WalletTransaction> transactions = new ArrayList<>();
 
 
@@ -33,7 +31,7 @@ public class Wallet {
 
     public Wallet(Currency c) {
         this.currency = c;
-        this.balance = new CurrencyValue(0.0, c);
+        this.balance = new CurrencyValue(c);
     }
 
     public Currency getCurrency() {

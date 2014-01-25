@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -88,7 +89,10 @@ public class MtGoxClient extends RestExchangeClient {
             Wallet w = wallets.getWallet(c);
 
             MtGoxWalletHistory history = this.getWalletHistory(c);
-            w.setTransactions(history.getTransactions());
+
+            for(MtGoxWalletTransaction t : history.getTransactions()) {
+                w.addTransaction(t);
+            }
 
             accountInfo.addWallet(w);
         }
@@ -96,6 +100,32 @@ public class MtGoxClient extends RestExchangeClient {
         return accountInfo;
     }
 
+    @Override
+    public Balance getBalance() {
+        Response res = signedRequest(API_GET_INFO, "");
+
+        if(res == null) {
+            log.warn("failed to get account info");
+            return null;
+        }
+
+        MtGoxAccountInfo accountInfo = res.readEntity(ApiAccountInfo.class).getData();
+
+        // fix up wallte structure, load transaction data
+        MtGoxWallets wallets = accountInfo.getWallets();
+
+        Balance balance = new Balance(market);
+
+
+        for(Currency c : wallets.getCurrencies()) {
+            Wallet w = wallets.getWallet(c);
+
+            balance.setAvailable(w.getBalance());
+            balance.setOpen(w.getOpenOrders());
+        }
+
+        return balance;
+    }
 
     @Override
     public MarketDepth getMarketDepth(AssetPair asset) {
@@ -223,7 +253,7 @@ public class MtGoxClient extends RestExchangeClient {
         MtGoxWalletHistory mtGoxWalletHistory = res.readEntity(ApiWalletHistory.class).getData();
 
         // TODO: fix this somwhere else? remove empty/null Transaction
-        Iterator<WalletTransaction> it = mtGoxWalletHistory.getTransactions().iterator();
+        Iterator<MtGoxWalletTransaction> it = mtGoxWalletHistory.getTransactions().iterator();
         while(it.hasNext()) {
             WalletTransaction trans = it.next();
             if(trans.getValue() == null) it.remove();
@@ -263,7 +293,7 @@ public class MtGoxClient extends RestExchangeClient {
         List<String> orderData = new ArrayList<>();
         orderData.add("type=" + type.name().toLowerCase());
 
-        long volumeValue = volume.getValue().multiply( multiplier.get(volume.getCurrency()) ).longValue();
+        long volumeValue = volume.getValue().multiply(multiplier.get(volume.getCurrency())).longValue();
         long priceValue =  price.getValue().multiply(multiplier.get(price.getCurrency())).longValue();
 
         orderData.add("amount_int=" + Long.toString( volumeValue ));

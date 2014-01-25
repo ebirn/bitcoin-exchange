@@ -35,29 +35,27 @@ public class CurrencyPerformance extends Performance {
     }
 
     @Override
-    public void includeTransaction(WalletTransaction transaction) throws IllegalArgumentException {
+    public boolean includeTransaction(WalletTransaction transaction) {
 
-        if(transaction.getValue().getCurrency() != currency) {
-            throw new IllegalArgumentException("Currency mismatch: only " + currency + " is allowed.");
+        if(transaction.getValue().getCurrency() == currency) {
+
+
+            transactions.add(transaction);
+
+            TransactionType type = transaction.getType();
+            CurrencyValue balance = transaction.getBalance();
+
+            if(!started) {
+                startBalance = balance;
+                started = true;
+            }
+
+            endBalance = balance;
+
+            return true;
         }
 
-        transactions.add(transaction);
-
-        TransactionType type = transaction.getType();
-        //if(ignoredTransactions.contains(type)) return;
-
-
-
-        CurrencyValue balance = transaction.getBalance();
-
-        //System.out.println( transaction.getTimestamp() + ", " + type + ": balance: " + balance + ", transaction:" + transaction.getValue().getValue());
-
-        if(!started) {
-            startBalance = balance;
-            started = true;
-        }
-
-        endBalance = balance;
+        return false;
     }
 
     @Override

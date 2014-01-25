@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -63,6 +64,20 @@ public class BitkonanApiClient extends RestExchangeClient {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public Balance getBalance() {
+
+        WebTarget balanceTarget = client.target("https://bitkonan.com/api/balance/");
+        String rawBalance = simpleGetRequest(balanceTarget, String.class);
+
+        JsonObject jsonBalance = jsonFromString(rawBalance);
+
+
+        Balance balance = new Balance(market);
+
+
+        return balance;
+    }
 
     @Override
     public MarketDepth getMarketDepth(AssetPair asset) {

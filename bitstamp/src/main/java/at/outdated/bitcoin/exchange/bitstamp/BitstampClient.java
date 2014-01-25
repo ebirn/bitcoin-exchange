@@ -1,13 +1,10 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.*;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.account.TransactionType;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
-import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -162,6 +159,27 @@ public class BitstampClient extends RestExchangeClient {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
+    @Override
+    public Balance getBalance() {
+        Form balanceForm = new Form();
+        balanceForm.param("sort", "asc");
+        balanceForm.param("offset", "0");
+        balanceForm.param("limit", "1000");
+
+        WebTarget balanceResource = client.target("https://www.bitstamp.net/api/balance/");
+        BitstampAccountBalance bitstampBalance =  protectedPostRequest(balanceResource, BitstampAccountBalance.class, Entity.form(balanceForm));
+
+        Balance balance = new Balance(market);
+
+        balance.setAvailable(new CurrencyValue(bitstampBalance.btcAvailable, Currency.BTC));
+        balance.setOpen(new CurrencyValue(bitstampBalance.btcReserved, Currency.BTC));
+
+        balance.setAvailable(new CurrencyValue(bitstampBalance.usdAvailable, Currency.USD));
+        balance.setOpen(new CurrencyValue(bitstampBalance.usdReserved, Currency.USD));
+
+        return balance;
+    }
 
     @Override
     public MarketDepth getMarketDepth(AssetPair asset) {

@@ -18,7 +18,7 @@ public abstract class Performance {
 
 
     // throw Exception if transaction does not match performance currency
-    abstract public void includeTransaction(WalletTransaction transaction) throws IllegalArgumentException;
+    abstract public boolean includeTransaction(WalletTransaction transaction);
 
     abstract public BigDecimal getPercent();
 

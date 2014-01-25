@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bter;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
@@ -76,6 +77,45 @@ public class BterApiClient extends RestExchangeClient {
 
 
         return info;
+    }
+
+    @Override
+    public Balance getBalance() {
+        WebTarget fundsTarget = client.target("https://bter.com/api/1/private/getfunds");
+
+
+        String rawFunds = protectedPostRequest(fundsTarget, String.class, Entity.form(new Form()));
+
+        JsonObject jsonFunds = jsonFromString(rawFunds);
+
+        Balance balance = new Balance(market);
+
+        if(jsonFunds.get("available_funds").getValueType() == JsonValue.ValueType.OBJECT) {
+            JsonObject funds = jsonFunds.getJsonObject("available_funds");
+            JsonObject lockedFunds = jsonFunds.getJsonObject("locked_funds");
+            for(String key : funds.keySet()) {
+
+                try {
+                    Currency c = Currency.valueOf(key);
+
+                    balance.setAvailable(new CurrencyValue(new BigDecimal(funds.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+
+                    if(lockedFunds != null && lockedFunds.containsKey(key)) {
+                        balance.setOpen(new CurrencyValue(new BigDecimal(lockedFunds.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+                    }
+                }
+                catch(Exception e) {
+                    log.info("Currency '{}' unhandled, cannot read balance", key);
+                }
+            }
+        }
+        else {
+            log.error("no funds available");
+            return null;
+        }
+
+
+        return balance;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.bitcurex;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -21,6 +22,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +93,25 @@ public class BitcurexApiClient extends RestExchangeClient {
         btcWallet.setBalance(new CurrencyValue(Double.parseDouble(jsonFunds.getString("btcs")), Currency.BTC));
 
         return info;
+    }
+
+    @Override
+    public Balance getBalance() {
+
+        WebTarget fundsTarget = tradeTarget.path("/getFunds").resolveTemplate("quote", Currency.EUR);
+        Entity entity = Entity.form(new Form());
+
+        Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
+        String rawFunds = builder.post(entity, String.class);
+
+        JsonObject jsonFunds = jsonFromString(rawFunds);
+
+        Balance balance = new Balance(market);
+
+        balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("eurs")), Currency.EUR));
+        balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("btcs")), Currency.BTC));
+
+        return balance;
     }
 
     @Override

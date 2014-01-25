@@ -39,9 +39,11 @@ public class CombinedPerformance extends Performance {
     }
 
     @Override
-    public void includeTransaction(WalletTransaction transaction) throws  IllegalArgumentException {
+    public boolean includeTransaction(WalletTransaction transaction) {
         Currency c = transaction.getValue().getCurrency();
         performances.get(c).includeTransaction(transaction);
+
+        return true;
     }
 
 

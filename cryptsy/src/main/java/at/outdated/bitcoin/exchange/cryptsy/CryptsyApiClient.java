@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.cryptsy;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.client.MarketClient;
 import at.outdated.bitcoin.exchange.api.client.TradeClient;
@@ -20,6 +21,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import java.math.BigDecimal;
 import java.nio.channels.spi.AbstractSelectionKey;
 import java.text.NumberFormat;
 import java.util.*;
@@ -30,6 +32,9 @@ import java.util.*;
 public class CryptsyApiClient extends RestExchangeClient implements MarketClient, TradeClient {
 
     Map<AssetPair,Integer> marketId = new HashMap<>();
+
+    WebTarget tradeBase = client.target("https://www.cryptsy.com/api");
+    WebTarget publicBase = client.target("http://pubapi.cryptsy.com/api.php");
 
     Fee buyFee, sellFee;
 
@@ -97,7 +102,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         int marketNum = marketId.get(asset);
 
         try {
-            WebTarget tgt = client.target("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=" + marketNum);
+            WebTarget tgt = publicBase.queryParam("method", "singlemarketdata").queryParam("marketid", marketNum);
+
             String raw = simpleGetRequest(tgt, String.class);
             JsonObject root = jsonFromString(raw);
 
@@ -134,7 +140,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         int marketNum = marketId.get(asset);
         // http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=
-        WebTarget tgt = client.target("http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=" + marketNum);
+        WebTarget tgt = publicBase.queryParam("method", "singleorderdata").queryParam("marketid", marketNum);
 
         String raw = simpleGetRequest(tgt, String.class);
         try {
@@ -179,17 +185,62 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         return new CryptsyAccountInfo();
     }
 
+    @Override
+    public Balance getBalance() {
+        Form form = new Form();
+        form.param("method", "getinfo");
+
+        String raw = protectedPostRequest(tradeBase, String.class, Entity.form(form));
+
+        /*
+        balances_available	Array of currencies and the balances availalbe for each
+        balances_hold	Array of currencies and the amounts currently on hold for open orders
+        servertimestamp	Current server timestamp
+        servertimezone	Current timezone for the server
+        serverdatetime	Current date/time on the server
+        openordercount	Count of open orders on your account
+        */
+
+        JsonObject root = jsonFromString(raw);
+
+        log.info("raw: {}", raw);
+        if(root.getString("success").equalsIgnoreCase("1")) {
+            Balance balance = new Balance();
+
+            JsonObject jsonResult = root.getJsonObject("return");
+
+            JsonObject jsonAvailable = jsonResult.getJsonObject("balances_available");
+            JsonObject jsonOpen = jsonResult.getJsonObject("balances_hold");
+
+            for(Currency c : market.getCurrencies()) {
+
+                String key = c.name();
+
+                if(jsonAvailable.containsKey(key)) {
+                    balance.setAvailable(new CurrencyValue(new BigDecimal(jsonAvailable.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+                }
+
+                if(jsonOpen.containsKey(key)) {
+                    balance.setOpen(new CurrencyValue(new BigDecimal(jsonOpen.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+                }
+            }
+
+            return balance;
+        }
+
+        log.error("failed to load balances");
+
+        return null;
+    }
 
     @Override
     public boolean cancelOrder(OrderId order) {
-
-        WebTarget tgt = client.target("https://www.cryptsy.com/api");
 
         Form form = new Form();
         form.param("method", "cancelorder");
         form.param("orderid", order.getIdentifier());
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(form));
+        String raw = protectedPostRequest(tradeBase, String.class, Entity.form(form));
 
         JsonObject root = jsonFromString(raw);
 
@@ -210,9 +261,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         quantity	Amount of units you are buying/selling in this order
         price	Price per unit you are buying/selling at
                 */
-
-        WebTarget tgt = client.target("https://www.cryptsy.com/api");
-
 
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         nf.setMaximumFractionDigits(10);
@@ -239,7 +287,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         form.param("quantity", nf.format(volume.getValue()));
         form.param("price", nf.format(price.getValue()));
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(form));
+        String raw = protectedPostRequest(tradeBase, String.class, Entity.form(form));
 
         JsonObject root = jsonFromString(raw);
 
@@ -257,12 +305,10 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
     @Override
     public List<MarketOrder> getOpenOrders() {
 
-        WebTarget tgt = client.target("https://www.cryptsy.com/api");
-
         Form form = new Form();
         form.param("method", "allmyorders");
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(form));
+        String raw = protectedPostRequest(tradeBase, String.class, Entity.form(form));
 
         JsonObject root = jsonFromString(raw);
 

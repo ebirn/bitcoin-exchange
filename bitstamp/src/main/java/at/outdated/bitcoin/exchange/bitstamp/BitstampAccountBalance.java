@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
+import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
 import at.outdated.bitcoin.exchange.api.jaxb.StringNumberAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -7,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,56 +32,56 @@ public class BitstampAccountBalance {
     }
     */
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number fee;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal fee;
 
-    @XmlElement(name="usd_balance") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number usdBalance;
+    @XmlElement(name="usd_balance") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal usdBalance;
 
-    @XmlElement(name="usd_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number usdReserved;
+    @XmlElement(name="usd_reserved") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal usdReserved;
 
-    @XmlElement(name="usd_available") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number usdAvailable;
-
-
-
-    @XmlElement(name="btc_balance") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number btcBalance;
-
-    @XmlElement(name="btc_reserved") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number btcReserved;
+    @XmlElement(name="usd_available") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal usdAvailable;
 
 
-    @XmlElement(name="btc_available") @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number btcAvailable;
+
+    @XmlElement(name="btc_balance") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal btcBalance;
+
+    @XmlElement(name="btc_reserved") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal btcReserved;
 
 
-    public Number getBtcReserved() {
+    @XmlElement(name="btc_available") @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal btcAvailable;
+
+
+    public BigDecimal getBtcReserved() {
         return btcReserved;
     }
 
-    public Number getUsdBalance() {
+    public BigDecimal getUsdBalance() {
         return usdBalance;
     }
 
-    public Number getFee() {
+    public BigDecimal getFee() {
         return fee;
     }
 
-    public Number getUsdAvailable() {
+    public BigDecimal getUsdAvailable() {
         return usdAvailable;
     }
 
-    public Number getBtcBalance() {
+    public BigDecimal getBtcBalance() {
         return btcBalance;
     }
 
-    public Number getUsdReserved() {
+    public BigDecimal getUsdReserved() {
         return usdReserved;
     }
 
-    public Number getBtcAvailable() {
+    public BigDecimal getBtcAvailable() {
         return btcAvailable;
     }
 }

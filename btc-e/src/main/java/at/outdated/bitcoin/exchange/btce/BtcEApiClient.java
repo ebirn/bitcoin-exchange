@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
+import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -33,9 +34,14 @@ import java.util.List;
 
 public class BtcEApiClient extends RestExchangeClient {
 
+    WebTarget tradeTarget, publicTarget;
+
     public BtcEApiClient(Market market) {
         super(market);
         client.register(JsonEnforcingFilter.class);
+
+        tradeTarget = client.target("https://btc-e.com/tapi");
+        publicTarget = client.target("https://btc-e.com/api/2/{base}_{quote}/");
 
         tradeFee = new SimplePercentageFee("0.002");
 
@@ -47,19 +53,19 @@ public class BtcEApiClient extends RestExchangeClient {
 
 
         //https://btc-e.com/tapi/
-        WebTarget tgt = client.target("https://btc-e.com/tapi");
+
 
         MultivaluedMap<String,String> data = null;
 
         data = new MultivaluedHashMap<>();
         data.add("method", "getInfo");
-        InfoResponse infoRes = protectedPostRequest(tgt, InfoResponse.class, Entity.form(data));
+        InfoResponse infoRes = protectedPostRequest(tradeTarget, InfoResponse.class, Entity.form(data));
 
         AccountInfo info = infoRes.result;
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TransHistory");
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
 
         //log.debug("raw transactions: {}", raw);
         JsonObject transResponse = jsonFromString(raw);
@@ -97,7 +103,7 @@ public class BtcEApiClient extends RestExchangeClient {
 
         data = new MultivaluedHashMap<>();
         data.add("method", "TradeHistory");
-        raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
         //log.debug("raw trades: {}", raw);
         JsonObject tradeResponse = jsonFromString(raw);
         if(tradeResponse.getInt("success") == 1) {
@@ -132,13 +138,43 @@ public class BtcEApiClient extends RestExchangeClient {
     }
 
     @Override
+    public Balance getBalance() {
+
+
+        MultivaluedMap<String,String> data = null;
+
+        data = new MultivaluedHashMap<>();
+        data.add("method", "getInfo");
+        InfoResponse infoRes = protectedPostRequest(tradeTarget, InfoResponse.class, Entity.form(data));
+
+        BtcEAccountInfo info = infoRes.result;
+
+        Balance balance = new Balance(market);
+
+        BtceFunds funds = info.funds;
+
+        balance.setAvailable(new CurrencyValue(funds.btc, Currency.BTC));
+        balance.setAvailable(new CurrencyValue(funds.eur, Currency.EUR));
+        balance.setAvailable(new CurrencyValue(funds.ftc, Currency.FTC));
+        balance.setAvailable(new CurrencyValue(funds.ltc, Currency.LTC));
+        balance.setAvailable(new CurrencyValue(funds.nmc, Currency.NMC));
+        balance.setAvailable(new CurrencyValue(funds.nvc, Currency.NVC));
+        balance.setAvailable(new CurrencyValue(funds.ppc, Currency.PPC));
+        //balance.setAvailable(new CurrencyValue(funds.rur, Currency.RUR));
+        //balance.setAvailable(new CurrencyValue(funds.trc, Currency.));
+        balance.setAvailable(new CurrencyValue(funds.usd, Currency.USD));
+
+        return balance;
+    }
+
+    @Override
     public MarketDepth getMarketDepth(AssetPair asset) {
         Currency base = asset.getBase();
         Currency quote = asset.getQuote();
 
         // (price, volume)
 
-        WebTarget resource = client.target("https://btc-e.com/api/2/{base}_{quote}/depth")
+        WebTarget resource = publicTarget.path("/depth")
             .resolveTemplate("base", base.name().toLowerCase())
             .resolveTemplate("quote", quote.name().toLowerCase());
 
@@ -173,7 +209,9 @@ public class BtcEApiClient extends RestExchangeClient {
 
         // https://btc-e.com/api/2/btc_usd/ticker
 
-        WebTarget tickerResource = client.target("https://btc-e.com/api/2/" + asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase() + "/ticker");
+        WebTarget tickerResource = publicTarget.path("/ticker")
+            .resolveTemplate("base", asset.getBase().name().toLowerCase())
+            .resolveTemplate("quote", asset.getQuote().name().toLowerCase());
 
         TickerResponse response = simpleGetRequest(tickerResource, TickerResponse.class);
 
@@ -236,14 +274,12 @@ public class BtcEApiClient extends RestExchangeClient {
     public boolean cancelOrder(OrderId order) {
         // CancelOrder
 
-        WebTarget tgt = client.target("https://btc-e.com/tapi");
-
         Form data = new Form();
 
         data.param("method", "CancelOrder");
         data.param("order_id", order.getIdentifier());
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
 
         JsonObject jsonResponse = jsonFromString(raw);
 
@@ -268,8 +304,6 @@ public class BtcEApiClient extends RestExchangeClient {
 
         // method: Trade
 
-        WebTarget tgt = client.target("https://btc-e.com/tapi");
-
         Form data = new Form();
         data.param("method", "Trade");
 
@@ -293,7 +327,7 @@ public class BtcEApiClient extends RestExchangeClient {
         data.param("rate", price.valueToString());
         data.param("amount", volume.valueToString());
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
 
         /*
             {
@@ -344,13 +378,11 @@ public class BtcEApiClient extends RestExchangeClient {
 }
  */
 
-        WebTarget tgt = client.target("https://btc-e.com/tapi");
-
         Form data = new Form();
         data.param("method", "ActiveOrders");
         //data.param("pair", "CancelOrder"); // btc_usd
 
-        String raw = protectedPostRequest(tgt, String.class, Entity.form(data));
+        String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
 
 
         JsonObject jsonResult = jsonFromString(raw);

@@ -27,12 +27,10 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
 
     public static final MathContext CURRENCY_MATH_CONTEXT = new MathContext(7, RoundingMode.HALF_UP);
 
-
-    private BigDecimal value = new BigDecimal("0.000000000");
-    private Currency currency = null;
+    private BigDecimal value;
+    private Currency currency;
 
     public CurrencyValue() {
-
     }
 
     @Deprecated
@@ -47,7 +45,7 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
     }
 
     public CurrencyValue(Currency curr) {
-        this.value = new BigDecimal("0.0", CURRENCY_MATH_CONTEXT);
+        this.value = new BigDecimal(0L, CURRENCY_MATH_CONTEXT);
         this.currency = curr;
     }
 
