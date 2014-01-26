@@ -188,11 +188,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
     }
 
     @Override
-    public AccountInfo getAccountInfo() {
-        return new CryptsyAccountInfo();
-    }
-
-    @Override
     public Balance getBalance() {
         Form form = new Form();
         form.param("method", "getinfo");

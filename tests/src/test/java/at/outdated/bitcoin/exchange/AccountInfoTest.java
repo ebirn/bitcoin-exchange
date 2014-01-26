@@ -69,17 +69,4 @@ public class AccountInfoTest extends BaseTest {
 
     }
 
-    @Ignore
-    @Test
-    public void testAccountInfo() {
-        AccountInfo info = client.getAccountInfo();
-
-        assertAccountInfo(info);
-    }
-
-    protected void assertAccountInfo(AccountInfo info) {
-
-        Assert.assertNotNull(info);
-        // FIXME: more detailed checks
-    }
 }

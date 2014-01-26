@@ -66,7 +66,7 @@ public class MtGoxClient extends RestExchangeClient {
         tradeFee = new SimplePercentageFee("0.006");
     }
 
-
+/*
     @Override
     public AccountInfo getAccountInfo() {
 
@@ -96,7 +96,7 @@ public class MtGoxClient extends RestExchangeClient {
 
         return accountInfo;
     }
-
+*/
     @Override
     public Balance getBalance() {
         Response res = signedRequest(API_GET_INFO, "");

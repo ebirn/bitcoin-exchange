@@ -38,33 +38,6 @@ public class BitkonanApiClient extends RestExchangeClient {
         tradeFee = new SimplePercentageFee("0.0029");
     }
 
-    @Override
-    public AccountInfo getAccountInfo() {
-
-        //  https://bitkonan.com/api/balance/
-        // https://bitkonan.com/api/open_orders
-
-        WebTarget balanceTarget = client.target("https://bitkonan.com/api/balance/");
-        WebTarget ordersTarget = client.target("https://bitkonan.com/api/open_orders");
-
-
-        Future<String> rawBalance = asyncRequest(balanceTarget, String.class, "GET", null, true);
-        Future<String> rawOrders = asyncRequest(ordersTarget, String.class , "GET", null, true);
-
-        try {
-            //log.info("rawBalance: " + rawBalance.get());
-            //log.info("rawOrders: " + rawOrders.get());
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        // FIXME do actual parsing here
-        BitkonanAccountInfo info = new BitkonanAccountInfo();
-
-        return info;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     @Override
     public Balance getBalance() {

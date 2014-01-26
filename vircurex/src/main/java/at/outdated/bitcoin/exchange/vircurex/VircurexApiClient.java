@@ -46,52 +46,6 @@ public class VircurexApiClient extends RestExchangeClient {
     }
 
     @Override
-    public AccountInfo getAccountInfo() {
-
-        /*
-        get_balances		balance
-        available_balance		Input token: YourSecurityWord;YourUserName;Timestamp;ID;get_balances
-
-        Note: the security word of this function is the security word from function "get_balance".
-
-        Output token: YourSecurityWord;YourUserName;Timestamp;get_balances
-         */
-
-        WebTarget balancesTgt = baseTarget.path("/get_balances.json");
-
-        Form f = new Form();
-        f.param("word", getPropertyString("word.balance"));
-        f.param("command", "get_balances");
-
-        String rawBalances = protectedGetRequest(balancesTgt, String.class, Entity.form(f));
-
-        JsonObject jsonBalances = jsonFromString(rawBalances).getJsonObject("balances");
-
-        AccountInfo info = new VircurexAccountInfo();
-
-        for(String currKey : jsonBalances.keySet()) {
-
-            try {
-                Currency curr = Currency.valueOf(currKey);
-                double balance = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("balance"));
-                double available = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("availablebalance"));
-
-                Wallet w = new Wallet(curr);
-
-                w.setBalance(new CurrencyValue(available, curr));
-                w.setOpenOrders(new CurrencyValue(balance - available, curr));
-
-                info.addWallet(w);
-            }
-            catch(Exception e) {
-                // log.info("unknown currency {}", currKey);
-            }
-        }
-
-        return info;
-    }
-
-    @Override
     public Balance getBalance() {
 
         WebTarget balancesTgt = baseTarget.path("/get_balances.json");

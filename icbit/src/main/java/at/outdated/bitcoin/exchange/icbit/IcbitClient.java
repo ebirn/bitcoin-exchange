@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange.icbit;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -51,7 +52,7 @@ public class IcbitClient extends RestExchangeClient {
     }
 
     @Override
-    public AccountInfo getAccountInfo() {
+    public List<WalletTransaction> getTransactions() {
         return null;
     }
 

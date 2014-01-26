@@ -50,52 +50,6 @@ public class BitcurexApiClient extends RestExchangeClient {
         publicTarget = client.target("https://{quote}.bitcurex.com/data");
     }
 
-    // FIXME complete implementation!
-    @Override
-    public AccountInfo getAccountInfo() {
-
-        /// see https://bitcurex.com/en-pages,eurapi.html
-
-        // getOrders
-        // getFunds
-        // getTransactions
-
-        WebTarget fundsTarget = tradeTarget.path("/getFunds").resolveTemplate("quote", Currency.EUR);
-        Entity entity = Entity.form(new Form());
-
-        Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
-        String rawFunds = builder.post(entity, String.class);
-
-        entity = Entity.form(new Form());
-        WebTarget ordersTarget = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.EUR);
-
-        String rawOrders =  setupProtectedResource(ordersTarget, entity).post(entity, String.class);
-
-        WebTarget transactionsTarget = tradeTarget.path("/getTransactions").resolveTemplate("quote", Currency.EUR);
-        Form form = new Form();
-
-        form.param("type", "" + BitcurexTransactionType.BTC_DEPOST.ordinal());
-        entity = Entity.form(form);
-        String rawTransactions =  setupProtectedResource(transactionsTarget, entity).post(entity, String.class);
-
-
-        JsonObject jsonFunds = jsonFromString(rawFunds);
-        JsonObject jsonOrders = jsonFromString(rawOrders);
-        JsonObject jsonTransactions = jsonFromString(rawTransactions);
-
-        BitcurexAccountInfo info = new BitcurexAccountInfo();
-
-        Wallet eurWallet = new Wallet(Currency.EUR);
-        info.addWallet(eurWallet);
-        eurWallet.setBalance(new CurrencyValue(Double.parseDouble(jsonFunds.getString("eurs")), Currency.EUR));
-
-        Wallet btcWallet = new Wallet(Currency.BTC);
-        info.addWallet(btcWallet);
-        btcWallet.setBalance(new CurrencyValue(Double.parseDouble(jsonFunds.getString("btcs")), Currency.BTC));
-
-        return info;
-    }
-
     @Override
     public List<WalletTransaction> getTransactions() {
         WebTarget transactionsTarget = tradeTarget.path("/getTransactions").resolveTemplate("quote", Currency.EUR);

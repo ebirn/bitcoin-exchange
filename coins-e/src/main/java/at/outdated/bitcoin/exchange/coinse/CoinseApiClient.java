@@ -152,15 +152,6 @@ public class CoinseApiClient extends RestExchangeClient {
         return depth;
     }
 
-
-
-    //FIXME actually implement this
-    @Override
-    public AccountInfo getAccountInfo() {
-
-        return new CoinseAccountInfo();
-    }
-
     @Override
     public List<WalletTransaction> getTransactions() {
 

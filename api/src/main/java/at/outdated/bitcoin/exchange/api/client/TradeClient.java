@@ -21,7 +21,7 @@ import java.util.List;
 public interface TradeClient {
 
     // TODO: refactor AccountInfo directly into this interface
-    public AccountInfo getAccountInfo();
+    //public AccountInfo getAccountInfo();
 
     public Balance getBalance();
     public List<WalletTransaction> getTransactions();

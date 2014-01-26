@@ -49,58 +49,6 @@ public class KrakenClient extends RestExchangeClient {
     }
 
     @Override
-    public AccountInfo getAccountInfo() {
-
-        KrakenAccountInfo accountInfo = new KrakenAccountInfo();
-
-
-        WebTarget tradeHistoryTgt = client.target("https://api.kraken.com/0/private/TradesHistory");
-        String rawTradeHistory = protectedPostRequest(tradeHistoryTgt, String.class, Entity.form(new Form()));
-        //log.debug("tradeHistory: {}", rawTradeHistory);
-
-        JsonObject jsonTrades = jsonFromString(rawTradeHistory).getJsonObject("result").getJsonObject("trades");
-        if(jsonTrades != null) {
-            for(String tradeKey : jsonTrades.keySet()) {
-                // TODO finish this
-                jsonTrades.getJsonObject(tradeKey);
-                //log.debug("TRADE: {}", tradeKey);
-            }
-        }
-
-
-        WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
-        String rawLedger = protectedPostRequest(ledgerTgt, String.class, Entity.form(new Form()));
-        //log.debug("ledger: {}", rawLedger);
-        JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
-        if(jsonLedger != null) parseLedger(accountInfo, jsonLedger);
-
-
-        WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
-        String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));
-        //log.debug("balance: {}", rawBalance);
-
-        JsonObject balances = jsonFromString(rawBalance).getJsonObject("result");
-
-        if(balances != null)
-            for(String currKey : balances.keySet()) {
-            Currency curr = parseCurrency(currKey);
-
-            Wallet wallet = accountInfo.getWallet(curr);
-            if(wallet == null) {
-                wallet = new Wallet(curr);
-                accountInfo.addWallet(wallet);
-            }
-
-            wallet.setBalance(new CurrencyValue(Double.parseDouble(balances.getString(currKey)), curr));
-        }
-
-        // TODO: fee parsing
-        WebTarget feeTgt = client.target("https://api.kraken.com/0/public/AssetPairs?info=fees");
-
-        return accountInfo;
-    }
-
-    @Override
     public Balance getBalance() {
         WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
         String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));

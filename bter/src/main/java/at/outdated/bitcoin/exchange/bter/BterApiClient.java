@@ -42,46 +42,6 @@ public class BterApiClient extends RestExchangeClient {
     }
 
     @Override
-    public AccountInfo getAccountInfo() {
-
-
-        WebTarget fundsTarget = privateTarget.path("/getfunds");
-        String rawFunds = protectedPostRequest(fundsTarget, String.class, Entity.form(new Form()));
-
-        JsonObject jsonFunds = jsonFromString(rawFunds);
-
-        BterAccountInfo info = new BterAccountInfo();
-
-        if(jsonFunds.get("available_funds").getValueType() == JsonValue.ValueType.OBJECT) {
-            JsonObject funds = jsonFunds.getJsonObject("available_funds");
-            JsonObject lockedFunds = jsonFunds.getJsonObject("locked_funds");
-            for(String key : funds.keySet()) {
-
-                try {
-                    Currency c = Currency.valueOf(key);
-
-                    Wallet w = new Wallet(c);
-                    w.setBalance(new CurrencyValue(Double.valueOf(funds.getString(key)), c));
-
-                    if(lockedFunds != null && lockedFunds.containsKey(key)) {
-                        w.setOpenOrders(new CurrencyValue(Double.valueOf(lockedFunds.getString(key)), c));
-                    }
-
-                    info.addWallet(w);
-                }
-                catch(Exception e) {
-                    log.info("Currency '{}' unhandled, cannot create wallet", key);
-                }
-            }
-        }
-        else {
-            log.info("no funds available");
-        }
-
-        return info;
-    }
-
-    @Override
     public List<WalletTransaction> getTransactions() {
         log.warn("transaction list not implemented");
         return new ArrayList<>();

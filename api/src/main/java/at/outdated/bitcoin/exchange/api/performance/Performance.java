@@ -6,6 +6,7 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Collection;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +20,19 @@ public abstract class Performance {
 
     // throw Exception if transaction does not match performance currency
     abstract public boolean includeTransaction(WalletTransaction transaction);
+
+    public boolean includeAllTransactions(Collection<WalletTransaction> transactions) {
+        boolean didit = true;
+
+        for(WalletTransaction t : transactions) {
+            boolean single = includeTransaction(t);
+            if(single == false) {
+                didit = false;
+            }
+        }
+
+        return didit;
+    }
 
     abstract public BigDecimal getPercent();
 
