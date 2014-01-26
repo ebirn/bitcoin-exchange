@@ -51,7 +51,6 @@ public class MtGoxWalletHistory {
     }
 
     public List<MtGoxWalletTransaction> getTransactions() {
-        Collections.sort(transactions);
         return transactions;
 
     }

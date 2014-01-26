@@ -114,7 +114,7 @@ public class MtGoxClient extends RestExchangeClient {
         Balance balance = new Balance(market);
 
         for(Currency c : wallets.getCurrencies()) {
-            Wallet w = wallets.getWallet(c);
+            MtGoxWallet w = wallets.getWallet(c);
 
             balance.setAvailable(w.getBalance());
             balance.setOpen(w.getOpenOrders());
@@ -140,12 +140,23 @@ public class MtGoxClient extends RestExchangeClient {
         // fix up wallte structure, load transaction data
         MtGoxWallets wallets = accountInfo.getWallets();
         for(Currency c : wallets.getCurrencies()) {
-            Wallet w = wallets.getWallet(c);
+            MtGoxWallet w = wallets.getWallet(c);
 
             MtGoxWalletHistory history = this.getWalletHistory(c);
 
-            for(MtGoxWalletTransaction t : history.getTransactions()) {
-                list.add(t);
+            for(MtGoxWalletTransaction mtgoxTrans : history.getTransactions()) {
+
+                WalletTransaction trans = new WalletTransaction();
+
+                trans.setId(new OrderId(market, mtgoxTrans.getId()));
+                trans.setTimestamp(mtgoxTrans.getTimestamp());
+                trans.setType(mtgoxTrans.getType());
+
+                trans.setValue(mtgoxTrans.getValue());
+                trans.setBalance(mtgoxTrans.getBalance());
+                trans.setInfo(mtgoxTrans.getInfo());
+
+                list.add(trans);
             }
         }
 
@@ -282,7 +293,7 @@ public class MtGoxClient extends RestExchangeClient {
         // TODO: fix this somwhere else? remove empty/null Transaction
         Iterator<MtGoxWalletTransaction> it = mtGoxWalletHistory.getTransactions().iterator();
         while(it.hasNext()) {
-            WalletTransaction trans = it.next();
+            MtGoxWalletTransaction trans = it.next();
             if(trans.getValue() == null) it.remove();
         }
 

@@ -20,12 +20,15 @@ public class BitkonanMarket extends Market {
         super("bitkonan", "http://bitkonan.com", "BitKonan");
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.USD, TransferType.BANK));
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));
         addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK));
 
         addAsset(Currency.BTC, Currency.USD);
+        addAsset(Currency.LTC, Currency.USD);
     }
 
     @Override

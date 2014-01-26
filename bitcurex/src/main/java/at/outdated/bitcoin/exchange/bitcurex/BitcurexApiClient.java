@@ -65,8 +65,14 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         log.error("finish implementation!");
 
-        List<WalletTransaction> list = new ArrayList<>();
+        List<WalletTransaction> list = null;
+        if(jsonTransactions.getString("error", "").isEmpty()) {
+            list  = new ArrayList<>();
 
+        }
+        else {
+            log.error("failed to load funds: {}", jsonTransactions.getString("error"));
+        }
 
         return list;
     }
@@ -82,11 +88,17 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         JsonObject jsonFunds = jsonFromString(rawFunds);
 
-        Balance balance = new Balance(market);
+        Balance balance = null;
 
-        balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("eurs")), Currency.EUR));
-        balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("btcs")), Currency.BTC));
+        if(jsonFunds.getString("error", "").isEmpty()) {
+            balance = new Balance(market);
 
+            balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("eurs")), Currency.EUR));
+            balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("btcs")), Currency.BTC));
+        }
+        else {
+            log.error("failed to load funds: {}", jsonFunds.getString("error"));
+        }
         return balance;
     }
 

@@ -121,34 +121,41 @@ public class VircurexApiClient extends RestExchangeClient {
 
         String rawDepth = simpleGetRequest(depthTarget, String.class);
 
-        MarketDepth depth = new MarketDepth();
-        depth.setAsset(asset);
+        MarketDepth depth = null;
 
-        JsonObject jsonDepth = jsonFromString(rawDepth);
-
-        try {
-            double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
-            for(double[] bid : bids) {
-                double volume = bid[1];
-                double price = bid[0];
-
-                depth.addBid(volume, price);
-            }
-
-            double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
-            for(double[] ask : asks) {
-                double volume = ask[1];
-                double price = ask[0];
-
-                depth.addAsk(volume, price);
-            }
-
-        }
-        catch(ClassCastException cce) {
-            log.info("canot parse depth, probably empty?", cce);
-            return null;
+        // partial init if there is a result
+        if(rawDepth != null) {
+            depth = new MarketDepth();
+            depth.setAsset(asset);
         }
 
+        // response can be completely empty
+        if(!rawDepth.isEmpty()) {
+            JsonObject jsonDepth = jsonFromString(rawDepth);
+
+            try {
+                double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
+                for(double[] bid : bids) {
+                    double volume = bid[1];
+                    double price = bid[0];
+
+                    depth.addBid(volume, price);
+                }
+
+                double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
+                for(double[] ask : asks) {
+                    double volume = ask[1];
+                    double price = ask[0];
+
+                    depth.addAsk(volume, price);
+                }
+
+            }
+            catch(ClassCastException cce) {
+                log.info("canot parse depth, probably empty?", cce);
+                return null;
+            }
+        }
         return depth;
     }
 

@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
  * To change this template use File | Settings | File Templates.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MtGoxWallet extends Wallet {
+public class MtGoxWallet {
 
     @XmlElement(name="Operations")
     private long transactionCount;
@@ -37,12 +37,7 @@ public class MtGoxWallet extends Wallet {
     private CurrencyValue Open_Orders;
 
 
-
-    @Override
     public Currency getCurrency() {
-
-        super.balance = Balance;
-        this.currency = Balance.getCurrency();
         return Balance.getCurrency();
     }
 
@@ -51,8 +46,6 @@ public class MtGoxWallet extends Wallet {
     }
 
     public CurrencyValue getOpenOrders() {
-
-        super.openOrders = Open_Orders;
         return Open_Orders;
     }
 

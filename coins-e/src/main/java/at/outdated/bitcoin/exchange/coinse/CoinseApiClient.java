@@ -172,11 +172,12 @@ public class CoinseApiClient extends RestExchangeClient {
 
         JsonObject jsonBalance = jsonFromString(rawBalance);
 
+        Balance balance = null;
         if(jsonBalance.getBoolean("status")) {
 
             JsonObject jsonWallets = jsonBalance.getJsonObject("wallets");
 
-            Balance balance = new Balance(market);
+            balance = new Balance(market);
 
             for(Currency curr : market.getCurrencies()) {
 
@@ -194,12 +195,12 @@ public class CoinseApiClient extends RestExchangeClient {
                 }
             }
 
-            return balance;
+        }
+        else {
+            log.error("failed to load balance: {}", jsonBalance.getString("message"));
         }
 
-        log.error("failed to load balance: {}", jsonBalance.getString("message"));
-
-        return null;
+        return balance;
     }
 
     // FIXME

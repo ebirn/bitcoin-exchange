@@ -18,7 +18,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MtGoxWalletTransaction extends WalletTransaction {
+public class MtGoxWalletTransaction {
 
     /*
         "Index": "16",
@@ -32,6 +32,9 @@ public class MtGoxWalletTransaction extends WalletTransaction {
         "Money_Bitcoin_Block_Tx_Out",
         "1BitcoinTransaction780gfsd8970fg:9"]
     */
+
+    @XmlElement(name="Index")
+    String id;
 
     @XmlElement(name = "Date")
     private long datestamp;
@@ -108,6 +111,15 @@ public class MtGoxWalletTransaction extends WalletTransaction {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

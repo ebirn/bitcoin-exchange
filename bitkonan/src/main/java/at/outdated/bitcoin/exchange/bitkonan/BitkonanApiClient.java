@@ -32,8 +32,12 @@ import java.util.concurrent.Future;
  */
 public class BitkonanApiClient extends RestExchangeClient {
 
+    WebTarget baseTarget = null;
+
     public BitkonanApiClient(Market market) {
         super(market);
+
+        baseTarget = client.target("https://bitkonan.com/api/");
 
         tradeFee = new SimplePercentageFee("0.0029");
     }
@@ -42,8 +46,8 @@ public class BitkonanApiClient extends RestExchangeClient {
     @Override
     public Balance getBalance() {
 
-        WebTarget balanceTarget = client.target("https://bitkonan.com/api/balance/");
-        String rawBalance = simpleGetRequest(balanceTarget, String.class);
+        WebTarget balanceTarget = baseTarget.path("/balance/");
+        String rawBalance = protectedGetRequest(balanceTarget, String.class);
 
         JsonObject jsonBalance = jsonFromString(rawBalance);
 
@@ -68,15 +72,23 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         // https://bitkonan.com/api/orderbook/?group=0
 
-        WebTarget orderbook = client.target("https://bitkonan.com/api/orderbook/");
+        WebTarget orderbook = baseTarget.path("/{prefix}orderbook/").resolveTemplate("prefix", prefixfor(base));;
 
         String obString = super.simpleGetRequest(orderbook, String.class);
 
         JsonObject konanDepth = jsonFromString(obString);
 
-        double[][] asks = parseNestedArray(konanDepth.getJsonArray("asks"));
-        double[][] bids = parseNestedArray(konanDepth.getJsonArray("bids"));
+        double[][] asks = null;
+        double[][] bids = null;
 
+        if(base == Currency.BTC) {
+            asks = parseNestedArray(konanDepth.getJsonArray("asks"));
+            bids = parseNestedArray(konanDepth.getJsonArray("bids"));
+        }
+        else if(base == Currency.LTC) {
+            asks = parseNestedArray(konanDepth.getJsonArray("ask"));
+            bids = parseNestedArray(konanDepth.getJsonArray("bid"));
+        }
 
         MarketDepth depth = new MarketDepth(asset);
 
@@ -99,9 +111,9 @@ public class BitkonanApiClient extends RestExchangeClient {
     public TickerValue getTicker(AssetPair asset) {
 
 
-        WebTarget tickerResource = client.target("https://bitkonan.com/api/ticker/");
+        WebTarget tickerTarget = baseTarget.path("/{prefix}ticker/").resolveTemplate("prefix", prefixfor(asset.getBase()));
 
-        BitkonanTickerValue response = simpleGetRequest(tickerResource, BitkonanTickerValue.class);
+        BitkonanTickerValue response = simpleGetRequest(tickerTarget, BitkonanTickerValue.class);
 
 
         TickerValue value = response.getTickerValue();
@@ -115,6 +127,20 @@ public class BitkonanApiClient extends RestExchangeClient {
         return 0.12345678910;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
+    private String prefixfor(Currency baseCurrency) {
+
+        switch(baseCurrency) {
+
+            case LTC:
+                return "ltc_";
+
+            case BTC:
+                return "";
+        }
+
+        return null;
+    }
 
     @Override
     protected <Form> Invocation.Builder setupProtectedResource(WebTarget res, Entity<Form> entity) {
