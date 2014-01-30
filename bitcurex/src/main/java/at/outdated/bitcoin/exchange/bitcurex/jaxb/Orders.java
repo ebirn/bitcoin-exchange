@@ -14,7 +14,7 @@ import java.util.List;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Orders {
+public class Orders extends BaseApiResponse  {
 
     @XmlElement
     @XmlJavaTypeAdapter(StringNumberAdapter.class)

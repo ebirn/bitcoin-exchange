@@ -6,7 +6,9 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
+import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
@@ -29,14 +31,37 @@ public class TradeTest extends BaseTest {
 
     @Parameterized.Parameters(name = "{0}TradeTest")
     public static Collection<Object[]> getMarketParams() {
-        return BaseTest.getMarketParams();
+        //return BaseTest.getMarketParams();
+
+        List<Object[]> params = new ArrayList<>();
+        params.add(marketParams(Markets.getMarket("coinse")));
+        //params.add(marketParams(Markets.getMarket("bitcurex")));
+        //params.add(marketParams(Markets.getMarket("bitkonan")));
+
+        return params;
     }
 
 
     public TradeTest(String key, Market m) {
         super(key, m);
+
+        invalidOrderId = new OrderId(m, "xxx111222333xxx");
+        validOrderId = new OrderId(m, "S/100.00010101/6431215947087872");
     }
 
+
+    @Test
+    public void testOpenOrders() {
+
+        List<MarketOrder> orders = client.getOpenOrders();
+
+        Assert.assertNotNull("returned order list is NULL", orders);
+
+        for(MarketOrder order : orders) {
+            log.info("order: {}", order);
+        }
+
+    }
 
 
     @Test(expected=AssertionError.class)
@@ -68,7 +93,7 @@ public class TradeTest extends BaseTest {
         testPlaceOrder(validOrder);
     }
 
-    @Test
+
     public void  testPlaceOrder(MarketOrder order) {
 
         OrderId id = client.placeOrder(order);
@@ -78,9 +103,7 @@ public class TradeTest extends BaseTest {
         Assert.assertNotNull("no market set", id.getMarket());
 
         log.info("placed order: {}", id);
-
     }
-
 
 
     @Test

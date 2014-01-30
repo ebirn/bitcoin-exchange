@@ -412,22 +412,28 @@ public class BtcEApiClient extends RestExchangeClient {
 
 
         JsonObject jsonResult = jsonFromString(raw);
-        if(jsonResult.getInt("success") == 0) {
-            log.error("failed to get active orders");
-            return null;
-        }
 
         List<MarketOrder> orders = new ArrayList<>();
 
-        JsonObject jsonOrders = jsonResult.getJsonObject("return");
-        for(String key : jsonOrders.keySet()) {
+        if(jsonResult.getInt("success") == 0) {
 
-            MarketOrder order = parseOrder(jsonOrders.getJsonObject(key));
-            order.setId(new OrderId(market, key));
+            // empty list is returned as error "no orders" - stupid!
+            if(!jsonResult.getString("error", "").equalsIgnoreCase("no orders")) {
+                log.error("failed to get active orders");
+                orders = null;
+            }
 
-            orders.add(order);
         }
+        else {
+            JsonObject jsonOrders = jsonResult.getJsonObject("return");
+            for(String key : jsonOrders.keySet()) {
 
+                MarketOrder order = parseOrder(jsonOrders.getJsonObject(key));
+                order.setId(new OrderId(market, key));
+
+                orders.add(order);
+            }
+        }
         return orders;
     }
 

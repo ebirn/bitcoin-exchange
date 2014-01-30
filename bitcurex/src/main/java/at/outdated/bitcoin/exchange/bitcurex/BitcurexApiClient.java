@@ -84,20 +84,18 @@ public class BitcurexApiClient extends RestExchangeClient {
         Entity entity = Entity.form(new Form());
 
         Invocation.Builder builder = setupProtectedResource(fundsTarget, entity);
-        String rawFunds = builder.post(entity, String.class);
-
-        JsonObject jsonFunds = jsonFromString(rawFunds);
+        Funds funds = builder.post(entity, Funds.class);
 
         Balance balance = null;
 
-        if(jsonFunds.getString("error", "").isEmpty()) {
+        if(!funds.isError()) {
             balance = new Balance(market);
 
-            balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("eurs")), Currency.EUR));
-            balance.setAvailable(new CurrencyValue(new BigDecimal(jsonFunds.getString("btcs")), Currency.BTC));
+            balance.setAvailable(new CurrencyValue(funds.getEurs(), Currency.EUR));
+            balance.setAvailable(new CurrencyValue(funds.getBtcs(), Currency.BTC));
         }
         else {
-            log.error("failed to load funds: {}", jsonFunds.getString("error"));
+            log.error("failed to load funds: {}", funds.getError());
         }
         return balance;
     }
@@ -278,25 +276,47 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         Form form = new Form();
 
-        Future<Orders> ordersEur = asyncRequest(ordersTgtEur, Orders.class, HttpMethod.POST, Entity.form(form));
-        Future<Orders> ordersPln = asyncRequest(ordersTgtPln, Orders.class, HttpMethod.POST, Entity.form(form));
-
-
-        List<BitcurexOrder> allOrders = new ArrayList<>();
-        try {
-            allOrders.addAll(ordersEur.get().getOrders());
-            allOrders.addAll(ordersPln.get().getOrders());
-        }
-        catch(ExecutionException | InterruptedException e) {
-            log.error("failed to load orders", e);
-            return null;
-        }
+        Entity<Form> entity = Entity.form(new Form());
+        Future<Orders> ordersEur = setupProtectedResource(ordersTgtEur, Entity.form(form)).async().post(entity, Orders.class);
+        Future<Orders> ordersPln = setupProtectedResource(ordersTgtPln, Entity.form(form)).async().post(entity, Orders.class);
 
         List<MarketOrder> orders = new ArrayList<>();
 
-        for(BitcurexOrder o : allOrders) {
+        boolean isError = false;
+        try {
+            List<BitcurexOrder> allOrders = new ArrayList<>();
 
-            orders.add(convert(o));
+            Orders ordersEurResult = ordersEur.get();
+            if(!ordersEurResult.isError()) {
+                allOrders.addAll(ordersEurResult.getOrders());
+            }
+            else {
+                log.error("eur orders error: {}", ordersEurResult.getError());
+                isError = true;
+            }
+
+            Orders ordersPlnResult = ordersPln.get();
+            if(!ordersPlnResult.isError()) {
+                allOrders.addAll(ordersPlnResult.getOrders());
+            }
+            else {
+                log.error("pln orders error: {}", ordersPlnResult.getError());
+                isError = true;
+            }
+
+            //
+            for(BitcurexOrder o : allOrders) {
+                orders.add(convert(o));
+            }
+        }
+        catch(ExecutionException | InterruptedException e) {
+            log.error("failed to load orders", e);
+            orders = null;
+        }
+        finally {
+            if(isError) {
+                orders = null;
+            }
         }
 
         return orders;

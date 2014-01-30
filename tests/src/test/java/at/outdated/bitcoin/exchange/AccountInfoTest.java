@@ -32,9 +32,7 @@ public class AccountInfoTest extends BaseTest {
         //return BaseTest.getMarketParams();
 
         List<Object[]> params = new ArrayList<>();
-        params.add(marketParams(Markets.getMarket("bitkonan")));
-        params.add(marketParams(Markets.getMarket("bitcurex")));
-        params.add(marketParams(Markets.getMarket("bter")));
+        params.add(marketParams(Markets.getMarket("coinse")));
 
         return params;
 

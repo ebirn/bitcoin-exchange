@@ -6,9 +6,14 @@ import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
+import at.outdated.bitcoin.exchange.coinse.jaxb.CoinseOrder;
+import at.outdated.bitcoin.exchange.coinse.jaxb.DepositAddress;
+import at.outdated.bitcoin.exchange.coinse.jaxb.ListOrders;
+import at.outdated.bitcoin.exchange.coinse.jaxb.SingleOrder;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
@@ -24,18 +29,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created by ebirn on 06.01.14.
  */
 public class CoinseApiClient extends RestExchangeClient {
 
-    WebTarget baseTarget = client.target("https://www.coins-e.com/api/v2/");
-
+    WebTarget baseTarget, marketTarget;
     public CoinseApiClient(Market market) {
         super(market);
 
         tradeFee = new SimplePercentageFee("0.002");
+        baseTarget = client.target("https://www.coins-e.com/api/v2/");
+        marketTarget = baseTarget.path("/market/{base}_{quote}/");
     }
 
     @Override
@@ -70,6 +78,7 @@ public class CoinseApiClient extends RestExchangeClient {
 
         Invocation.Builder builder = res.request();
 
+        // documentation is wrong, this must be headers!
         builder.header("key", getUserId());
         builder.header("sign", hexSignature);
 
@@ -111,10 +120,7 @@ public class CoinseApiClient extends RestExchangeClient {
     public MarketDepth getMarketDepth(AssetPair asset) {
 
         // https://www.coins-e.com/api/v2/market/WDC_BTC/depth/
-
-        String marketKey = asset.getBase() + "_" + asset.getQuote();
-
-        String raw = simpleGetRequest(baseTarget.path("/market/"+marketKey+"/depth/"), String.class);
+        String raw = simpleGetRequest(marketTarget.resolveTemplate("base", asset.getBase().name()).resolveTemplate("quote", asset.getQuote().name()), String.class);
         JsonObject root = jsonFromString(raw);
 
         // {"status": true, "ltq": "31.07186789", "ltp": "0.00052500", "marketdepth": {"bids": [{"q": "67.61970
@@ -154,6 +160,9 @@ public class CoinseApiClient extends RestExchangeClient {
 
     @Override
     public List<WalletTransaction> getTransactions() {
+
+        // FIXME
+        // TODO: reuse getOpenOrders
 
         log.warn("transaction list not supported by api");
 
@@ -198,6 +207,7 @@ public class CoinseApiClient extends RestExchangeClient {
         }
         else {
             log.error("failed to load balance: {}", jsonBalance.getString("message"));
+            balance = null;
         }
 
         return balance;
@@ -206,16 +216,124 @@ public class CoinseApiClient extends RestExchangeClient {
     // FIXME
     @Override
     public List<MarketOrder> getOpenOrders() {
-        return null;
+
+        // https://www.coins-e.com/api/v2/market/WDC_BTC/
+        WebTarget openOrdersTgt = baseTarget.path("market/{base}_{quote}/");
+
+        //List<Future<ListOrders>> results = new ArrayList<>();
+        List<MarketOrder> allOrders = new ArrayList<>();
+
+        for(AssetPair asset : market.getTradedAssets()) {
+
+            WebTarget assetTarget = openOrdersTgt.resolveTemplate("base", asset.getBase().name())
+                                                 .resolveTemplate("quote", asset.getQuote().name());
+            Form form = new Form();
+            form.param("method", "listorders");
+            form.param("filter", "active");
+            form.param("limit", "100");
+
+            Entity entity = Entity.form(form);
+            ListOrders result = protectedPostRequest(assetTarget, ListOrders.class, entity);
+
+            if(result.isSuccess()) {
+                for(CoinseOrder rawOrder : result.getOrders()) {
+
+                    MarketOrder order = rawOrder.getOrder(market);
+
+                    // just to be safe, asset value in order is parsed from api response
+                    assert(asset.equals(order.getAsset()));
+
+                    allOrders.add(order);
+                }
+            }
+            else {
+                log.error("error: {}", result.getMessage());
+                allOrders = null;
+                break;
+            }
+        }
+
+        return allOrders;
     }
 
     @Override
     public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
-        return null;
+        WebTarget placeOrderTarget = marketTarget.resolveTemplate("base", asset.getBase().name()).resolveTemplate("quote", asset.getQuote().name());
+
+        Form form = new Form();
+        form.param("method", "neworder");
+
+        switch(type) {
+            case BID:
+                form.param("order_type", "buy");
+                break;
+
+            case ASK:
+                form.param("order_type", "sell");
+                break;
+
+            default:
+                form.param("order_type", "ERROR");
+        }
+
+        form.param("rate", price.valueToString());
+        form.param("quantity", volume.valueToString());
+
+        SingleOrder resultOrder = protectedPostRequest(placeOrderTarget, SingleOrder.class, Entity.form(form));
+
+        return resultOrder.getOrder().getOrder(market).getId();
     }
 
     @Override
     public boolean cancelOrder(OrderId order) {
-        return false;
+
+
+        WebTarget cancelTargetBase = baseTarget.path("market/{base}_{quote}/");
+
+        boolean success = false;
+        for(AssetPair asset : market.getTradedAssets()) {
+
+            WebTarget cancelTarget = cancelTargetBase.resolveTemplate("base", asset.getBase().name())
+                                                     .resolveTemplate("quote", asset.getQuote().name());
+            Form form = new Form();
+            form.param("method", "cancelorder");
+            form.param("order_id", order.getIdentifier());
+
+            SingleOrder resultOrder = protectedPostRequest(cancelTarget, SingleOrder.class, Entity.form(form));
+
+            if(resultOrder.isSuccess()) {
+                success = true;
+                break;
+            }
+
+        }
+
+        if(!success) {
+            log.error("failed to cancel order: {}", order);
+        }
+
+        return success;
+    }
+
+    @Override
+    protected CurrencyAddress lookupUpDepositAddress(Currency curr) {
+        /*
+        {
+          "status": true,
+          "message": "success",
+          "deposit_address": "1Q1RaxqZipDgaUg4r7KYqgoftZGhba1CyV",
+          "systime": 1372852975
+        }
+        */
+
+        // https://www.coins-e.com/api/v2/wallet/BTC/
+
+        WebTarget addressTarget = baseTarget.path("wallet/{curr}/").resolveTemplate("curr", curr.name());
+        Form form = new Form();
+        form.param("method", "getdepositaddress");
+
+        DepositAddress address = protectedPostRequest(addressTarget, DepositAddress.class, Entity.form(form));
+
+        return new CurrencyAddress(curr, address.getDepositAddress());
     }
 }
