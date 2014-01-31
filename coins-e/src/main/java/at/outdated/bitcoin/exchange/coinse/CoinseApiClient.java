@@ -120,7 +120,7 @@ public class CoinseApiClient extends RestExchangeClient {
     public MarketDepth getMarketDepth(AssetPair asset) {
 
         // https://www.coins-e.com/api/v2/market/WDC_BTC/depth/
-        String raw = simpleGetRequest(marketTarget.resolveTemplate("base", asset.getBase().name()).resolveTemplate("quote", asset.getQuote().name()), String.class);
+        String raw = simpleGetRequest(marketTarget.path("/depth/").resolveTemplate("base", asset.getBase().name()).resolveTemplate("quote", asset.getQuote().name()), String.class);
         JsonObject root = jsonFromString(raw);
 
         // {"status": true, "ltq": "31.07186789", "ltp": "0.00052500", "marketdepth": {"bids": [{"q": "67.61970

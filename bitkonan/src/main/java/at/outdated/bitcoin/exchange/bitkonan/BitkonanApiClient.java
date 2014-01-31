@@ -14,12 +14,15 @@ import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -86,8 +89,8 @@ public class BitkonanApiClient extends RestExchangeClient {
             bids = parseNestedArray(konanDepth.getJsonArray("bids"));
         }
         else if(base == Currency.LTC) {
-            asks = parseNestedArray(konanDepth.getJsonArray("ask"));
-            bids = parseNestedArray(konanDepth.getJsonArray("bid"));
+            asks = parseOtherDepth(konanDepth.getJsonArray("ask"));
+            bids = parseOtherDepth(konanDepth.getJsonArray("bid"));
         }
 
         MarketDepth depth = new MarketDepth(asset);
@@ -105,6 +108,20 @@ public class BitkonanApiClient extends RestExchangeClient {
         }
 
         return depth;
+    }
+
+    private double[][] parseOtherDepth(JsonArray jsonArray) {
+
+        int size = jsonArray.size();
+        double[][] orders = new double[size][2];
+
+        for(int i=0; i<size; i++) {
+            JsonObject entry = jsonArray.getJsonObject(i);
+
+            orders[i][0] = entry.getJsonNumber("usd").doubleValue();
+            orders[i][1] = entry.getJsonNumber("btc").doubleValue();
+        }
+        return orders;
     }
 
     @Override
