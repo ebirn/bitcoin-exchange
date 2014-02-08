@@ -99,10 +99,12 @@ public class MarketTest extends BaseTest {
     protected void assertTicker(TickerValue ticker) {
         Assert.assertNotNull(ticker);
 
-        Assert.assertNotNull(ticker.getBid());
+        Assert.assertNotNull("invalid ticker timestamp", ticker.getTimestamp());
+
+        Assert.assertNotEquals(ticker.getBid(), 0.0, Double.MIN_NORMAL);
         Assert.assertNotEquals(ticker.getBid(), Double.NaN, 0.0);
 
-        Assert.assertNotNull(ticker.getAsk());
+        Assert.assertNotEquals(ticker.getAsk(), 0.0, Double.MIN_NORMAL);
         Assert.assertNotEquals(ticker.getAsk(), Double.NaN, 0.0);
 
         Assert.assertNotNull(ticker.getAsset());

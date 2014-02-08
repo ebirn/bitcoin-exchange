@@ -12,6 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -106,5 +107,11 @@ public class IcbitClient extends RestExchangeClient {
     @Override
     public boolean cancelOrder(OrderId order) {
         return false;
+    }
+
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+        return null;
     }
 }

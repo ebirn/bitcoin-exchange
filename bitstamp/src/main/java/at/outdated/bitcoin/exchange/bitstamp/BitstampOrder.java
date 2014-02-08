@@ -22,8 +22,14 @@ public class BitstampOrder {
         @XmlEnumValue("1") SELL
     }
 
-    @XmlElement
+    @XmlElements({
+        @XmlElement(name="id"),
+        @XmlElement(name="tid")
+    })
     int id;
+
+
+
 
     //FIXME: is there a way to limit formatter to a total number of digits?
     // {"error": {"price": ["Ensure that there are no more than 7 digits in total."]}}
@@ -61,4 +67,6 @@ public class BitstampOrder {
     public Date getDatetime() {
         return datetime;
     }
+
+
 }

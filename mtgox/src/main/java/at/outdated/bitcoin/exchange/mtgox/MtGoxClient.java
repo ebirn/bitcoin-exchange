@@ -66,37 +66,6 @@ public class MtGoxClient extends RestExchangeClient {
         tradeFee = new SimplePercentageFee("0.006");
     }
 
-/*
-    @Override
-    public AccountInfo getAccountInfo() {
-
-
-        Response res = signedRequest(API_GET_INFO, "");
-
-        if(res == null) {
-            log.warn("failed to get account info");
-            return null;
-        }
-
-        MtGoxAccountInfo accountInfo = res.readEntity(ApiAccountInfo.class).getData();
-
-        // fix up wallte structure, load transaction data
-        MtGoxWallets wallets = accountInfo.getWallets();
-        for(Currency c : wallets.getCurrencies()) {
-            Wallet w = wallets.getWallet(c);
-
-            MtGoxWalletHistory history = this.getWalletHistory(c);
-
-            for(MtGoxWalletTransaction t : history.getTransactions()) {
-                w.addTransaction(t);
-            }
-
-            accountInfo.addWallet(w);
-        }
-
-        return accountInfo;
-    }
-*/
     @Override
     public Balance getBalance() {
         Response res = signedRequest(API_GET_INFO, "");
@@ -210,6 +179,22 @@ public class MtGoxClient extends RestExchangeClient {
         return ticker;
     }
 
+    // BTCUSD/money/trades/fetch?since=1364767190000000
+
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+        WebTarget tradesTarget = client.target(API_BASE_URL + asset.getBase().name() + asset.getQuote().name() + "/money/trades/fetch").resolveTemplate("since", since.getTime());
+        ApiTradesResponse response = simpleGetRequest(tradesTarget, ApiTradesResponse.class);
+
+        List<MarketOrder> orders = new ArrayList<>();
+        for(MtGoxTrade trade : response.getData()) {
+            orders.add(trade.getOrder(market));
+        }
+
+        return orders;
+    }
 
     public TickerValue getFastTicker(Currency currency) {
 

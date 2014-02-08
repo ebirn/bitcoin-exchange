@@ -23,6 +23,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,7 +137,6 @@ public class BitcurexApiClient extends RestExchangeClient {
             throw new IllegalArgumentException("unsupported currency");
         }
 
-
         WebTarget tickerResource = publicTarget.path("/ticker.json").resolveTemplate("quote", asset.getQuote());
 
         BitcurexTickerValue bTicker = simpleGetRequest(tickerResource, BitcurexTickerValue.class);
@@ -146,6 +146,33 @@ public class BitcurexApiClient extends RestExchangeClient {
         TickerValue ticker = bTicker.getTickerValue();
         ticker.setAsset(asset);
         return ticker;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+
+        WebTarget tradesTgt = publicTarget.path("/trades.json").resolveTemplate("quote", asset.getQuote());
+
+        // {"price":"2140.00000000","amount":"0.05518913","type":1,"date":1391898805,"tid":255482}
+
+        GenericType<List<BitcurexOrder>> orderList = new GenericType<List<BitcurexOrder>>() {};
+
+
+        List<BitcurexOrder> trades = tradesTgt.request().get(orderList);
+
+
+        List<MarketOrder> orders = new ArrayList<>();
+        for(BitcurexOrder o : trades) {
+
+            // don't exit loop early, there is no order guarantee?
+            if(o.getTimestamp().after(since)) {
+                orders.add(convert(o));
+            }
+        }
+
+        return orders;
     }
 
     @Override
@@ -338,8 +365,8 @@ public class BitcurexApiClient extends RestExchangeClient {
                 break;
         }
 
-        order.setVolume(new CurrencyValue(o.getAmount().doubleValue(), Currency.BTC));
-
+        order.setVolume(new CurrencyValue(o.getAmount(), Currency.BTC));
+        order.setTimestamp(o.getTimestamp());
         return order;
     }
 }

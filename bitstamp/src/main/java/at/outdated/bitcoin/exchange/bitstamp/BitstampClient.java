@@ -212,6 +212,29 @@ public class BitstampClient extends RestExchangeClient {
     }
 
     @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+        // https://www.bitstamp.net/api/transactions/
+        WebTarget historyTgt = baseTarget.path("/transactions/");
+
+        // {"date": "1391900651", "tid": 3406563, "price": "686.54", "amount": "0.00723919"}
+
+        GenericType<List<BitstampOrder>> orderList = new GenericType<List<BitstampOrder>>() {};
+
+        List<BitstampOrder> trades = historyTgt.request().get(orderList);
+
+        List<MarketOrder> history = new ArrayList<>();
+
+        for(BitstampOrder bo : trades) {
+
+            if(since.before(bo.getDatetime())) {
+                history.add(convertOrder(bo));
+            }
+        }
+
+        return history;
+    }
+
+    @Override
     public Number getLag() {
         return 1.0;
     }

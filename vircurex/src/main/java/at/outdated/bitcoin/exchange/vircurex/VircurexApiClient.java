@@ -106,6 +106,26 @@ public class VircurexApiClient extends RestExchangeClient {
         return ticker.getValue();
     }
 
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+        WebTarget tradesTgt = baseTarget.path("/trades.json")
+                .queryParam("base", asset.getBase())
+                .queryParam("alt", asset.getQuote());
+
+
+        List<MarketOrder> orders = new ArrayList<>();
+
+
+        //FIXME
+        //simpleGetRequest(tradesTgt, );
+
+
+
+        return null;
+    }
+
     @Override
     public Number getLag() {
         return 100.00;

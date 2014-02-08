@@ -3,6 +3,8 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.util.Date;
+
 /**
  * Created by ebirn on 22.09.13.
  */
@@ -17,8 +19,14 @@ public class MarketOrder {
 
     protected OrderType type;
 
+    protected Date timestamp;
+
     public MarketOrder() {
 
+    }
+
+    public MarketOrder(OrderId id) {
+        this.id = id;
     }
 
     public MarketOrder(OrderType type, CurrencyValue volume,  CurrencyValue price) {
@@ -75,5 +83,13 @@ public class MarketOrder {
 
     public void setType(OrderType type) {
         this.type = type;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }

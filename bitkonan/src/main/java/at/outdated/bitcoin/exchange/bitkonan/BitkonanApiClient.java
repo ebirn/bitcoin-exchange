@@ -20,6 +20,7 @@ import javax.json.JsonValue;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -65,7 +66,9 @@ public class BitkonanApiClient extends RestExchangeClient {
     @Override
     public List<WalletTransaction> getTransactions() {
         log.error("not implemented yet!");
-        return new ArrayList<>();
+
+
+        return null;
     }
 
     @Override
@@ -137,6 +140,36 @@ public class BitkonanApiClient extends RestExchangeClient {
         value.setAsset(asset);
 
         return value;
+    }
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+        // https://bitkonan.com/api/transactions
+        // Parameters:
+
+        //FIXME use these parameters
+        // offset - skip that many transactions before beginning to return results. Default: 0.
+        // limit - limit result to that many transactions. Default: 25.
+        // sort - sorting by date and time (asc - ascending; desc - descending). Default: desc.
+
+
+        WebTarget tradesTgt = baseTarget.path("/{prefix}transactions/").resolveTemplate("prefix", prefixfor(asset.getBase())).queryParam("limit", 1000);
+
+        GenericType<List<BitkonanOrder>> orderType = new GenericType<List<BitkonanOrder>>() {};
+        List<BitkonanOrder> trades = tradesTgt.request().get(orderType);
+        // {"total":111.75,"btc":0.15,"usd":745,"time":"2014-02-08T21:07:48.000Z","tradetype":1}
+
+        List<MarketOrder> history = new ArrayList<>();
+
+        for(BitkonanOrder bo : trades) {
+
+            if(since.after(bo.time)) {
+                history.add(bo.getOrder(market, asset));
+            }
+        }
+
+        return history;
     }
 
     @Override
