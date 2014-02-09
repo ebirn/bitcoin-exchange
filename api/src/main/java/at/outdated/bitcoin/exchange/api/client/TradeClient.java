@@ -20,15 +20,12 @@ import java.util.List;
  */
 public interface TradeClient {
 
-    // TODO: refactor AccountInfo directly into this interface
-    //public AccountInfo getAccountInfo();
-
     public Balance getBalance();
     public List<WalletTransaction> getTransactions();
 
     //public void updateFees();
     public Fee getTradeFee(OrderType trade);
-    public Fee getDepositFee();
+    public Fee getDepositFee(Currency curr);
     public Fee getWithdrawalFee(Currency curr);
 
     public List<MarketOrder> getOpenOrders();
@@ -39,7 +36,7 @@ public interface TradeClient {
     public boolean cancelOrder(OrderId order);
 
     public CurrencyAddress getDepositAddress(Currency currency);
-    public boolean withdrawFunds(CurrencyValue volume, CurrencyAddress address);
+    public boolean withdrawFunds(CurrencyValue volume, CurrencyAddress destination);
 
 
 }

@@ -85,14 +85,14 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
     @Override
     public final CurrencyAddress getDepositAddress(Currency currency) {
 
-        TransferMethod withdrawal = market.getWithdrawalMethod(currency);
+        TransferMethod deposit = market.getDepositMethod(currency);
 
-        if(withdrawal == null) {
+        if(deposit == null) {
             throw new IllegalArgumentException("cannot withdraw " + currency);
         }
 
         // TODO: make this better
-        if(withdrawal.getCurrency().isCrypto() == false) {
+        if(deposit.getCurrency().isCrypto() == false) {
             throw new IllegalArgumentException("currently only crypto currencies are supported, NOT " + currency);
         }
 
@@ -108,8 +108,18 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
             throw new IllegalArgumentException("parameters must not be null.");
         }
 
-        if(volume.getCurrency() != address.getReference()) {
+
+        Currency curr = volume.getCurrency();
+
+        if(curr != address.getReference()) {
             throw new IllegalArgumentException("Currency mismatch");
+        }
+
+
+        TransferMethod withdrawal = market.getWithdrawalMethod(curr);
+
+        if(withdrawal == null) {
+            throw new IllegalArgumentException("cannot withdraw " + curr);
         }
 
         return false;
@@ -123,7 +133,7 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
     }
 
     @Override
-    public Fee getDepositFee() {
+    public Fee getDepositFee(Currency c) {
         return new ZeroFee();
     }
 

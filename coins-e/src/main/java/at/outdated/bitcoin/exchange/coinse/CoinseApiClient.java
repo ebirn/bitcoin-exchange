@@ -159,6 +159,37 @@ public class CoinseApiClient extends RestExchangeClient {
     }
 
     @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+        // https://www.coins-e.com/api/v2/market/WDC_BTC/trades/
+        WebTarget tgt = marketTarget.path("/trades/").resolveTemplate("base", asset.getBase().name()).resolveTemplate("quote", asset.getQuote().name());
+
+        ListOrders result = simpleGetRequest(tgt, ListOrders.class);
+
+        List<MarketOrder> history = null;
+
+        if(result != null && result.isSuccess()) {
+            history = new ArrayList<>();
+            for(CoinseOrder co : result.getOrders()) {
+                if(since.before(co.getCreated())) {
+                    history.add(co.getOrder(market));
+                }
+            }
+
+        }
+        else {
+            if(result != null) {
+                log.error("failed to load trade history: {}", result.getMessage());
+            }
+            else {
+                log.error("failed to http request for trade history");
+            }
+        }
+
+        return history;
+    }
+
+    @Override
     public List<WalletTransaction> getTransactions() {
 
         // FIXME

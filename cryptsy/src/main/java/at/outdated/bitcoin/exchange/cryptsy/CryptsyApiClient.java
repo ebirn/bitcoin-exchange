@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.cryptsy;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
@@ -23,6 +22,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -107,6 +107,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         int marketNum = marketId.get(asset);
 
+        TickerValue ticker = new TickerValue(asset);
+
         try {
             WebTarget tgt = publicBase.queryParam("method", "singlemarketdata").queryParam("marketid", marketNum);
 
@@ -126,19 +128,18 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             double volume = Double.parseDouble(jsonMarket.getString("volume"));
 
 
-            TickerValue ticker = new TickerValue(asset);
             ticker.setLast(last);
             ticker.setVolume(volume);
             ticker.setBid(bid);
             ticker.setAsk(ask);
 
-            return ticker;
         }
         catch(Exception e) {
             log.info("failed to load ticker for {}", asset);
+            return null;
         }
 
-        return null;
+        return ticker;
     }
 
     @Override
@@ -206,8 +207,10 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         JsonObject root = jsonFromString(raw);
 
         log.info("raw: {}", raw);
+
+        Balance balance = new Balance();
         if(root.getString("success").equalsIgnoreCase("1")) {
-            Balance balance = new Balance();
+
 
             JsonObject jsonResult = root.getJsonObject("return");
 
@@ -227,12 +230,55 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 }
             }
 
-            return balance;
+
+        }
+        else {
+            log.error("failed to load balances");
+            return null;
         }
 
-        log.error("failed to load balances");
+        return balance;
+    }
 
-        return null;
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+        int marketNum = marketId.get(asset);
+        // http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=
+
+        Form form = new Form();
+        form.param("method", "markettrades");
+
+        WebTarget tgt = publicBase.queryParam("marketid", marketNum);
+
+        GenericType<List<CryptsyTrade>> tradeList = new GenericType<List<CryptsyTrade>>() {};
+        Entity e = Entity.form(form);
+        MarketTradesResult tradesResult = setupProtectedResource(tgt, e).post(e, MarketTradesResult.class);
+        /*
+            tradeid	A unique ID for the trade
+            datetime	Server datetime trade occurred
+            tradeprice	The price the trade occurred at
+            quantity	Quantity traded
+            total	Total value of trade (tradeprice * quantity)
+            initiate_ordertype	The type of order which initiated this trade
+         */
+
+        List<MarketOrder> history = new ArrayList<>();
+
+        if(tradesResult.isSuccess()) {
+            for(CryptsyTrade ct : tradesResult.getResult()) {
+
+                if(since.before(ct.datetime)) {
+                    history.add(ct.getOrder(market, asset));
+                }
+            }
+        }
+        else {
+            log.error("failed to load past trades: {}", tradesResult.getError());
+            return null;
+        }
+
+        return history;
     }
 
     @Override

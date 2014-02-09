@@ -48,7 +48,7 @@ public class BitcurexApiClient extends RestExchangeClient {
         client.register(JsonEnforcingFilter.class);
 
         tradeTarget = client.target("https://{quote}.bitcurex.com/api/0/");
-        publicTarget = client.target("https://{quote}.bitcurex.com/data");
+        publicTarget = client.target("https://{quote}.bitcurex.com/data/");
     }
 
     @Override

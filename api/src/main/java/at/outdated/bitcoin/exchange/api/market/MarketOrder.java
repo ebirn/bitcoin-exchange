@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange.api.market;
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -44,6 +45,10 @@ public class MarketOrder {
         this.price = price;
     }
 
+    public void setPrice(BigDecimal price) {
+        this.price = new CurrencyValue(price, asset.getQuote());
+    }
+
     public CurrencyValue getPriceVolume() {
         return new CurrencyValue(price).multiply(volume.getValue());
     }
@@ -56,6 +61,9 @@ public class MarketOrder {
         this.volume = volume;
     }
 
+    public void setVolume(BigDecimal volume) {
+        this.volume = new CurrencyValue(volume, asset.getBase());
+    }
     @Override
     public String toString() {
         return "Order: " + type + " " + volume  + " @ " + price;

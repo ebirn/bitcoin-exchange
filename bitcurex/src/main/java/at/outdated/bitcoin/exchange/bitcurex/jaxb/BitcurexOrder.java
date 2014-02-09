@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.jaxb.StringNumberAdapter;
 import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeDateAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -15,7 +16,10 @@ import java.util.Date;
 
 public class BitcurexOrder {
 
-    @XmlElement
+    @XmlElements({
+        @XmlElement(name="oid"),
+        @XmlElement(name="tid")
+    })
     String oid;
 
     @XmlElement
@@ -29,7 +33,10 @@ public class BitcurexOrder {
     @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
     BigDecimal price;
 
-    @XmlElement
+    @XmlElements({
+        @XmlElement(name="timestamp"),
+        @XmlElement(name="date")
+    })
     @XmlJavaTypeAdapter(UnixTimeDateAdapter.class)
     Date timestamp;
 

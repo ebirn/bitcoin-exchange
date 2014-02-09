@@ -23,6 +23,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
@@ -250,7 +251,38 @@ public class BtcEApiClient extends RestExchangeClient {
         return value;
     }
 
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
 
+        // https://btc-e.com/api/2/btc_usd/trades
+
+        WebTarget tgt = publicTarget.path("/trades")
+                .resolveTemplate("base", asset.getBase().name().toLowerCase())
+                .resolveTemplate("quote", asset.getQuote().name().toLowerCase());
+
+        /*
+        [{"date":1391940472,"price":701.39,"amount":0.01,"tid":29283411,"price_currency":"USD","item":"BTC","trade_type":"ask"},
+        {"date":1391940441,"price":698.213,"amount":0.13,"tid":29283401,"price_currency":"USD","item":"BTC","trade_type":"ask"},{
+         */
+
+        GenericType<List<BtceTrade>> tradeList = new GenericType<List<BtceTrade>>() {};
+
+        List<BtceTrade> trades = tgt.request().get(tradeList);
+
+        if(trades == null) {
+            log.error("failed to lead past trades");
+            return null;
+        }
+
+        List<MarketOrder> history = new ArrayList<>();
+        for(BtceTrade t : trades) {
+            if(since.before(t.date)) {
+                history.add(t.getOrder(market));
+            }
+        }
+
+        return history;
+    }
 
     @Override
     public Number getLag() {

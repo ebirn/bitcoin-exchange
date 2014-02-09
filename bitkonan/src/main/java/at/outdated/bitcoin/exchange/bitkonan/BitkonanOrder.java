@@ -2,7 +2,7 @@ package at.outdated.bitcoin.exchange.bitkonan;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
-import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601SpacedAdapter;
+import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601Adapter;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
@@ -29,7 +29,7 @@ public class BitkonanOrder {
 
     BigDecimal usd;
 
-    @XmlJavaTypeAdapter(DateIso8601SpacedAdapter.class)
+    @XmlJavaTypeAdapter(DateIso8601Adapter.class)
     Date time;
 
 

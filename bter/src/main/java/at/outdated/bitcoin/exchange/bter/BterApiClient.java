@@ -89,7 +89,10 @@ public class BterApiClient extends RestExchangeClient {
     @Override
     public TickerValue getTicker(AssetPair asset) {
 
-        WebTarget tickerTgt = client.target("https://bter.com/api/1/ticker/" + asset.getBase().name().toLowerCase() + "_" + asset.getQuote().name().toLowerCase());
+        WebTarget tickerTgt = baseTarget.path("/ticker/{base}_{quote}")
+                .resolveTemplate("base", asset.getBase().name().toLowerCase())
+                .resolveTemplate("quote", asset.getQuote().name().toLowerCase());
+
 
         BterTicker ticker = simpleGetRequest(tickerTgt, BterTicker.class);
 
@@ -98,6 +101,38 @@ public class BterApiClient extends RestExchangeClient {
         tickerValue.setAsset(asset);
 
         return tickerValue;
+    }
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+        // http://data.bter.com/api/1/trade/aaa_bbb
+
+        WebTarget tgt = baseTarget.path("/trade/{base}_{quote}")
+                .resolveTemplate("base", asset.getBase().name().toLowerCase())
+                .resolveTemplate("quote", asset.getQuote().name().toLowerCase());
+
+        // {"result":"true","data":[
+        // {"date":"1391940727","price":4576,"amount":0.1962,"tid":"4422029","type":"buy"},
+        // {"date":"1391940732","price":4578,"amount":0.1095,"tid":"4422033","type":"buy"},
+        // ...
+
+        BterTradeHistory result = simpleGetRequest(tgt, BterTradeHistory.class);
+
+        List<MarketOrder> history = null;
+        if(result != null && result.isSuccess()) {
+
+            history = new ArrayList<>();
+            for(BterTrade bt : result.getData()) {
+                if(since.before(bt.date)) {
+                    history.add(bt.getOrder(market, asset));
+                }
+            }
+        }
+        else {
+            log.error("failed to load trade history");
+        }
+
+        return history;
     }
 
     @Override

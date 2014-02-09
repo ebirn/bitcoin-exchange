@@ -64,6 +64,15 @@ public class CoinseOrder {
     @XmlElement
     String id;
 
+    @XmlElement
+    String buy_order_no;
+
+    @XmlElement
+    String sell_order_no;
+
+    public Date getCreated() {
+        return created;
+    }
 
     private AssetPair parseAsset(String raw) {
 
@@ -83,14 +92,22 @@ public class CoinseOrder {
         order.setPrice(new CurrencyValue(rate, asset.getQuote()));
 
 
-        if(order_type.equalsIgnoreCase("buy")) {
+        if(order_type != null) {
+            if(order_type.equalsIgnoreCase("buy")) {
+                order.setType(OrderType.BID);
+            }
+            else if(order_type.equalsIgnoreCase("sell")) {
+                order.setType(OrderType.ASK);
+            }
+            else {
+                order.setType(OrderType.UNDEF);
+            }
+        }
+        else if (buy_order_no != null) {
             order.setType(OrderType.BID);
         }
-        else if(order_type.equalsIgnoreCase("sell")) {
+        else if(sell_order_no != null) {
             order.setType(OrderType.ASK);
-        }
-        else {
-            order.setType(OrderType.UNDEF);
         }
 
         return order;

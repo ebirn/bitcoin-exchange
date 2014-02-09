@@ -43,14 +43,23 @@ import java.util.Locale;
 //FIXME: use GenericType in return values to do acutail jax/rs parsing
 public class KrakenClient extends RestExchangeClient {
 
+    WebTarget baseTarget;
+
     public KrakenClient(Market market) {
         super(market);
         this.tradeFee = new SimplePercentageFee("0.002");
+
+        baseTarget = client.target("https://api.kraken.com/0/");
+
+    }
+
+    String pairString(AssetPair asset) {
+        return fixSymbol(asset.getBase()) + fixSymbol(asset.getQuote());
     }
 
     @Override
     public Balance getBalance() {
-        WebTarget balanceTgt = client.target("https://api.kraken.com/0/private/Balance");
+        WebTarget balanceTgt = baseTarget.path("/private/Balance");
         String rawBalance = protectedPostRequest(balanceTgt, String.class, Entity.form(new Form()));
         //log.debug("balance: {}", rawBalance);
 
@@ -104,7 +113,7 @@ public class KrakenClient extends RestExchangeClient {
         }
 */
 
-        WebTarget ledgerTgt = client.target("https://api.kraken.com/0/private/Ledgers");
+        WebTarget ledgerTgt = baseTarget.path("/private/Ledgers");
         String rawLedger = protectedPostRequest(ledgerTgt, String.class, Entity.form(new Form()));
         //log.debug("ledger: {}", rawLedger);
         JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
@@ -118,16 +127,15 @@ public class KrakenClient extends RestExchangeClient {
     @Override
     public TickerValue getTicker(AssetPair asset) {
 
-        String currencyKey = fixSymbol(asset.getBase()) + fixSymbol(asset.getQuote());
 
-        WebTarget webResource = client.target("https://api.kraken.com/0/public/Ticker?pair=" + currencyKey);
+        WebTarget webResource = baseTarget.path("/public/Ticker").queryParam("pair", pairString(asset));
         //KrakenTickerResponse tickerResponse =
 
        String tickerRaw = simpleGetRequest(webResource, String.class);
 
         JsonObject jsonTicker = jsonFromString(tickerRaw);
 
-        JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(currencyKey);
+        JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(pairString(asset));
 
         TickerValue value = new TickerValue();
         value.setAsset(asset);
@@ -154,7 +162,7 @@ public class KrakenClient extends RestExchangeClient {
         Currency base = asset.getBase();
         Currency quote = asset.getQuote();
 
-        WebTarget webResource = client.target("https://api.kraken.com/0/public/Depth?pair=" + fixSymbol(base) + fixSymbol(quote));
+        WebTarget webResource = baseTarget.path("/public/Depth?pair=" + fixSymbol(base) + fixSymbol(quote));
         String rawDepth = simpleGetRequest(webResource, String.class);
 
         //log.debug("raw depth: {}", rawDepth);
@@ -180,6 +188,102 @@ public class KrakenClient extends RestExchangeClient {
         }
 
         return depth;
+    }
+
+    @Override
+    public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
+
+        //https://api.kraken.com/0/public/Trades
+
+        int sinceId = 0;
+        WebTarget webTgt = baseTarget.path("/public/Trades").queryParam("pair", pairString(asset)).queryParam("since", sinceId);
+
+        String raw = simpleGetRequest(webTgt, String.class);
+
+        /*
+        {
+            "error": [
+
+            ],
+            "result": {
+            "XXBTZEUR": [
+            [
+                "521.10740",
+                "0.01502664",
+                1391889547.5148,
+                "b",
+                "l",
+                ""
+            ],
+            [
+            "522.40757",
+                "0.01500795",
+                1391889553.5553,
+                "b",
+                "l",
+                ""
+            ],
+            */
+
+        JsonObject root = jsonFromString(raw);
+
+        List<MarketOrder> history = new ArrayList<>();
+
+        if(root.getJsonArray("error").isEmpty()) {
+            // <price>, <volume>, <time>, <buy/sell>, <market/limit>, <miscellaneous>
+            JsonArray values = root.getJsonObject("result").getJsonArray(pairString(asset));
+
+            for(int i=0; i<values.size(); i++) {
+                JsonArray elements = values.getJsonArray(i);
+
+                Date timestamp = new Date(Math.round(elements.getJsonNumber(2).doubleValue() * 1000.0));
+
+                // abort parsing if too old
+                if(since.before(timestamp)) {
+
+                    BigDecimal price = new BigDecimal(elements.getString(0));
+                    BigDecimal volume = new BigDecimal(elements.getString(1));
+
+                    String type = elements.getString(3);
+
+                    // market / limit
+                    String mode = values.getString(4);
+                    String descr = values.getString(5);
+
+                    MarketOrder order = new MarketOrder();
+                    order.setId(new OrderId(market, elements.getJsonNumber(2).toString()));
+
+                    order.setAsset(asset);
+                    order.setTimestamp(timestamp);
+
+                    order.setPrice(price);
+                    order.setVolume(volume);
+
+                    switch(type) {
+                        case "b":
+                            order.setType(OrderType.BID);
+                            break;
+
+                        case "s":
+                            order.setType(OrderType.ASK);
+                            break;
+
+                        default:
+                            order.setType(OrderType.UNDEF);
+
+                    }
+
+                    history.add(order);
+                }
+            }
+        }
+        else {
+            log.error("failed to load past trades: {}", root.getJsonArray("error"));
+            history = null;
+            return null;
+        }
+
+        return history;
     }
 
     @Override
@@ -373,7 +477,7 @@ public class KrakenClient extends RestExchangeClient {
         GenericType<KrakenResponse<KrakenOpenOrderResult>> resultType = new GenericType<KrakenResponse<KrakenOpenOrderResult>>() {};
 
         Entity payload = Entity.form(new Form());
-        String rawOpenResult =  setupProtectedResource(client.target("https://api.kraken.com/0/private/OpenOrders"), payload).post(payload).readEntity(String.class);
+        String rawOpenResult =  setupProtectedResource(baseTarget.path("/private/OpenOrders"), payload).post(payload).readEntity(String.class);
 
         // sample result:
         // {"error":[],"result":{"open":{"OHKQFZ-ALIP3-SBVVCF":{"refid":null,"userref":null,"status":"open","opentm":1388937107.352,"starttm":0,"expiretm":0,"descr":{"pair":"XBTEUR","type":"buy","ordertype":"limit","price":"0.75000","price2":"0","leverage":"none","order":"buy 2.00000000 XBTEUR @ limit 0.75000"},"vol":"2.00000000","vol_exec":"0.00000000","cost":"0.00000","fee":"0.00000","price":"0.00000","misc":"","oflags":""},"OSJPS5-K5GK2-NDEQBQ":{"refid":null,"userref":null,"status":"open","opentm":1388937079.8802,"starttm":0,"expiretm":0,"descr":{"pair":"XBTEUR","type":"buy","ordertype":"limit","price":"1.00000","price2":"0","leverage":"none","order":"buy 1.00000000 XBTEUR @ limit 1.00000"},"vol":"1.00000000","vol_exec":"0.00000000","cost":"0.00000","fee":"0.00000","price":"0.00000","misc":"","oflags":""}}}}
@@ -402,7 +506,7 @@ public class KrakenClient extends RestExchangeClient {
     public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
 
         //  https://api.kraken.com/0/private/AddOrder
-        WebTarget orderTgt = client.target("https://api.kraken.com/0/private/AddOrder");
+        WebTarget orderTgt = baseTarget.path("/private/AddOrder");
 
         Form params = new Form();
 
@@ -477,7 +581,7 @@ public class KrakenClient extends RestExchangeClient {
         Entity payload = Entity.form(params);
 
         //KrakenResponse<KrakenOrderCancelResult> result = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(resultType);
-        String rawResult = setupProtectedResource(client.target("https://api.kraken.com/0/private/CancelOrder"), payload).post(payload).readEntity(String.class);
+        String rawResult = setupProtectedResource(baseTarget.path("/private/CancelOrder"), payload).post(payload).readEntity(String.class);
 
         log.info("cancel result: {}", rawResult);
 

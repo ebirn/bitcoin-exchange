@@ -1,9 +1,6 @@
 package at.outdated.bitcoin.exchange.coinse.jaxb;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +33,10 @@ public class ListOrders extends BaseResponse {
     @XmlElement(name = "next_cursor")
     String nextCursor;
 
-    @XmlElement
+    @XmlElements({
+        @XmlElement(name="orders"),
+        @XmlElement(name="trades")
+    })
     List<CoinseOrder> orders = new ArrayList<>();
 
     public String getNextCursor() {

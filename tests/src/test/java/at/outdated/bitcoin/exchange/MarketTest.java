@@ -10,6 +10,8 @@ import org.junit.runners.Parameterized;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ebirn on 20.01.14.
@@ -47,6 +49,19 @@ public class MarketTest extends BaseTest {
             log.info("depth: {}: {}", asset, depth);
 
             assertDepth(depth);
+        }
+    }
+
+    @Test
+    public void testTradeHistory() {
+        for(AssetPair asset : market.getTradedAssets()) {
+            List<MarketOrder> history = client.getTradeHistory(asset, new Date(0L));
+
+            Assert.assertNotNull("history is NULL", history);
+            Assert.assertFalse("history is empty", history.isEmpty());
+
+            log.info("history: {} #{}", asset, history.size());
+            //TODO verify elements?
         }
     }
 
