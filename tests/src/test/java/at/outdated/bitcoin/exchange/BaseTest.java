@@ -6,14 +6,19 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.core.AnyOf;
+import org.hamcrest.core.IsCollectionContaining;
+import org.hamcrest.core.IsNull;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by ebirn on 29.10.13.
@@ -34,9 +39,18 @@ public abstract class BaseTest {
 
     public static Collection<Object[]> getMarketParams() {
 
-        ArrayList<Object[]> params = new ArrayList<>();
-        for(Market m : Markets.allMarkets()) {
+        Set<Market> allMarkets = Markets.allMarkets();
 
+        Market[] arr = new Market[allMarkets.size()];
+        allMarkets.toArray(arr);
+        return getMarketParams(arr);
+    }
+
+    public static Collection<Object[]> getMarketParams(Market... markets ) {
+
+        ArrayList<Object[]> params = new ArrayList<>(markets.length);
+
+        for(Market m : markets) {
             params.add(marketParams(m));
         }
 
@@ -55,5 +69,21 @@ public abstract class BaseTest {
 
         Assert.assertNotNull("currency address is NULL", address);
         Assert.assertEquals("currency mismatch", currency, address.getReference());
+    }
+
+    @Rule
+    public ErrorCollector errorCollector = new ErrorCollector();
+
+
+    protected void notNull(Object obj) {
+        errorCollector.checkThat(obj, IsNull.notNullValue());
+    }
+
+    protected void notNull(String reason, Object obj) {
+        errorCollector.checkThat(reason, obj, IsNull.notNullValue());
+    }
+
+    public void notEmpty(Collection coll) {
+        //errorCollector.checkThat(coll, Is.);
     }
 }

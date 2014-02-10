@@ -193,7 +193,7 @@ public class CoinseApiClient extends RestExchangeClient {
     public List<WalletTransaction> getTransactions() {
 
         // FIXME
-        // TODO: reuse getOpenOrders
+        // TODO: reuse getOpenOrders??
 
         log.warn("transaction list not supported by api");
 

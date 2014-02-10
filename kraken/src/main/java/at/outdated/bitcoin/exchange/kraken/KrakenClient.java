@@ -162,29 +162,36 @@ public class KrakenClient extends RestExchangeClient {
         Currency base = asset.getBase();
         Currency quote = asset.getQuote();
 
-        WebTarget webResource = baseTarget.path("/public/Depth?pair=" + fixSymbol(base) + fixSymbol(quote));
+        WebTarget webResource = baseTarget.path("/public/Depth").queryParam("pair", pairString(asset));
         String rawDepth = simpleGetRequest(webResource, String.class);
 
         //log.debug("raw depth: {}", rawDepth);
 
-        JsonObject jsonDepth = jsonFromString(rawDepth).getJsonObject("result").getJsonObject(fixSymbol(base) + fixSymbol(quote));
+        JsonObject root = jsonFromString(rawDepth);
 
-        double asks[][] = parseNestedArray(jsonDepth.getJsonArray("asks"));
-        double bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
+        MarketDepth depth = null;
+        if(root.getJsonArray("error").isEmpty()) {
+            JsonObject jsonDepth = root.getJsonObject("result").getJsonObject(fixSymbol(base) + fixSymbol(quote));
 
+            double asks[][] = parseNestedArray(jsonDepth.getJsonArray("asks"));
+            double bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
 
-        MarketDepth depth = new MarketDepth(asset);
+            depth = new MarketDepth(asset);
 
-        for(double ask[] : asks) {
-            double price = ask[0];
-            double volume = ask[1];
-            depth.addAsk(volume, price);
+            for(double ask[] : asks) {
+                double price = ask[0];
+                double volume = ask[1];
+                depth.addAsk(volume, price);
+            }
+
+            for(double bid[] : bids) {
+                double price = bid[0];
+                double volume = bid[1];
+                depth.addBid(volume, price);
+            }
         }
-
-        for(double bid[] : bids) {
-            double price = bid[0];
-            double volume = bid[1];
-            depth.addBid(volume, price);
+        else {
+            log.error("failed to load depth: {}", root.getJsonArray("error"));
         }
 
         return depth;
@@ -241,14 +248,22 @@ public class KrakenClient extends RestExchangeClient {
                 // abort parsing if too old
                 if(since.before(timestamp)) {
 
-                    BigDecimal price = new BigDecimal(elements.getString(0));
-                    BigDecimal volume = new BigDecimal(elements.getString(1));
+                    String priceStr = elements.getString(0, "");
+                    String volumeStr = elements.getString(1, "");
+
+                    if(priceStr.isEmpty()) {
+                        log.warn("empty price: {}", elements);
+                        priceStr = "0.0";
+                    }
+
+                    BigDecimal price = new BigDecimal(priceStr);
+                    BigDecimal volume = new BigDecimal(volumeStr);
 
                     String type = elements.getString(3);
 
                     // market / limit
-                    String mode = values.getString(4);
-                    String descr = values.getString(5);
+                    //String mode = values.getString(4);
+                    //String descr = values.getString(5);
 
                     MarketOrder order = new MarketOrder();
                     order.setId(new OrderId(market, elements.getJsonNumber(2).toString()));

@@ -2,9 +2,12 @@ package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601SpacedAdapter;
 import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
+import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeDateAdapter;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,21 +18,11 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BitstampOrder {
 
-    // 0 == buy; 1 == sell;
-    @XmlEnum(Integer.class)
-    public enum OrderType {
-        @XmlEnumValue("0") BUY,
-        @XmlEnumValue("1") SELL
-    }
-
     @XmlElements({
         @XmlElement(name="id"),
         @XmlElement(name="tid")
     })
     int id;
-
-
-
 
     //FIXME: is there a way to limit formatter to a total number of digits?
     // {"error": {"price": ["Ensure that there are no more than 7 digits in total."]}}
@@ -39,13 +32,19 @@ public class BitstampOrder {
     @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
     BigDecimal amount;
 
-    //FIXME this might be dangerous: bitstamp does not provide timezone offset=
+    //time comes in UTC
     @XmlElement
     @XmlJavaTypeAdapter(DateIso8601SpacedAdapter.class)
     Date datetime;
 
     @XmlElement
-    OrderType type;
+    @XmlJavaTypeAdapter(UnixTimeDateAdapter.class)
+    Date date;
+
+
+    @XmlElement
+    @XmlJavaTypeAdapter(BitstampOrderTypeAdapter.class)
+    OrderType type = OrderType.UNDEF;
 
 
     public int getId() {
@@ -68,5 +67,7 @@ public class BitstampOrder {
         return datetime;
     }
 
-
+    public Date getDate() {
+        return date;
+    }
 }

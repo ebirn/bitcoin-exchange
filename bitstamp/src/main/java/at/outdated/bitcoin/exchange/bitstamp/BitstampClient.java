@@ -226,7 +226,7 @@ public class BitstampClient extends RestExchangeClient {
 
         for(BitstampOrder bo : trades) {
 
-            if(since.before(bo.getDatetime())) {
+            if(since.before(bo.getDate())) {
                 history.add(convertOrder(bo));
             }
         }
@@ -401,20 +401,21 @@ public class BitstampClient extends RestExchangeClient {
 
     MarketOrder convertOrder(BitstampOrder rawOrder) {
         MarketOrder order = new MarketOrder();
+
         order.setId(new OrderId(market, Integer.toString(rawOrder.getId())));
-
-        switch(rawOrder.getType()) {
-            case BUY:
-                order.setType(OrderType.BID);
-                break;
-
-            case SELL:
-                order.setType(OrderType.ASK);
-        }
-
-        order.setPrice(new CurrencyValue(rawOrder.getPrice().doubleValue(), Currency.USD));
-        order.setVolume(new CurrencyValue(rawOrder.getAmount().doubleValue(), Currency.BTC));
         order.setAsset(market.getAsset(Currency.BTC, Currency.USD));
+
+        order.setType(rawOrder.getType());
+
+        order.setPrice(rawOrder.getPrice());
+        order.setVolume(rawOrder.getAmount());
+
+        if(rawOrder.date != null) {
+            order.setTimestamp(rawOrder.date);
+        }
+        else if(rawOrder.datetime != null) {
+            order.setTimestamp(rawOrder.datetime);
+        }
 
         return order;
     }

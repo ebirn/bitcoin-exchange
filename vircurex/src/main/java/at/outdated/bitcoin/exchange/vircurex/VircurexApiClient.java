@@ -19,6 +19,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
@@ -114,16 +115,33 @@ public class VircurexApiClient extends RestExchangeClient {
                 .queryParam("base", asset.getBase())
                 .queryParam("alt", asset.getQuote());
 
+        // parameter since = tradeid
 
-        List<MarketOrder> orders = new ArrayList<>();
+        GenericType<List<VircurexTrade>> tradeList = new GenericType<List<VircurexTrade>>(){};
+
+        /*
+        [{"date":1391011966,"tid":1331206,"amount":"1.0","price":"0.02669999"},
+        {"date":1391011966,"tid":1331208,"amount":"2.9995","price":"0.0267"},
+        */
+
+        List<VircurexTrade> trades = tradesTgt.request().get(tradeList);
+
+        List<MarketOrder> history = null;
+
+        if(trades != null) {
+            history = new ArrayList<>();
+
+            for(VircurexTrade trade : trades) {
+
+                if(since.before(trade.date)) {
+                    history.add(trade.getOrder(market, asset));
+                }
+            }
+
+        }
 
 
-        //FIXME
-        //simpleGetRequest(tradesTgt, );
-
-
-
-        return null;
+        return history;
     }
 
     @Override
@@ -147,35 +165,40 @@ public class VircurexApiClient extends RestExchangeClient {
         if(rawDepth != null) {
             depth = new MarketDepth();
             depth.setAsset(asset);
+
+            // response can be completely empty
+            if(!rawDepth.isEmpty()) {
+                JsonObject jsonDepth = jsonFromString(rawDepth);
+
+                try {
+                    double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
+                    for(double[] bid : bids) {
+                        double volume = bid[1];
+                        double price = bid[0];
+
+                        depth.addBid(volume, price);
+                    }
+
+                    double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
+                    for(double[] ask : asks) {
+                        double volume = ask[1];
+                        double price = ask[0];
+
+                        depth.addAsk(volume, price);
+                    }
+
+                }
+                catch(ClassCastException cce) {
+                    log.info("canot parse depth, probably empty?", cce);
+                    return null;
+                }
+            }
         }
 
-        // response can be completely empty
-        if(!rawDepth.isEmpty()) {
-            JsonObject jsonDepth = jsonFromString(rawDepth);
-
-            try {
-                double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
-                for(double[] bid : bids) {
-                    double volume = bid[1];
-                    double price = bid[0];
-
-                    depth.addBid(volume, price);
-                }
-
-                double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
-                for(double[] ask : asks) {
-                    double volume = ask[1];
-                    double price = ask[0];
-
-                    depth.addAsk(volume, price);
-                }
-
-            }
-            catch(ClassCastException cce) {
-                log.info("canot parse depth, probably empty?", cce);
-                return null;
-            }
+        if(depth == null) {
+            log.error("failed to load depth for {}", asset);
         }
+
         return depth;
     }
 

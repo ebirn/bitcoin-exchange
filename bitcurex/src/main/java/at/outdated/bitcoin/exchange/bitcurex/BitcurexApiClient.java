@@ -354,19 +354,14 @@ public class BitcurexApiClient extends RestExchangeClient {
         MarketOrder order = new MarketOrder();
         order.setId(new OrderId(market, o.getOid()));
 
+        order.setAsset(new AssetPair(Currency.BTC, Currency.USD));
+        order.setType(o.getType());
 
-        switch(o.getType()) {
-            case ASK:
-                order.setType(OrderType.ASK);
-                break;
-
-            case BID:
-                order.setType(OrderType.ASK);
-                break;
-        }
-
-        order.setVolume(new CurrencyValue(o.getAmount(), Currency.BTC));
+        order.setPrice(o.getPrice());
+        order.setVolume(o.getAmount());
         order.setTimestamp(o.getTimestamp());
+
+
         return order;
     }
 }

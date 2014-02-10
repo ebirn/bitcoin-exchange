@@ -6,6 +6,7 @@ import at.outdated.bitcoin.exchange.api.jaxb.DateIso8601Adapter;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,15 +33,22 @@ public class BitkonanOrder {
     @XmlJavaTypeAdapter(DateIso8601Adapter.class)
     Date time;
 
-
-    int tradetype;
+    @XmlJavaTypeAdapter(BitkonanOrderTypeAdapter.class)
+    OrderType tradetype;
 
     public MarketOrder getOrder(Market m, AssetPair asset) {
 
-        MarketOrder order = new MarketOrder(new OrderId(m, Long.toString(time.getTime())));
+        MarketOrder order = new MarketOrder();
+
+        order.setId(new OrderId(m, Long.toString(time.getTime())));
+        order.setAsset(asset);
+
+        order.setTimestamp(time);
 
         order.setVolume(new CurrencyValue(btc, asset.getBase()));
         order.setPrice(new CurrencyValue(usd, asset.getQuote()));
+
+        order.setType(tradetype);
 
         return order;
     }

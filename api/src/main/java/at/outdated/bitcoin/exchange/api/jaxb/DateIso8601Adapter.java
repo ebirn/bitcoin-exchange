@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class DateIso8601Adapter extends XmlAdapter<String, Date> {
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     @Override
     public String marshal(Date v) throws Exception {
@@ -23,6 +23,7 @@ public class DateIso8601Adapter extends XmlAdapter<String, Date> {
 
     @Override
     public Date unmarshal(String v) throws Exception {
+
         return dateFormat.parse(v);
     }
 

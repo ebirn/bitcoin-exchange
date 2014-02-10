@@ -87,7 +87,10 @@ public class CoinseOrder {
         AssetPair asset = parseAsset(pair);
 
         order.setId(new OrderId(market, id));
+
         order.setAsset(asset);
+        order.setTimestamp(created);
+
         order.setVolume(new CurrencyValue(quantity, asset.getBase()));
         order.setPrice(new CurrencyValue(rate, asset.getQuote()));
 

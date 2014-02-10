@@ -1,8 +1,8 @@
 package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
 import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
-import at.outdated.bitcoin.exchange.api.jaxb.StringNumberAdapter;
 import at.outdated.bitcoin.exchange.api.jaxb.UnixTimeDateAdapter;
+import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -23,7 +23,8 @@ public class BitcurexOrder {
     String oid;
 
     @XmlElement
-    BitcurexOrderType type;
+    @XmlJavaTypeAdapter(BitcurexOrderTypeAdapter.class)
+    OrderType type;
 
     @XmlElement
     @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
@@ -44,7 +45,7 @@ public class BitcurexOrder {
         return oid;
     }
 
-    public BitcurexOrderType getType() {
+    public OrderType getType() {
         return type;
     }
 

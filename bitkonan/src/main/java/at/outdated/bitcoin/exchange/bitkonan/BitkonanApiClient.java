@@ -164,7 +164,7 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         for(BitkonanOrder bo : trades) {
 
-            if(since.after(bo.time)) {
+            if(since.before(bo.time)) {
                 history.add(bo.getOrder(market, asset));
             }
         }

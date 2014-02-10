@@ -249,11 +249,15 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         Form form = new Form();
         form.param("method", "markettrades");
 
-        WebTarget tgt = publicBase.queryParam("marketid", marketNum);
+        WebTarget tgt = tradeBase.queryParam("marketid", marketNum);
 
-        GenericType<List<CryptsyTrade>> tradeList = new GenericType<List<CryptsyTrade>>() {};
+        //GenericType<List<CryptsyTrade>> tradeList = new GenericType<List<CryptsyTrade>>() {};
         Entity e = Entity.form(form);
-        MarketTradesResult tradesResult = setupProtectedResource(tgt, e).post(e, MarketTradesResult.class);
+        MarketTradesResult tradesResult = protectedPostRequest(tgt, MarketTradesResult.class, e);
+
+        // String raw = protectedPostRequest(tgt, String.class, e);
+        //JsonObject root = jsonFromString(raw);
+
         /*
             tradeid	A unique ID for the trade
             datetime	Server datetime trade occurred
@@ -263,9 +267,11 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             initiate_ordertype	The type of order which initiated this trade
          */
 
-        List<MarketOrder> history = new ArrayList<>();
+
+        List<MarketOrder> history = null;
 
         if(tradesResult.isSuccess()) {
+            history =  new ArrayList<>();
             for(CryptsyTrade ct : tradesResult.getResult()) {
 
                 if(since.before(ct.datetime)) {
@@ -279,6 +285,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         }
 
         return history;
+
     }
 
     @Override
