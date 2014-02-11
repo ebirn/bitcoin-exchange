@@ -24,48 +24,56 @@ import java.util.List;
 @RunWith(value=Parameterized.class)
 public class MarketTest extends BaseTest {
 
-    @Parameterized.Parameters(name = "{0}MarketTest")
+
+
+    @Parameterized.Parameters(name = "{0}MarketTest {2}")
     public static Collection<Object[]> getMarketParams() {
 
         //return BaseTest.getMarketParams(Markets.getMarket("cryptsy"), Markets.getMarket("bitstamp"));
 
-        return BaseTest.getMarketParams();
+        return BaseTest.getAssetMarketParams();
     }
 
 
-
+/*
     public MarketTest(String key, Market m) {
         super(key, m);
         log = LoggerFactory.getLogger("test.market." + m.getKey());
         log.info("MarketTest: {}", m.getKey());
     }
+*/
 
-
+    public MarketTest(String key, Market m, AssetPair asset) {
+        super(key, m);
+        log = LoggerFactory.getLogger("test.market." + m.getKey());
+        log.info("MarketTest: {} {}", m.getKey(), asset);
+        this.asset = asset;
+    }
 
     @Test
     public void testAllTickers() {
-        for(AssetPair asset : market.getTradedAssets()) {
+        //for(AssetPair asset : market.getTradedAssets()) {
 
             TickerValue ticker = client.getTicker(asset);
             log.info("ticker {}: {}", asset, ticker);
 
             assertTicker(ticker);
-        }
+        //}
     }
 
     @Test
     public void testAllDepth() {
-        for(AssetPair asset : market.getTradedAssets()) {
+        //for(AssetPair asset : market.getTradedAssets()) {
             MarketDepth depth = client.getMarketDepth(asset);
             log.info("depth: {}: {}", asset, depth);
 
             assertDepth(depth);
-        }
+        //}
     }
 
     @Test
     public void testTradeHistory() {
-        for(AssetPair asset : market.getTradedAssets()) {
+        //for(AssetPair asset : market.getTradedAssets()) {
             List<MarketOrder> history = client.getTradeHistory(asset, new Date(0L));
 
             String msg = "history is NULL for " + asset + " @ " + market.getKey();
@@ -80,7 +88,7 @@ public class MarketTest extends BaseTest {
                     checkOrder(order);
                 }
             }
-        }
+        //}
     }
 
 

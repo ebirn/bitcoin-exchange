@@ -29,19 +29,15 @@ public class AccountInfoTest extends BaseTest {
 
     @Parameterized.Parameters(name = "{0}AccountInfoTest")
     public static Collection<Object[]> getMarketParams() {
-        //return BaseTest.getMarketParams();
+        return BaseTest.getMarketParams();
+        /*
+            List<Object[]> params = new ArrayList<>();
+            params.add(marketParams(Markets.getMarket("coinse")));
 
-        List<Object[]> params = new ArrayList<>();
-        params.add(marketParams(Markets.getMarket("coinse")));
-
-        return params;
-
+            return params;
+        */
     }
 
-    @Test
-    public void simpleTest() {
-        log.info("testing the testing test: {}", this.market);
-    }
 
     @Test
     public void balanceTest() {

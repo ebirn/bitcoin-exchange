@@ -3,6 +3,7 @@ package at.outdated.bitcoin.exchange;
 import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,9 @@ import java.util.*;
 public abstract class BaseTest {
 
     protected ExchangeClient client;
+
     protected Market market;
+    protected AssetPair asset;
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
@@ -37,14 +40,30 @@ public abstract class BaseTest {
         return new Object[] { niceKey, m };
     }
 
+    protected static Object[] marketParams(Market m, AssetPair asset) {
+
+        String niceKey = StringUtils.capitalize(m.getKey());
+
+        return new Object[] { niceKey, m, asset };
+    }
+
     public static Collection<Object[]> getMarketParams() {
+
+        Set<Market> allMarkets = Markets.allMarkets();
+        Market[] arr = new Market[allMarkets.size()];
+        allMarkets.toArray(arr);
+        return getMarketParams(arr);
+    }
+
+    public static Collection<Object[]> getAssetMarketParams() {
 
         Set<Market> allMarkets = Markets.allMarkets();
 
         Market[] arr = new Market[allMarkets.size()];
         allMarkets.toArray(arr);
-        return getMarketParams(arr);
+        return getAssetMarketParams(arr);
     }
+
 
     public static Collection<Object[]> getMarketParams(Market... markets ) {
 
@@ -52,6 +71,19 @@ public abstract class BaseTest {
 
         for(Market m : markets) {
             params.add(marketParams(m));
+        }
+
+        return params;
+    }
+
+    public static Collection<Object[]> getAssetMarketParams(Market... markets ) {
+
+        ArrayList<Object[]> params = new ArrayList<>(markets.length);
+
+        for(Market m : markets) {
+            for(AssetPair asset : m.getTradedAssets()) {
+                params.add(marketParams(m, asset));
+            }
         }
 
         return params;
