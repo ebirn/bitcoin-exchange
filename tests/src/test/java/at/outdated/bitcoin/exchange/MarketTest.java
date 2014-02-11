@@ -129,7 +129,7 @@ public class MarketTest extends BaseTest {
 
     protected void assertTicker(TickerValue ticker) {
 
-        Assert.assertNotNull(ticker);
+        Assume.assumeNotNull(ticker);
 
         notNull("invalid ticker timestamp", ticker.getTimestamp());
         notNull(ticker.getAsset());
