@@ -2,6 +2,7 @@ package at.outdated.bitcoin.exchange;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.AccountInfo;
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
@@ -42,8 +43,8 @@ public class TradeTest extends BaseTest {
     }
 
 
-    public TradeTest(String key, Market m) {
-        super(key, m);
+    public TradeTest(String key, Market m, ExchangeClient c) {
+        super(key, m, c);
 
         invalidOrderId = new OrderId(m, "xxx111222333xxx");
         validOrderId = new OrderId(m, "S/100.00010101/6431215947087872");

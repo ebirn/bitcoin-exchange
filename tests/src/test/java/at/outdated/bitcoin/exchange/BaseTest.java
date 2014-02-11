@@ -28,8 +28,14 @@ public abstract class BaseTest {
 
     protected ExchangeClient client;
 
-    protected Market market;
-    protected AssetPair asset;
+    //@Parameterized.Parameter(value = 0)
+    String name;
+
+    //@Parameterized.Parameter(value = 1)
+    Market market;
+
+    //@Parameterized.Parameter(value = )
+    AssetPair asset;
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
@@ -37,14 +43,14 @@ public abstract class BaseTest {
 
         String niceKey = StringUtils.capitalize(m.getKey());
 
-        return new Object[] { niceKey, m };
+        return new Object[] { niceKey, m, m.createClient() };
     }
 
     protected static Object[] marketParams(Market m, AssetPair asset) {
 
         String niceKey = StringUtils.capitalize(m.getKey());
 
-        return new Object[] { niceKey, m, asset };
+        return new Object[] { niceKey, m, asset, null };
     }
 
     public static Collection<Object[]> getMarketParams() {
@@ -81,8 +87,11 @@ public abstract class BaseTest {
         ArrayList<Object[]> params = new ArrayList<>(markets.length);
 
         for(Market m : markets) {
+            ExchangeClient client = m.createClient();
             for(AssetPair asset : m.getTradedAssets()) {
-                params.add(marketParams(m, asset));
+                Object[] paramsArr = marketParams(m, asset);
+                paramsArr[paramsArr.length-1] = client;
+                params.add(paramsArr);
             }
         }
 
@@ -90,8 +99,16 @@ public abstract class BaseTest {
     }
 
     public BaseTest(String key, Market m) {
+        this.name = key;
         this.market = m;
         this.client = m.createClient();
+        log = LoggerFactory.getLogger("test." + m.getKey());
+    }
+
+    public BaseTest(String key, Market m, ExchangeClient client) {
+        this.name = key;
+        this.market = m;
+        this.client = client;
         log = LoggerFactory.getLogger("test." + m.getKey());
     }
 

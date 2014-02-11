@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange;
 
+import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import com.sun.tools.classfile.Annotation;
@@ -24,71 +25,55 @@ import java.util.List;
 @RunWith(value=Parameterized.class)
 public class MarketTest extends BaseTest {
 
-
-
     @Parameterized.Parameters(name = "{0}MarketTest {2}")
     public static Collection<Object[]> getMarketParams() {
 
         //return BaseTest.getMarketParams(Markets.getMarket("cryptsy"), Markets.getMarket("bitstamp"));
-
         return BaseTest.getAssetMarketParams();
     }
 
 
-/*
-    public MarketTest(String key, Market m) {
-        super(key, m);
-        log = LoggerFactory.getLogger("test.market." + m.getKey());
-        log.info("MarketTest: {}", m.getKey());
-    }
-*/
-
-    public MarketTest(String key, Market m, AssetPair asset) {
-        super(key, m);
+    public MarketTest(String key, Market m, AssetPair asset, ExchangeClient client) {
+        super(key, m, client);
         log = LoggerFactory.getLogger("test.market." + m.getKey());
         log.info("MarketTest: {} {}", m.getKey(), asset);
         this.asset = asset;
     }
 
     @Test
-    public void testAllTickers() {
-        //for(AssetPair asset : market.getTradedAssets()) {
+    public void testTicker() {
+        TickerValue ticker = client.getTicker(asset);
+        log.info("ticker {}: {}", asset, ticker);
 
-            TickerValue ticker = client.getTicker(asset);
-            log.info("ticker {}: {}", asset, ticker);
-
-            assertTicker(ticker);
-        //}
+        assertTicker(ticker);
     }
 
     @Test
-    public void testAllDepth() {
-        //for(AssetPair asset : market.getTradedAssets()) {
-            MarketDepth depth = client.getMarketDepth(asset);
-            log.info("depth: {}: {}", asset, depth);
+    public void testDepth() {
 
-            assertDepth(depth);
-        //}
+        MarketDepth depth = client.getMarketDepth(asset);
+        log.info("depth: {}: {}", asset, depth);
+
+        assertDepth(depth);
     }
 
     @Test
     public void testTradeHistory() {
-        //for(AssetPair asset : market.getTradedAssets()) {
-            List<MarketOrder> history = client.getTradeHistory(asset, new Date(0L));
 
-            String msg = "history is NULL for " + asset + " @ " + market.getKey();
-            notNull(msg, history);
+        List<MarketOrder> history = client.getTradeHistory(asset, new Date(0L));
 
-            //Assert.assertFalse("history is empty", history.isEmpty());
+        String msg = "history is NULL for " + asset + " @ " + market.getKey();
+        notNull(msg, history);
 
-            if(history != null) {
-                log.info("history: {} #{}", asset, history.size());
-                //TODO verify elements?
-                for(MarketOrder order : history) {
-                    checkOrder(order);
-                }
+        //Assert.assertFalse("history is empty", history.isEmpty());
+
+        if(history != null) {
+            log.info("history: {} #{}", asset, history.size());
+            //TODO verify elements?
+            for(MarketOrder order : history) {
+                checkOrder(order);
             }
-        //}
+        }
     }
 
 
@@ -154,9 +139,6 @@ public class MarketTest extends BaseTest {
 
         Assert.assertNotEquals(ticker.getAsk(), 0.0, Double.MIN_NORMAL);
         Assert.assertNotEquals(ticker.getAsk(), Double.NaN, 0.0);
-
-
-
     }
 
     protected void checkOrder(MarketOrder order) {
