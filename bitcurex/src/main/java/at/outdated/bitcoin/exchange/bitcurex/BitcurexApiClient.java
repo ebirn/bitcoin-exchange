@@ -6,8 +6,6 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -18,13 +16,11 @@ import org.apache.commons.codec.binary.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.JsonObject;
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -173,11 +169,6 @@ public class BitcurexApiClient extends RestExchangeClient {
         }
 
         return orders;
-    }
-
-    @Override
-    public Number getLag() {
-        return 1.0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

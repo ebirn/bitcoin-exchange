@@ -25,11 +25,9 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -149,11 +147,6 @@ public class KrakenClient extends RestExchangeClient {
         value.setHigh(Double.parseDouble(resultData.getJsonArray("h").getString(0)));
         value.setLow(Double.parseDouble(resultData.getJsonArray("l").getString(0)));
         return value;
-    }
-
-    @Override
-    public Number getLag() {
-        return 1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

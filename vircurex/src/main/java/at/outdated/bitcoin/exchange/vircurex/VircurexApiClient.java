@@ -5,8 +5,6 @@ import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -142,11 +140,6 @@ public class VircurexApiClient extends RestExchangeClient {
 
 
         return history;
-    }
-
-    @Override
-    public Number getLag() {
-        return 100.00;
     }
 
     @Override

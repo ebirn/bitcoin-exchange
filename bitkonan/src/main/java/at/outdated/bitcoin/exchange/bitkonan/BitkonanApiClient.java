@@ -6,7 +6,6 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
@@ -16,16 +15,13 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -170,11 +166,6 @@ public class BitkonanApiClient extends RestExchangeClient {
         }
 
         return history;
-    }
-
-    @Override
-    public Number getLag() {
-        return 0.12345678910;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

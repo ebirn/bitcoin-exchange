@@ -234,11 +234,6 @@ public class BitstampClient extends RestExchangeClient {
         return history;
     }
 
-    @Override
-    public Number getLag() {
-        return 1.0;
-    }
-
     protected String getCustomerId() {
         ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
         return bundle.getString("bitstamp.customerid");

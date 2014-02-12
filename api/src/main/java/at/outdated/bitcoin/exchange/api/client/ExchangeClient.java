@@ -51,8 +51,6 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
         return rate;
     }
 
-    public abstract Number getLag();
-
     final public double getApiLag() {
         return apiLagTrack.getStatistics().getGeometricMean();  //To change body of implemented methods use File | Settings | File Templates.
     }

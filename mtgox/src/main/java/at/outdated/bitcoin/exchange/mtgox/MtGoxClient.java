@@ -208,20 +208,6 @@ public class MtGoxClient extends RestExchangeClient {
     }
 
 
-    @Override
-    public Number getLag() {
-
-        WebTarget webResource = client.target(API_BASE_URL + API_LAG);
-        ApiLagResponse lagResponse = simpleGetRequest(webResource, ApiLagResponse.class);
-
-        if(lagResponse == null) {
-            log.warn("no response from api for trading lag");
-            return null;
-        }
-
-        return lagResponse.getData().getSeconds();
-    }
-
     //FIXME: actually use that
     @Override
     protected <T> Invocation.Builder setupProtectedResource(WebTarget res, Entity<T> entity) {

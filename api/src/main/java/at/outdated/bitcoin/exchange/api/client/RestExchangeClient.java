@@ -139,6 +139,7 @@ public abstract class RestExchangeClient extends ExchangeClient {
         return result;
     }
 
+    // default is an unsecured request
     protected <R> R syncRequest(WebTarget resource, Class<R> resultClass, String httpMethod, Entity payload) {
         return syncRequest(resource, resultClass, httpMethod, payload, false);
     }
@@ -147,6 +148,7 @@ public abstract class RestExchangeClient extends ExchangeClient {
 
         R result = null;
         Date requestDate = new Date();
+        Response response = null;
         try {
             Invocation.Builder builder = null;
 
@@ -162,10 +164,7 @@ public abstract class RestExchangeClient extends ExchangeClient {
                 payload = null;
             }
 
-            Response response = builder.header("User-Agent", userAgent).method(httpMethod, payload);
-
-//            log.debug("response Content-Type: {}", response.getMediaType());
-
+            response = builder.header("User-Agent", userAgent).method(httpMethod, payload);
             result = response.readEntity(resultClass);
         }
         //
@@ -180,6 +179,10 @@ public abstract class RestExchangeClient extends ExchangeClient {
         }
         finally {
             updateApiLag(requestDate);
+
+            if(response != null) {
+                response.close();
+            }
         }
 
         return result;

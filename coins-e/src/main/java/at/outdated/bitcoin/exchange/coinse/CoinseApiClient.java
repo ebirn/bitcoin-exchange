@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.coinse;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
@@ -24,13 +23,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.Request;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by ebirn on 06.01.14.
@@ -44,11 +40,6 @@ public class CoinseApiClient extends RestExchangeClient {
         tradeFee = new SimplePercentageFee("0.002");
         baseTarget = client.target("https://www.coins-e.com/api/v2/");
         marketTarget = baseTarget.path("/market/{base}_{quote}/");
-    }
-
-    @Override
-    public Number getLag() {
-        return 0.01234;
     }
 
     @Override

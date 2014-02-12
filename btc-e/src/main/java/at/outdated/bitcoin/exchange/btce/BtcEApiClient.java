@@ -7,7 +7,6 @@ import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -282,11 +281,6 @@ public class BtcEApiClient extends RestExchangeClient {
         }
 
         return history;
-    }
-
-    @Override
-    public Number getLag() {
-        return 0.12345678910;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

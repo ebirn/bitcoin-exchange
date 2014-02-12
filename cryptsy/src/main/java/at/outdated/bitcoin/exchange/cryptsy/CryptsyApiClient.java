@@ -22,7 +22,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -66,11 +65,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
     private void setMarketNum(Currency base, Currency quote, int marketNum) {
         AssetPair asset = market.getAsset(base, quote);
         marketId.put(asset, marketNum);
-    }
-
-    @Override
-    public Number getLag() {
-        return 0.1234;
     }
 
     @Override
