@@ -189,6 +189,11 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         String raw = protectedPostRequest(tradeBase, String.class, Entity.form(form));
 
+        if(raw == null) {
+            log.error("balance request failed.");
+            return null;
+        }
+
         /*
         balances_available	Array of currencies and the balances availalbe for each
         balances_hold	Array of currencies and the amounts currently on hold for open orders
