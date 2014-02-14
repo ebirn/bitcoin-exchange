@@ -116,7 +116,7 @@ public class KrakenClient extends RestExchangeClient {
         //log.debug("ledger: {}", rawLedger);
         JsonObject jsonLedger = jsonFromString(rawLedger).getJsonObject("result").getJsonObject("ledger");
         if(jsonLedger != null) {
-            transactions.addAll(parseLedger(new KrakenAccountInfo(), jsonLedger));
+            transactions.addAll(parseLedger(jsonLedger));
         }
 
         return transactions;
@@ -417,7 +417,7 @@ public class KrakenClient extends RestExchangeClient {
     }
 
 
-    private List<WalletTransaction> parseLedger(AccountInfo accountInfo, JsonObject jsonLedger) {
+    private List<WalletTransaction> parseLedger(JsonObject jsonLedger) {
 
         List<WalletTransaction> transactions = new ArrayList<>();
 
@@ -434,9 +434,9 @@ public class KrakenClient extends RestExchangeClient {
             Date timestamp = new Date((long)(1000.0 * ledger.getJsonNumber("time").doubleValue()));
             trans.setTimestamp(timestamp);
 
-            trans.setValue(new CurrencyValue(new BigDecimal(ledger.getString("amount"), CurrencyValue.CURRENCY_MATH_CONTEXT).abs(), curr));
+            trans.setValue(new CurrencyValue(ledger.getString("amount"), curr).abs());
             trans.setInfo(refId);
-            trans.setBalance(new CurrencyValue(new BigDecimal(ledger.getString("balance"), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
+            trans.setBalance(new CurrencyValue(ledger.getString("balance"), curr));
 
             TransactionType type = parseLedgerType(ledger.getString("type"));
             trans.setType(type);
@@ -446,13 +446,6 @@ public class KrakenClient extends RestExchangeClient {
                 }
             }
 
-            Wallet w = accountInfo.getWallet(curr);
-            if(w==null) {
-                w = new Wallet(curr);
-                accountInfo.addWallet(w);
-            }
-
-            w.addTransaction(trans);
             transactions.add(trans);
 
 
@@ -463,7 +456,7 @@ public class KrakenClient extends RestExchangeClient {
                 feeTransaction.setType(TransactionType.FEE);
                 feeTransaction.setValue(new CurrencyValue(new BigDecimal(ledger.getString("fee"), CurrencyValue.CURRENCY_MATH_CONTEXT), curr));
                 feeTransaction.setInfo(refId);
-                w.addTransaction(feeTransaction);
+
                 transactions.add(feeTransaction);
             }
 

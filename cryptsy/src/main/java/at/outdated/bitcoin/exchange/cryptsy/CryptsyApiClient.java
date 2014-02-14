@@ -200,8 +200,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         JsonObject root = jsonFromString(raw);
 
-        log.info("raw: {}", raw);
-
         Balance balance = new Balance();
         if(root.getString("success").equalsIgnoreCase("1")) {
 
@@ -216,11 +214,11 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 String key = c.name();
 
                 if(jsonAvailable != null && jsonAvailable.containsKey(key)) {
-                    balance.setAvailable(new CurrencyValue(new BigDecimal(jsonAvailable.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+                    balance.setAvailable(new CurrencyValue(jsonAvailable.getString(key), c));
                 }
 
                 if(jsonOpen != null && jsonOpen.containsKey(key)) {
-                    balance.setOpen(new CurrencyValue(new BigDecimal(jsonOpen.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
+                    balance.setOpen(new CurrencyValue(jsonOpen.getString(key), c));
                 }
             }
 
@@ -530,17 +528,26 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 AssetPair asset = assetForMarketId(Integer.parseInt(jsonOrder.getString("marketid")));
                 order.setAsset(asset);
 
-                order.setVolume(new CurrencyValue(Double.parseDouble(jsonOrder.getString("quantity")), asset.getBase()));
+                order.setVolume(new CurrencyValue(jsonOrder.getString("quantity"), asset.getBase()));
 
-                order.setPrice(new CurrencyValue(Double.parseDouble(jsonOrder.getString("price")), asset.getQuote()));
+                order.setPrice(new CurrencyValue(jsonOrder.getString("price"), asset.getQuote()));
 
-                OrderType type = OrderType.UNDEF;
                 String dStr = jsonOrder.getString("ordertype");
-                if(dStr.equalsIgnoreCase("Buy")) type = OrderType.BID;
-                if(dStr.equalsIgnoreCase("Sell")) type = OrderType.ASK;
+                OrderType type;
+                switch(dStr) {
+                    case "Buy":
+                        type = OrderType.BID;
+                        break;
+
+                    case "Sell":
+                        type = OrderType.ASK;
+                        break;
+
+                    default:
+                        type = OrderType.UNDEF;
+                }
 
                 order.setType(type);
-
                 orders.add(order);
             }
 
@@ -572,7 +579,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 return sellFee;
         }
 
-        // you sould never come here
+        // beware: dragons beyond this line
         return null;
     }
 }

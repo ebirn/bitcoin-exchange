@@ -19,6 +19,7 @@ import java.util.List;
  * Time: 17:09
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public abstract class AccountInfo {
 
     protected Currency defaultCurrency = Currency.EUR;
@@ -53,7 +54,7 @@ public abstract class AccountInfo {
 
     public CurrencyValue getOverallBalance(Currency currency) {
 
-        CurrencyValue totalBalance = new CurrencyValue(0.0, currency);
+        CurrencyValue totalBalance = new CurrencyValue(currency);
 
         for(Wallet w : wallets) {
             totalBalance.add(w.getBalance());
