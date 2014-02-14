@@ -73,7 +73,9 @@ public class MarketTest extends BaseTest {
 
     protected void assertDepth(MarketDepth depth){
 
-        Assert.assertNotNull(depth);
+
+        Assume.assumeNotNull(depth);
+
         Assert.assertNotNull(depth.getAsset());
 
         Assert.assertNotNull(depth.getAsks());

@@ -215,11 +215,11 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
                 String key = c.name();
 
-                if(jsonAvailable.containsKey(key)) {
+                if(jsonAvailable != null && jsonAvailable.containsKey(key)) {
                     balance.setAvailable(new CurrencyValue(new BigDecimal(jsonAvailable.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
                 }
 
-                if(jsonOpen.containsKey(key)) {
+                if(jsonOpen != null && jsonOpen.containsKey(key)) {
                     balance.setOpen(new CurrencyValue(new BigDecimal(jsonOpen.getString(key), CurrencyValue.CURRENCY_MATH_CONTEXT), c));
                 }
             }

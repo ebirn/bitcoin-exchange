@@ -41,4 +41,8 @@ public enum Currency {
     public boolean isCrypto() {
         return crypto;
     }
+
+    public boolean isFiat() {
+        return !crypto;
+    }
 }

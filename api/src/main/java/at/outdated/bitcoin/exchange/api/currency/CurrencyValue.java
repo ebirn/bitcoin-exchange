@@ -126,7 +126,11 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
     }
 
     public String toString() {
-        return valueToString() + " " + currency;
+        NumberFormat fmt = NumberFormat.getNumberInstance(Locale.US);
+        fmt.setMinimumIntegerDigits(1);
+        fmt.setMinimumFractionDigits(2);
+
+        return fmt.format(value) + " " + currency;
     }
 
     public boolean isPositive() {

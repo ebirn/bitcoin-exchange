@@ -49,7 +49,7 @@ public class BitkonanApiClient extends RestExchangeClient {
         WebTarget balanceTarget = baseTarget.path("/balance/");
         String rawBalance = protectedGetRequest(balanceTarget, String.class);
 
-        JsonObject jsonBalance = jsonFromString(rawBalance);
+        // JsonObject jsonBalance = jsonFromString(rawBalance);
 
         log.error("not implemented yet!");
 

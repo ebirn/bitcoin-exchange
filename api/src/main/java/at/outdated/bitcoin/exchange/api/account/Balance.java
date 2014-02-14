@@ -44,8 +44,14 @@ public class Balance {
 
     public CurrencyValue getTotal(Currency c) {
 
-        CurrencyValue total = open.get(c).copy();
-        total.add(available.get(c));
+        CurrencyValue openValue = open.get(c);
+        CurrencyValue availValue = available.get(c);
+
+
+        CurrencyValue total = new CurrencyValue(c);
+
+        if(openValue != null) total.add(openValue);
+        if(availValue != null) total.add(availValue);
 
         return total;
     }
