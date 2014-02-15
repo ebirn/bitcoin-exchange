@@ -57,7 +57,6 @@ public class ExchangeRateCalculator {
 
     public CurrencyValue calculate(CurrencyValue value, Currency in) {
 
-        // FIXME: this must be all BigDecimal
         BigDecimal rate = getRate(value.getCurrency(), in);
 
 
