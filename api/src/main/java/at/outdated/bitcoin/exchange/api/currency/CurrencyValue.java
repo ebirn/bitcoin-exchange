@@ -149,15 +149,15 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
     }
 
     public boolean isPositive() {
-        return value.compareTo(BigDecimal.ZERO) > 0;
+        return value.signum() > 0;
     }
 
     public boolean isNonNegative() {
-        return value.compareTo(BigDecimal.ZERO) >= 0;
+        return value.signum() >= 0;
     }
 
     public boolean isNegative() {
-        return value.compareTo(BigDecimal.ZERO) < 0;
+        return value.signum() < 0;
     }
 
     public void setValue(BigDecimal value) {
