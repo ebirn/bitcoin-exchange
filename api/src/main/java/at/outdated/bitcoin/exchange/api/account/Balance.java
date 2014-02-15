@@ -58,18 +58,22 @@ public class Balance {
 
     public String longString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Balance: ");
+
         for(Currency c : Currency.values()) {
             CurrencyValue currencyBalance = getTotal(c);
             if(currencyBalance != null && currencyBalance.isPositive()) {
                 builder.append(c.name());
                 builder.append("=");
-                builder.append(currencyBalance.toString());
+                builder.append(currencyBalance.getValue().toString());
                 builder.append(" ");
-
             }
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Balance: " + longString();
     }
 }

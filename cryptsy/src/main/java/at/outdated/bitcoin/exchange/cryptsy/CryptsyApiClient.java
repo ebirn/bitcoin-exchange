@@ -147,7 +147,6 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         String raw = simpleGetRequest(tgt, String.class);
         try {
             JsonObject root = jsonFromString(raw);
-
             JsonObject jsonDepth = root.getJsonObject("return").getJsonObject(asset.getBase().name());
 
             MarketDepth depth = new MarketDepth(asset);
@@ -205,7 +204,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         JsonObject root = jsonFromString(raw);
 
-        Balance balance = new Balance();
+        Balance balance = new Balance(market);
         if(root.getString("success").equalsIgnoreCase("1")) {
 
 
