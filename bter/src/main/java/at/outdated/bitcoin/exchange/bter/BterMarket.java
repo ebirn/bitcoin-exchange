@@ -16,10 +16,10 @@ public class BterMarket extends Market {
     public BterMarket() {
         super("bter", "http://bter.com", "Bter.com");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.0005, Currency.BTC))));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL,new ConstantFee(new CurrencyValue(0.001, Currency.PPC))));
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.001, Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.0005", Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.02", Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL,new ConstantFee(new CurrencyValue("0.001", Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.001", Currency.NMC))));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));

@@ -24,10 +24,10 @@ public class BitstampMarket extends Market {
         super("bitstamp", "https://www.bitstamp.net", "Bitstamp.net");
 
         addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ZeroFee()));
-        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new SimplePercentageFee( 0.002)));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new SimplePercentageFee("0.002")));
 
-        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(0.90, Currency.EUR))));
-        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new SimplePercentageFee(0.0009)));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue("0.90", Currency.EUR))));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new SimplePercentageFee("0.0009")));
 
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));

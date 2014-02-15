@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue.*;
 
 
 /**
@@ -62,12 +63,12 @@ public class VircurexApiClient extends RestExchangeClient {
 
             try {
                 Currency curr = Currency.valueOf(currKey);
-                double balanceValue = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("balance"));
-                double availableValue = Double.parseDouble(jsonBalances.getJsonObject(currKey).getString("availablebalance"));
+                BigDecimal balanceValue = new BigDecimal(jsonBalances.getJsonObject(currKey).getString("balance"), CurrencyValue.CURRENCY_MATH_CONTEXT);
+                BigDecimal availableValue = new BigDecimal(jsonBalances.getJsonObject(currKey).getString("availablebalance"), CurrencyValue.CURRENCY_MATH_CONTEXT);
 
 
                 balance.setAvailable(new CurrencyValue(availableValue, curr));
-                balance.setOpen(new CurrencyValue(balanceValue - availableValue, curr));
+                balance.setOpen(new CurrencyValue(balanceValue.subtract(availableValue), curr));
 
             }
             catch(Exception e) {

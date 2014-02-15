@@ -16,13 +16,13 @@ public class VircurexMarket extends Market {
     public VircurexMarket() {
         super("vircurex", "http://vircurex.com", "Vircurex");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.002, Currency.BTC))));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.LTC))));
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NMC))));
-        addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.1, Currency.NVC))));
-        addWithdrawal(new TransferMethod(Currency.QRK, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.5, Currency.QRK))));
-        addWithdrawal(new TransferMethod(Currency.FTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.01, Currency.FTC))));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.002", Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.1", Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.1", Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.1", Currency.NVC))));
+        addWithdrawal(new TransferMethod(Currency.QRK, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.5", Currency.QRK))));
+        addWithdrawal(new TransferMethod(Currency.FTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.01", Currency.FTC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.02", Currency.PPC))));
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
         addDeposit(new TransferMethod(Currency.LTC, TransferType.VIRTUAL));

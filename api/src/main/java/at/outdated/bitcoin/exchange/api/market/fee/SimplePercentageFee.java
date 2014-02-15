@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 public class SimplePercentageFee extends Fee {
 
-    BigDecimal percentage = new BigDecimal("0.0");
+    BigDecimal percentage = BigDecimal.ZERO;
 
     public SimplePercentageFee() {
 

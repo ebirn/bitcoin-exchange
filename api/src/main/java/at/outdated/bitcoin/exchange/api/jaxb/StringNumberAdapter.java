@@ -9,8 +9,9 @@ import java.util.Locale;
  * User: ebirn
  * Date: 25.05.13
  * Time: 16:25
- * To change this template use File | Settings | File Templates.
+ * @deprecated should not be used in favor of StringBigDecimalAdapter
  */
+@Deprecated
 public class StringNumberAdapter extends XmlAdapter<String,Number> {
 
     NumberFormat nf = NumberFormat.getInstance(Locale.US);

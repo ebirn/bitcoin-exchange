@@ -101,10 +101,10 @@ public class BitstampClient extends RestExchangeClient {
                 if(jt.get("order_id").getValueType() == JsonValue.ValueType.NUMBER)
                     orderId = jt.getJsonNumber("order_id").longValue();
 
-                double usd = Double.parseDouble(jt.getString("usd"));
-                double btc = Double.parseDouble(jt.getString("btc"));
-                double btc_usd = Double.parseDouble(jt.getString("btc_usd"));
-                double fee = Double.parseDouble(jt.getString("fee"));
+                BigDecimal usd = new BigDecimal(jt.getString("usd"));
+                BigDecimal btc = new BigDecimal(jt.getString("btc"));
+                BigDecimal btc_usd = new BigDecimal(jt.getString("btc_usd"));
+                BigDecimal fee = new BigDecimal(jt.getString("fee"));
 
                 int type = jt.getInt("type");
                 long id = jt.getJsonNumber("id").longValue();
@@ -240,54 +240,54 @@ public class BitstampClient extends RestExchangeClient {
     }
 
 
-    private void parseDeposit(List<WalletTransaction> list , double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseDeposit(List<WalletTransaction> list , BigDecimal usd, BigDecimal btc, BigDecimal fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
-        if(usd != 0.0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.USD, usd, timestamp));
+        if(usd.signum() != 0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.USD, usd, timestamp));
 
-        if(btc != 0.0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.BTC, btc, timestamp));
+        if(btc.signum() != 0) list.add(parseTransaction(id, orderId, TransactionType.DEPOSIT, Currency.BTC, btc, timestamp));
 
-        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
+        if(fee.signum() > 0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
     }
 
-    private void parseTrade(List<WalletTransaction> list, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseTrade(List<WalletTransaction> list, BigDecimal usd, BigDecimal btc, BigDecimal fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
         TransactionType transactionType = null;
-        if(usd != 0.0) {
-            if(usd < 0.0)  transactionType = TransactionType.OUT;
+        if(usd.signum() != 0) {
+            if(usd.signum() == -1)  transactionType = TransactionType.OUT;
             else transactionType = TransactionType.IN;
 
             list.add(parseTransaction(id, orderId, transactionType, Currency.USD, usd, timestamp));
         }
 
-        if(btc != 0.0) {
-            if(btc<0.0)  transactionType = TransactionType.OUT;
+        if(btc.signum() != 0) {
+            if(btc.signum() == -1)  transactionType = TransactionType.OUT;
             else transactionType = TransactionType.IN;
 
             list.add(parseTransaction(id, orderId, transactionType, Currency.BTC, btc, timestamp));
         }
 
-        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
+        if(fee.signum() == 1) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
 
     }
 
-    private void parseWithdrawal(List<WalletTransaction> list, double usd, double btc, double fee, Date timestamp, long id, long orderId) {
+    private void parseWithdrawal(List<WalletTransaction> list, BigDecimal usd, BigDecimal btc, BigDecimal fee, Date timestamp, long id, long orderId) {
 
         String descr = Long.toString(id) + ", " + Long.toString(orderId);
 
-        if(usd != 0.0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.USD, usd, timestamp));
+        if(usd.signum() != 0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.USD, usd, timestamp));
 
-        if(btc != 0.0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.BTC, btc, timestamp));
+        if(btc.signum() != 0) list.add(parseTransaction(id, orderId, TransactionType.WITHDRAW, Currency.BTC, btc, timestamp));
 
-        if(fee > 0.0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
+        if(fee.signum() > 0) list.add(parseTransaction(id, orderId, TransactionType.FEE, Currency.USD, fee, timestamp));
     }
 
-    private WalletTransaction parseTransaction(long id, long orderId, TransactionType type, Currency curr, double volume, Date timestamp) {
+    private WalletTransaction parseTransaction(long id, long orderId, TransactionType type, Currency curr, BigDecimal volume, Date timestamp) {
 
-        WalletTransaction transaction = new WalletTransaction(type, new CurrencyValue(Math.abs(volume), curr));
+        WalletTransaction transaction = new WalletTransaction(type, new CurrencyValue(volume.abs(), curr));
         transaction.setId(new OrderId(market, Long.toString(id)));
         transaction.setInfo(Long.toString(orderId));
         transaction.setTimestamp(timestamp);

@@ -1,12 +1,13 @@
 package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
-import at.outdated.bitcoin.exchange.api.jaxb.StringNumberAdapter;
+import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -17,28 +18,28 @@ import java.util.List;
 public class Orders extends BaseApiResponse  {
 
     @XmlElement
-    @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number eurs;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal eurs;
 
 
     @XmlElement
-    @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number plns;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal plns;
 
     @XmlElement
-    @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number btcs;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal btcs;
 
 
     @XmlElement
     List<BitcurexOrder> orders;
 
 
-    public Number getEurs() {
+    public BigDecimal getEurs() {
         return eurs;
     }
 
-    public Number getBtcs() {
+    public BigDecimal getBtcs() {
         return btcs;
     }
 
@@ -46,7 +47,7 @@ public class Orders extends BaseApiResponse  {
         return orders;
     }
 
-    public Number getPlns() {
+    public BigDecimal getPlns() {
         return plns;
     }
 }

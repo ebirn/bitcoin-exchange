@@ -1,7 +1,12 @@
 package at.outdated.bitcoin.exchange.btce;
 
+import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
+import javafx.util.converter.BigDecimalStringConverter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 
 /**
  * Created by ebirn on 06.10.13.
@@ -9,23 +14,33 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BtceFunds {
 
-    double usd;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal usd;
 
-    double btc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal btc;
 
-    double ltc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal ltc;
 
-    double nmc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal nmc;
 
-    double rur;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal rur;
 
-    double eur;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal eur;
 
-    double nvc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal nvc;
 
-    double trc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal trc;
 
-    double ppc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal ppc;
 
-    double ftc;
+    @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal ftc;
 }

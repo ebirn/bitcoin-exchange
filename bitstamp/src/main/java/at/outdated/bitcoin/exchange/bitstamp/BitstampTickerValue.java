@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.jaxb.StringNumberAdapter;
+import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -24,25 +24,25 @@ public class BitstampTickerValue {
 
     // {"high": "129.94", "last": "128.48", "bid": "128.30", "volume": "12260.32110601", "low": "124.00", "ask": "128.48"}
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number last;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal last;
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number high;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal high;
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number low;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal low;
 
     // what you need to pay for buying
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number bid;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal bid;
 
     // what you get for selling
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number ask;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal ask;
 
-    @XmlElement @XmlJavaTypeAdapter(StringNumberAdapter.class)
-    Number volume;
+    @XmlElement @XmlJavaTypeAdapter(StringBigDecimalAdapter.class)
+    BigDecimal volume;
 
     Date timeStamp = new Date();
 

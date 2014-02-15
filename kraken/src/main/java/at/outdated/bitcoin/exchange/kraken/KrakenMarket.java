@@ -20,14 +20,14 @@ public class KrakenMarket extends Market {
     public KrakenMarket() {
         super("kraken", "http://www.kraken.com", "Kraken");
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.0005, Currency.BTC))));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02, Currency.LTC))));
-        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.00002, Currency.XRP))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.0005", Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.02", Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.XRP, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.00002", Currency.XRP))));
 
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.005, Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.005", Currency.NMC))));
 
-        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(0.09, Currency.EUR))));
-        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new ConstantFee(new CurrencyValue(30.0, Currency.USD))));
+        addWithdrawal(new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue("0.09", Currency.EUR))));
+        addWithdrawal(new TransferMethod(Currency.USD, TransferType.BANK, new ConstantFee(new CurrencyValue("30.0", Currency.USD))));
 
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));

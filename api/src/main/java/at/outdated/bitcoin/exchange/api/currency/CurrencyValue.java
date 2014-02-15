@@ -39,7 +39,14 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
         this.currency = curr;
     }
 
+    public CurrencyValue(long value, Currency curr) {
+        this.value = new BigDecimal(value, CURRENCY_MATH_CONTEXT);
+        this.currency = curr;
+    }
+
+
     public CurrencyValue(BigDecimal value, Currency curr) {
+        value.setScale(CURRENCY_MATH_CONTEXT.getPrecision(), CURRENCY_MATH_CONTEXT.getRoundingMode());
         this.value = value;
         this.currency = curr;
     }

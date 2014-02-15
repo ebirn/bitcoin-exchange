@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -54,8 +55,8 @@ public class KrakenDepthValue {
     private void addOrders(OrderType dec, double[][] raw, List<MarketOrder> orders, Currency base, Currency quote) {
         for(double[] val : raw) {
 
-            CurrencyValue price = new CurrencyValue(val[0], quote);
-            CurrencyValue volume = new CurrencyValue(val[1], base);
+            CurrencyValue price = new CurrencyValue(new BigDecimal(val[0]), quote);
+            CurrencyValue volume = new CurrencyValue(new BigDecimal(val[1]), base);
 
             orders.add(new MarketOrder(dec, volume, price));
         }

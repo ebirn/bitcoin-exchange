@@ -167,6 +167,6 @@ public class MtGoxCurrencyValue {
 
 
     CurrencyValue convert() {
-        return new CurrencyValue(value, currency);
+        return new CurrencyValue(new BigDecimal(value, CurrencyValue.CURRENCY_MATH_CONTEXT), currency);
     }
 }

@@ -21,12 +21,12 @@ public class CryptsyMarket extends Market {
         super("cryptsy", "http://cryptsy.com", "Cryptsy.com");
 
 
-        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.00050000, Currency.BTC))));
-        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.04000000, Currency.LTC))));
-        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.01500000, Currency.NMC))));
-        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02000000, Currency.PPC))));
-        addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.02000000, Currency.NVC))));
-        addWithdrawal(new TransferMethod(Currency.QRK, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue(0.10000000 , Currency.QRK))));
+        addWithdrawal(new TransferMethod(Currency.BTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.00050000", Currency.BTC))));
+        addWithdrawal(new TransferMethod(Currency.LTC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.04000000", Currency.LTC))));
+        addWithdrawal(new TransferMethod(Currency.NMC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.01500000", Currency.NMC))));
+        addWithdrawal(new TransferMethod(Currency.PPC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.02000000", Currency.PPC))));
+        addWithdrawal(new TransferMethod(Currency.NVC, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.02000000", Currency.NVC))));
+        addWithdrawal(new TransferMethod(Currency.QRK, TransferType.VIRTUAL, new ConstantFee(new CurrencyValue("0.10000000", Currency.QRK))));
 
 
         addDeposit(new TransferMethod(Currency.BTC, TransferType.VIRTUAL));

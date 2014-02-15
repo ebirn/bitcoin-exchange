@@ -24,7 +24,7 @@ public class MtGoxMarket extends Market {
         withdrawals.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK));
 
         deposits.put(Currency.BTC, new TransferMethod(Currency.BTC, TransferType.VIRTUAL));
-        deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue(2.5, Currency.EUR))));
+        deposits.put(Currency.EUR, new TransferMethod(Currency.EUR, TransferType.BANK, new ConstantFee(new CurrencyValue("2.5", Currency.EUR))));
 
         addAsset(Currency.BTC, Currency.USD);
         addAsset(Currency.BTC, Currency.EUR);

@@ -332,7 +332,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
                 AssetPair asset = assetForMarketId(Integer.parseInt(jsonOrder.getString("marketid")));
 
-                transLeft.setValue(new CurrencyValue(Double.parseDouble(jsonOrder.getString("quantity")), asset.getBase()));
+                transLeft.setValue(new CurrencyValue(jsonOrder.getString("quantity"), asset.getBase()));
 
                 String dStr = jsonOrder.getString("tradetype");
                 if(dStr.equalsIgnoreCase("Buy")) transLeft.setType(TransactionType.IN);
@@ -348,7 +348,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 transRight.setId(new OrderId(market, jsonOrder.getString("tradeid")));
                 transRight.setTimestamp(timestamp);
 
-                transRight.setValue(new CurrencyValue(Double.parseDouble(jsonOrder.getString("tradeprice")), asset.getQuote()));
+                transRight.setValue(new CurrencyValue(jsonOrder.getString("tradeprice"), asset.getQuote()));
                 transRight.setInfo(jsonOrder.getString("order_id"));
 
                 dStr = jsonOrder.getString("tradetype");
