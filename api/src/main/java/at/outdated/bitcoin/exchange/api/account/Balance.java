@@ -41,6 +41,9 @@ public class Balance {
         available.put(cv.getCurrency(), cv);
     }
 
+    public boolean isAvailable(Currency c) {
+        return (available.containsKey(c) && available.get(c).isPositive());
+    }
 
     public CurrencyValue getTotal(Currency c) {
 
