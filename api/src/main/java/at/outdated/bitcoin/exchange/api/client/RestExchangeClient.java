@@ -25,12 +25,18 @@ import java.util.concurrent.Future;
  */
 public abstract class RestExchangeClient extends ExchangeClient {
 
-    protected Client client = ClientBuilder.newClient();
+    protected Client client;
 
     protected final String userAgent = "RestExchangeClient/1.0a";
 
     public RestExchangeClient(Market market) {
         super(market);
+        client  = ClientBuilder.newClient();
+    }
+
+    public RestExchangeClient(Market market, Client client) {
+        super(market);
+        this.client = client;
     }
 
     protected JsonObject jsonFromString(String s) {

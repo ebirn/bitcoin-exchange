@@ -11,20 +11,41 @@ import java.util.*;
  */
 public class Markets {
 
-    private static ServiceLoader<Market> loader = ServiceLoader.load(Market.class);
-
     private static Market defaultMarket;
     private static Map<String,Market> marketMap = new HashMap<>();
 
-    private static final String defaultMarketKey = "mtgox";
+    private static String defaultMarketKey = "kraken";
 
-    static {
+
+    public static void loadMarkets() {
+        ServiceLoader<Market> loader = ServiceLoader.load(Market.class);
         for(Market m : loader) {
+
             if(m.getKey().equalsIgnoreCase(defaultMarketKey)) defaultMarket = m;
-            marketMap.put(m.getKey(), m);
+            registerMarket(m);
         }
     }
 
+    public static void setDefaultMarket(Market market) {
+        defaultMarket = market;
+    }
+
+    public static boolean unregisterMarket(Market m) {
+        return m == marketMap.remove(m.getKey());
+    }
+
+    public static boolean registerMarket(Market m) {
+
+        boolean wasAdded = false;
+        if(!marketMap.containsKey(m.getKey())) {
+            wasAdded = (m == marketMap.put(m.getKey(), m));
+        }
+        else {
+            wasAdded = false;
+        }
+
+        return wasAdded;
+    }
 
     public static Market getDefaultMarket() {
         return defaultMarket;
@@ -33,7 +54,6 @@ public class Markets {
     public static Market getMarket(String key) {
         return marketMap.get(key);
     }
-
 
     public static Set<Market> allMarkets() {
         return new HashSet(marketMap.values());

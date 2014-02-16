@@ -101,7 +101,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
 
         int marketNum = marketId.get(asset);
 
-        TickerValue ticker = new TickerValue(asset);
+        TickerValue ticker = null;
 
         try {
             WebTarget tgt = publicBase.queryParam("method", "singlemarketdata").queryParam("marketid", marketNum);
@@ -121,7 +121,7 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             double last = Double.parseDouble(jsonMarket.getString("lasttradeprice"));
             double volume = Double.parseDouble(jsonMarket.getString("volume"));
 
-
+            ticker = new TickerValue(asset);
             ticker.setLast(last);
             ticker.setVolume(volume);
             ticker.setBid(bid);
