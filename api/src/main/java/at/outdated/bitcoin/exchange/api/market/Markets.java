@@ -9,6 +9,7 @@ import java.util.*;
  * Time: 21:21
  * To change this template use File | Settings | File Templates.
  */
+// FIXME: this class should be refactored to Singleton
 public class Markets {
 
     private static Market defaultMarket;
@@ -16,6 +17,9 @@ public class Markets {
 
     private static String defaultMarketKey = "kraken";
 
+    static {
+        loadMarkets();
+    }
 
     public static void loadMarkets() {
         ServiceLoader<Market> loader = ServiceLoader.load(Market.class);
