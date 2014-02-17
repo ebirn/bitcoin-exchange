@@ -164,6 +164,11 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
         this.value = value;
     }
 
+    // TODO: review whether this is a good idea
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
     public BigDecimal getValue() {
         return value;
     }

@@ -32,14 +32,16 @@ public class TradeTest extends BaseTest {
 
     @Parameterized.Parameters(name = "{0}TradeTest")
     public static Collection<Object[]> getMarketParams() {
-        //return BaseTest.getMarketParams();
+        return BaseTest.getMarketParams();
 
+        /*
         List<Object[]> params = new ArrayList<>();
         params.add(marketParams(Markets.getMarket("coinse")));
         //params.add(marketParams(Markets.getMarket("bitcurex")));
         //params.add(marketParams(Markets.getMarket("bitkonan")));
 
         return params;
+        */
     }
 
 

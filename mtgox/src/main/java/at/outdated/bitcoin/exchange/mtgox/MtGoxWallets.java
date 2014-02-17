@@ -44,21 +44,32 @@ public class MtGoxWallets {
     }
 
     public MtGoxWallet getWallet(Currency curr) {
+
+        MtGoxWallet wallet = null;
         switch (curr) {
             case USD:
-                return getUSD();
+                wallet = getUSD();
+                break;
 
 
             case EUR:
-                return getEUR();
+                wallet = getEUR();
+                break;
 
 
             case BTC:
-                return getBTC();
+                wallet = getBTC();
+                break;
 
             default:
         }
 
-        return null;
+
+
+        return wallet;
+    }
+
+    private void setWalletCurrency(MtGoxWallet wallet, Currency curr) {
+
     }
 }
