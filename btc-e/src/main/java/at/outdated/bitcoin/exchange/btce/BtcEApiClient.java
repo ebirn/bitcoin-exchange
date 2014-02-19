@@ -46,7 +46,6 @@ public class BtcEApiClient extends RestExchangeClient {
         publicTarget = client.target("https://btc-e.com/api/2/{base}_{quote}/");
 
         tradeFee = new SimplePercentageFee("0.002");
-
     }
 
 
@@ -174,23 +173,27 @@ public class BtcEApiClient extends RestExchangeClient {
         data.add("method", "getInfo");
         InfoResponse infoRes = protectedPostRequest(tradeTarget, InfoResponse.class, Entity.form(data));
 
-        BtcEAccountInfo info = infoRes.result;
 
-        Balance balance = new Balance(market);
 
-        BtceFunds funds = info.funds;
+        Balance balance = null;
 
-        balance.setAvailable(new CurrencyValue(funds.btc, Currency.BTC));
-        balance.setAvailable(new CurrencyValue(funds.eur, Currency.EUR));
-        balance.setAvailable(new CurrencyValue(funds.ftc, Currency.FTC));
-        balance.setAvailable(new CurrencyValue(funds.ltc, Currency.LTC));
-        balance.setAvailable(new CurrencyValue(funds.nmc, Currency.NMC));
-        balance.setAvailable(new CurrencyValue(funds.nvc, Currency.NVC));
-        balance.setAvailable(new CurrencyValue(funds.ppc, Currency.PPC));
-        //balance.setAvailable(new CurrencyValue(funds.rur, Currency.RUR));
-        //balance.setAvailable(new CurrencyValue(funds.trc, Currency.));
-        balance.setAvailable(new CurrencyValue(funds.usd, Currency.USD));
+        if(infoRes != null) {
 
+            balance = new Balance(market);
+
+            BtceFunds funds = infoRes.result.funds;
+
+            balance.setAvailable(new CurrencyValue(funds.btc, Currency.BTC));
+            balance.setAvailable(new CurrencyValue(funds.eur, Currency.EUR));
+            balance.setAvailable(new CurrencyValue(funds.ftc, Currency.FTC));
+            balance.setAvailable(new CurrencyValue(funds.ltc, Currency.LTC));
+            balance.setAvailable(new CurrencyValue(funds.nmc, Currency.NMC));
+            balance.setAvailable(new CurrencyValue(funds.nvc, Currency.NVC));
+            balance.setAvailable(new CurrencyValue(funds.ppc, Currency.PPC));
+            //balance.setAvailable(new CurrencyValue(funds.rur, Currency.RUR));
+            //balance.setAvailable(new CurrencyValue(funds.trc, Currency.));
+            balance.setAvailable(new CurrencyValue(funds.usd, Currency.USD));
+        }
         return balance;
     }
 

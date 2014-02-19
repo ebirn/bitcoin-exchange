@@ -222,7 +222,7 @@ public class BitkonanApiClient extends RestExchangeClient {
             //log.debug("Api-Timestamp: {}", apiTimestamp);
         }
         catch(Exception e) {
-            e.printStackTrace();
+           log.error("failed to setup secure request", e);
         }
 
         return builder;  //To change body of implemented methods use File | Settings | File Templates.

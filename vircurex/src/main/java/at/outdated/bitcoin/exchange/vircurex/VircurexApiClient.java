@@ -101,7 +101,12 @@ public class VircurexApiClient extends RestExchangeClient {
 
         VircurexTicker ticker = simpleGetRequest(tickerTgt, VircurexTicker.class);
 
-        return ticker.getValue();
+        TickerValue tickerValue = null;
+        if(ticker != null) {
+            tickerValue = ticker.getValue();
+        }
+
+        return tickerValue;
     }
 
 

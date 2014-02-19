@@ -8,6 +8,7 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
 
@@ -43,6 +44,8 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         tradeTarget = client.target("https://{quote}.bitcurex.com/api/0/");
         publicTarget = client.target("https://{quote}.bitcurex.com/data/");
+
+        this.tradeFee = new SimplePercentageFee("0.004");
     }
 
     @Override
@@ -57,13 +60,11 @@ public class BitcurexApiClient extends RestExchangeClient {
         JsonObject jsonTransactions = jsonFromString(rawTransactions);
 
         //FIXME implementation does nothing
-
         log.error("finish implementation!");
 
         List<WalletTransaction> list = null;
         if(jsonTransactions.getString("error", "").isEmpty()) {
             list  = new ArrayList<>();
-
         }
         else {
             log.error("failed to load funds: {}", jsonTransactions.getString("error"));
