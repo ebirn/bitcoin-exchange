@@ -26,6 +26,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,7 +84,7 @@ public class BtcEApiClient extends RestExchangeClient {
                 JsonObject jt = transResult.getJsonObject(key);
                 Currency curr = Currency.valueOf(jt.getString("currency"));
 
-                double volume = jt.getJsonNumber("amount").doubleValue();
+                BigDecimal volume = jt.getJsonNumber("amount").bigDecimalValue();
                 Date timestamp = new Date(jt.getJsonNumber("timestamp").longValue() * 1000L);
                 String desc = jt.getString("desc");
 
@@ -219,14 +220,14 @@ public class BtcEApiClient extends RestExchangeClient {
         MarketDepth depth = new MarketDepth(asset);
 
         for(int i=0; i<asksArr.size(); i++ ) {
-            double price = asksArr.getJsonArray(i).getJsonNumber(0).doubleValue();
-            double volume = asksArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            BigDecimal price = asksArr.getJsonArray(i).getJsonNumber(0).bigDecimalValue();
+            BigDecimal volume = asksArr.getJsonArray(i).getJsonNumber(1).bigDecimalValue();
 
             depth.addAsk(volume, price);
         }
         for(int i=0; i<bidsArr.size(); i++ ) {
-            double price = bidsArr.getJsonArray(i).getJsonNumber(0).doubleValue();
-            double volume = bidsArr.getJsonArray(i).getJsonNumber(1).doubleValue();
+            BigDecimal price = bidsArr.getJsonArray(i).getJsonNumber(0).bigDecimalValue();
+            BigDecimal volume = bidsArr.getJsonArray(i).getJsonNumber(1).bigDecimalValue();
 
             depth.addBid(volume, price);
         }
@@ -346,6 +347,7 @@ public class BtcEApiClient extends RestExchangeClient {
 
 
         int cancelledId = jsonResponse.getJsonObject("return").getInt("order_id");
+
         if(cancelledId == Integer.parseInt(order.getIdentifier())) {
             return true;
         }
@@ -377,8 +379,6 @@ public class BtcEApiClient extends RestExchangeClient {
                 data.param("type", " buy");
                 break;
         }
-
-
 
         data.param("rate", price.valueToString());
         data.param("amount", volume.valueToString());
@@ -439,7 +439,6 @@ public class BtcEApiClient extends RestExchangeClient {
 
         String raw = protectedPostRequest(tradeTarget, String.class, Entity.form(data));
 
-
         JsonObject jsonResult = jsonFromString(raw);
 
         List<MarketOrder> orders = new ArrayList<>();
@@ -490,11 +489,11 @@ public class BtcEApiClient extends RestExchangeClient {
 
         order.setType(OrderType.parse(jsonOrder.getString("type")));
 
-        double price = jsonOrder.getJsonNumber("rate").doubleValue();
+        BigDecimal price = jsonOrder.getJsonNumber("rate").bigDecimalValue();
         order.setPrice(new CurrencyValue(price, right));
 
 
-        double volume = jsonOrder.getJsonNumber("amount").doubleValue();
+        BigDecimal volume = jsonOrder.getJsonNumber("amount").bigDecimalValue();
         order.setVolume(new CurrencyValue(volume, left));
 
         return order;

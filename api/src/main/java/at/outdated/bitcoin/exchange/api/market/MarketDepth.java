@@ -60,6 +60,10 @@ public class MarketDepth {
         BigDecimal volumeValue = new BigDecimal(volume, CurrencyValue.CURRENCY_MATH_CONTEXT);
         BigDecimal priceValue = new BigDecimal(price, CurrencyValue.CURRENCY_MATH_CONTEXT);
 
+        addAsk(volumeValue, priceValue);
+    }
+
+    public void addAsk(BigDecimal volumeValue, BigDecimal priceValue) {
         MarketOrder order = new MarketOrder(OrderType.ASK, new CurrencyValue(volumeValue, asset.getBase()), new CurrencyValue(priceValue, asset.getQuote()));
         order.setAsset(asset);
         addAsk(order);
@@ -71,14 +75,18 @@ public class MarketDepth {
         this.bids.add(bid);
     }
 
+    public void addBid(BigDecimal volumeValue, BigDecimal priceValue) {
+        MarketOrder order = new MarketOrder(OrderType.BID, new CurrencyValue(volumeValue, asset.getBase()), new CurrencyValue(priceValue, asset.getQuote()));
+        order.setAsset(asset);
+        addBid(order);
+    }
+
     public void addBid(double volume, double price) {
 
         BigDecimal volumeValue = new BigDecimal(volume, CurrencyValue.CURRENCY_MATH_CONTEXT);
         BigDecimal priceValue = new BigDecimal(price, CurrencyValue.CURRENCY_MATH_CONTEXT);
 
-        MarketOrder order = new MarketOrder(OrderType.BID, new CurrencyValue(volumeValue, asset.getBase()), new CurrencyValue(priceValue, asset.getQuote()));
-        order.setAsset(asset);
-        addBid(order);
+        addBid(volumeValue, priceValue);
     }
 
     public Date getTimestamp() {
