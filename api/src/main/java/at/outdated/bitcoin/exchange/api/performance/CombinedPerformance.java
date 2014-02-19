@@ -1,11 +1,11 @@
 package at.outdated.bitcoin.exchange.api.performance;
 
-import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
-import at.outdated.bitcoin.exchange.api.market.ExchangeRateCalculator;
 import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
+import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.ExchangeRateCalculator;
 
 import java.math.BigDecimal;
 

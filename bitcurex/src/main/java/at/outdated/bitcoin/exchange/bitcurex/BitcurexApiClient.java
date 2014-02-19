@@ -4,12 +4,10 @@ import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
-import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.*;
-import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.bitcurex.jaxb.*;
 import org.apache.commons.codec.binary.Base64;
 

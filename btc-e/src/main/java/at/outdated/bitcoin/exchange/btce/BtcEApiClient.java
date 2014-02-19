@@ -5,13 +5,13 @@ import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
-import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.jaxb.JsonEnforcingFilter;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import org.apache.commons.codec.binary.Hex;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.json.Json;

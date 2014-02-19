@@ -7,7 +7,6 @@ import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import java.math.BigDecimal;
 import java.util.Date;
 

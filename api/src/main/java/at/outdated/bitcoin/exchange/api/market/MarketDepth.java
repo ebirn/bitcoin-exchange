@@ -4,7 +4,10 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by ebirn on 22.09.13.

@@ -2,7 +2,6 @@ package at.outdated.bitcoin.exchange.api.container;
 
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.MarketContainer;
 
 import java.util.Map;

@@ -1,9 +1,9 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.Market;
-import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.fee.ConstantFee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
 import at.outdated.bitcoin.exchange.api.market.fee.ZeroFee;

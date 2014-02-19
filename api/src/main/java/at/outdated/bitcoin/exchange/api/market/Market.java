@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.api.market;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
-import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
 import org.apache.commons.lang3.builder.EqualsBuilder;

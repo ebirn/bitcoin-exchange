@@ -1,15 +1,12 @@
 package at.outdated.bitcoin.exchange;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.account.AccountInfo;
 import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
-import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.api.market.transfer.TransferMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;

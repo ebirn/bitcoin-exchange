@@ -11,7 +11,6 @@ import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 
-import java.util.Date;
 import java.util.List;
 
 /**

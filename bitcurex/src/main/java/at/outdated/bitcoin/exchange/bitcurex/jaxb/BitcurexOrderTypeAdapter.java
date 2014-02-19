@@ -2,7 +2,6 @@ package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 
-import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**

@@ -1,5 +1,3 @@
-import at.outdated.bitcoin.exchange.api.currency.Currency;
-import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import at.outdated.bitcoin.exchange.icbit.IcbitClient;
 import org.junit.Test;

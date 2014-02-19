@@ -1,7 +1,6 @@
 package at.outdated.bitcoin.exchange.btce;
 
 import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
-import javafx.util.converter.BigDecimalStringConverter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

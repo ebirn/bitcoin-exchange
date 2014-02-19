@@ -7,19 +7,16 @@ import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.market.Markets;
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.core.AnyOf;
-import org.hamcrest.core.IsCollectionContaining;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by ebirn on 29.10.13.

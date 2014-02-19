@@ -1,11 +1,12 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.OrderId;
-import at.outdated.bitcoin.exchange.api.account.*;
+import at.outdated.bitcoin.exchange.api.account.Balance;
+import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
+import at.outdated.bitcoin.exchange.api.account.WalletTransactionTimestampComparator;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
-import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyAddress;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;

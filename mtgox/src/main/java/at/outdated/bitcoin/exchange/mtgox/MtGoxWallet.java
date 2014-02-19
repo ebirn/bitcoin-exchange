@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
-import at.outdated.bitcoin.exchange.api.account.Wallet;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 

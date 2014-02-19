@@ -1,9 +1,9 @@
 package at.outdated.bitcoin.exchange.api.account;
 
 import at.outdated.bitcoin.exchange.api.container.CurrencyContainer;
-import at.outdated.bitcoin.exchange.api.market.ExchangeRateCalculator;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.ExchangeRateCalculator;
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.performance.CombinedPerformance;

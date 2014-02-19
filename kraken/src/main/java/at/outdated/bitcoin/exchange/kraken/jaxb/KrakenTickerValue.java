@@ -1,6 +1,5 @@
 package at.outdated.bitcoin.exchange.kraken.jaxb;
 
-import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;

@@ -2,7 +2,6 @@ package at.outdated.bitcoin.exchange.api.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 

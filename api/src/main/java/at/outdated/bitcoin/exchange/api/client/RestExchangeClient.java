@@ -1,6 +1,6 @@
 package at.outdated.bitcoin.exchange.api.client;
 
-import at.outdated.bitcoin.exchange.api.market.*;
+import at.outdated.bitcoin.exchange.api.market.Market;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -13,7 +13,9 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.io.StringReader;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 /**

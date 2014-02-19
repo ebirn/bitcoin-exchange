@@ -4,7 +4,6 @@ import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 
-
 import java.math.BigDecimal;
 
 /**

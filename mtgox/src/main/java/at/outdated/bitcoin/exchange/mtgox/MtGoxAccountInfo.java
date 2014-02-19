@@ -9,6 +9,7 @@ import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 import at.outdated.bitcoin.exchange.api.market.fee.Fee;
 import at.outdated.bitcoin.exchange.api.market.fee.SimplePercentageFee;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

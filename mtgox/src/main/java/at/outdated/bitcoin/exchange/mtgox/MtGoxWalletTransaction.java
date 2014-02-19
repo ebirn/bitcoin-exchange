@@ -1,8 +1,6 @@
 package at.outdated.bitcoin.exchange.mtgox;
 
 import at.outdated.bitcoin.exchange.api.account.TransactionType;
-import at.outdated.bitcoin.exchange.api.account.Wallet;
-import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 
 import javax.xml.bind.annotation.XmlAccessType;

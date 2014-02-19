@@ -4,7 +4,6 @@ import at.outdated.bitcoin.exchange.api.OrderId;
 import at.outdated.bitcoin.exchange.api.account.Balance;
 import at.outdated.bitcoin.exchange.api.account.WalletTransaction;
 import at.outdated.bitcoin.exchange.api.client.RestExchangeClient;
-import at.outdated.bitcoin.exchange.api.market.Market;
 import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
@@ -23,7 +22,6 @@ import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import at.outdated.bitcoin.exchange.api.currency.CurrencyValue.*;
 
 
 /**
