@@ -60,7 +60,13 @@ public class CombinedPerformance extends Performance {
         //double onePercent = getStartBalance() / 100.0;
         //return 1.0 + (getTotalDifference() / onePercent);
 
-        return getTotalDifference().divide(getStartBalance()).getValue();
+        BigDecimal percent = BigDecimal.ZERO;
+
+        if(getStartBalance().getValue().signum() != 0) {
+            percent = getTotalDifference().divide(getStartBalance()).getValue();
+        }
+
+        return percent;
     }
 
     @Override

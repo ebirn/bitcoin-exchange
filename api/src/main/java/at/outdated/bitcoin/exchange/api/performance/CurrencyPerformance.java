@@ -19,7 +19,6 @@ import java.util.List;
 public class CurrencyPerformance extends Performance {
 
     protected CurrencyValue startBalance = null;
-
     protected CurrencyValue endBalance = null;
 
     Currency currency;
@@ -32,6 +31,8 @@ public class CurrencyPerformance extends Performance {
 
     public CurrencyPerformance(Currency currency) {
         this.currency = currency;
+        this.startBalance = new CurrencyValue(currency);
+        this.endBalance = new CurrencyValue(currency);
     }
 
     @Override
