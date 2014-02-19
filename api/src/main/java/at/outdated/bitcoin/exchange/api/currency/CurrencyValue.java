@@ -23,6 +23,7 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
     private BigDecimal value;
     private Currency currency;
 
+    @Deprecated
     public CurrencyValue() {
     }
 

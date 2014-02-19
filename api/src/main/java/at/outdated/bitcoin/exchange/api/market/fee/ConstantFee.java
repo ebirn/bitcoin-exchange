@@ -42,4 +42,12 @@ public class ConstantFee extends Fee {
 
         return new CurrencyValue(constantFee, feeCurrency);  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public String toString() {
+
+        String curr = this.currency == null ? constantFee.toString() : new CurrencyValue(constantFee, currency).toString();
+
+        return super.toString()  + curr;
+    }
 }

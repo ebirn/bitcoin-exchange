@@ -20,7 +20,7 @@ public class NumberTrack extends ValueTrack<Number> {
 
     @Override
     public void insert(Number value) {
-        super.insert(value);    //To change body of overridden methods use File | Settings | File Templates.
+        super.insert(value);
         stats.addValue(value.doubleValue());
     }
 

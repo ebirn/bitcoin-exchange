@@ -4,6 +4,7 @@ import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.OrderType;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,4 +43,10 @@ public class SimplePercentageFee extends Fee {
         return fee;
     }
 
+    @Override
+    public String toString() {
+        String percentStr = NumberFormat.getPercentInstance().format(percentage.doubleValue());
+
+        return super.toString() + percentStr;
+    }
 }

@@ -27,4 +27,9 @@ public abstract class Fee {
 
         return remaining;
     }
+
+    @Override
+    public String toString() {
+        return "Fee: ";
+    }
 }

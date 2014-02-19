@@ -19,4 +19,9 @@ public class InfiniteFee extends Fee {
     public CurrencyValue calculate(OrderType orderType, CurrencyValue volume) {
         return new CurrencyValue(new BigDecimal("10e100"), volume.getCurrency());
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "+Inf";
+    }
 }

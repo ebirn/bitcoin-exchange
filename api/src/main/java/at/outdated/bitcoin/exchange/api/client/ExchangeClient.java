@@ -13,6 +13,7 @@ import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -64,11 +65,16 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
     }
 
     protected String getPropertyString(String key) {
-        ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
-
+        String value = null;
         String fullKey = market.getKey() + "." + key;
-        String value = bundle.getString(fullKey);
 
+        try {
+            ResourceBundle bundle = ResourceBundle.getBundle("bitcoin-exchange");
+            value = bundle.getString(fullKey);
+        }
+        catch(MissingResourceException mre) {
+            log.error("failed to lookup '{}'", fullKey);
+        }
         return value;
     }
 

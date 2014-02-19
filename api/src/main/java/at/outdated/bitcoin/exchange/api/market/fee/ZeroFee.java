@@ -12,4 +12,9 @@ public class ZeroFee extends ConstantFee {
     public ZeroFee() {
         super("0.0");
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " 0.";
+    }
 }
