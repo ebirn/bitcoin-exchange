@@ -63,7 +63,7 @@ public class BitkonanApiClient extends RestExchangeClient {
         log.error("not implemented yet!");
 
 
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -237,13 +237,14 @@ public class BitkonanApiClient extends RestExchangeClient {
     @Override
     public List<MarketOrder> getOpenOrders() {
         log.error("not implemented");
-        return null;
+        return new ArrayList<>();
     }
 
     /**
      * At the time of writing: trading api is unavailable, no documentation
      * @return null
      */
+    //FIXME: needs implementations
     @Override
     public OrderId placeOrder(AssetPair asset, OrderType type, CurrencyValue volume, CurrencyValue price) {
         log.error("not implemented");
@@ -254,6 +255,7 @@ public class BitkonanApiClient extends RestExchangeClient {
      * At the time of writing: trading api is unavailable, no documentation
      * @return null
      */
+    //FIXME: needs implementations
     @Override
     public boolean cancelOrder(OrderId order) {
         log.error("not implemented");

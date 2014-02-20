@@ -288,8 +288,8 @@ public class BitcurexApiClient extends RestExchangeClient {
         POST: nonce=#, returns: eurs, btcs, orders
         */
 
-        WebTarget ordersTgtEur = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.EUR);
-        WebTarget ordersTgtPln = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.PLN);
+        WebTarget ordersTgtEur = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.EUR.name().toLowerCase());
+        WebTarget ordersTgtPln = tradeTarget.path("/getOrders").resolveTemplate("quote", Currency.PLN.name().toLowerCase());
 
         Form form = new Form();
 
