@@ -42,12 +42,14 @@ public class AccountInfoTest extends BaseTest {
     public void balanceTest() {
 
         Balance balance = client.getBalance();
-        log.info("balance on {}", market);
 
+        Assert.assertNotNull("balance is null", balance);
+
+        log.info("balance on {}: {}", market, balance);
         for(Currency c : market.getCurrencies()) {
             log.info("  available: {}   | open {}", balance.getAvailable(c), balance.getOpen(c));
         }
-        Assert.assertNotNull("balance", balance);
+
     }
 
     @Test
