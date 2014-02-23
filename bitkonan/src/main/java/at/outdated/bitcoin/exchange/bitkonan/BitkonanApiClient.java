@@ -233,7 +233,7 @@ public class BitkonanApiClient extends RestExchangeClient {
      * At the time of writing: trading api is unavailable, no documentation
      * @return null
      */
-    // FIXME: implement these
+    // FIXME: needs implementations
     @Override
     public List<MarketOrder> getOpenOrders() {
         log.error("not implemented");

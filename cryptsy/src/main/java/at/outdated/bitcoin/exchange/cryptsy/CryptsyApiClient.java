@@ -16,8 +16,7 @@ import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
+import javax.json.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -218,11 +217,13 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
                 String key = c.name();
 
                 if(jsonAvailable != null && jsonAvailable.containsKey(key)) {
-                    balance.setAvailable(new CurrencyValue(jsonAvailable.getString(key), c));
+                    JsonValue value = jsonAvailable.get(key);
+                    balance.setAvailable(new CurrencyValue(readBalanceNumber(value), c));
                 }
 
                 if(jsonOpen != null && jsonOpen.containsKey(key)) {
-                    balance.setOpen(new CurrencyValue(jsonOpen.getString(key), c));
+                    JsonValue value = jsonOpen.get(key);
+                    balance.setOpen(new CurrencyValue(readBalanceNumber(value), c));
                 }
             }
 
@@ -236,6 +237,18 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
         return balance;
     }
 
+    private BigDecimal readBalanceNumber(JsonValue value) {
+
+        switch(value.getValueType()) {
+            case NUMBER:
+                return ((JsonNumber) value).bigDecimalValue();
+
+            case STRING:
+                return new BigDecimal( ((JsonString) value).getString());
+        }
+
+        return BigDecimal.ZERO;
+    }
 
     @Override
     public List<MarketOrder> getTradeHistory(AssetPair asset, Date since) {
