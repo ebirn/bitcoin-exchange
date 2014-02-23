@@ -147,17 +147,17 @@ public class BterApiClient extends RestExchangeClient {
 
         JsonObject jsonDepth = jsonFromString(rawDepth);
 
-        double[][] asks = parseNestedArray(jsonDepth.getJsonArray("asks"));
-        double[][] bids = parseNestedArray(jsonDepth.getJsonArray("bids"));
+        BigDecimal[][] asks = parseNestedArray(jsonDepth.getJsonArray("asks"));
+        BigDecimal[][] bids = parseNestedArray(jsonDepth.getJsonArray("bids"));
 
 
         MarketDepth depth = new MarketDepth(asset);
 
-        for(double[] ask : asks) {
+        for(BigDecimal[] ask : asks) {
             depth.addAsk(ask[1], ask[0]);
         }
 
-        for(double[] bid : bids) {
+        for(BigDecimal[] bid : bids) {
             depth.addBid(bid[1], bid[0]);
         }
 

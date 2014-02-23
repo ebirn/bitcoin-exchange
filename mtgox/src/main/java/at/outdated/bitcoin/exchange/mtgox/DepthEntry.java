@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,10 +16,10 @@ import java.util.Date;
 public class DepthEntry {
 
     @XmlElement
-    double price;
+    BigDecimal price;
 
     @XmlElement
-    double amount;
+    BigDecimal amount;
 
     @XmlElement
     int price_int;
@@ -32,11 +33,11 @@ public class DepthEntry {
     Date stamp;
 
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

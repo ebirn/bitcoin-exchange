@@ -12,6 +12,7 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
@@ -55,29 +56,29 @@ public abstract class RestExchangeClient extends ExchangeClient {
         return Json.createReader(new StringReader(s)).readArray();
     }
 
-    protected double[][] parseNestedArray(JsonArray jsonArray) {
+    protected BigDecimal[][] parseNestedArray(JsonArray jsonArray) {
 
 
         int len = jsonArray.size();
-        double[][] resultArray = new double[len][];
+        BigDecimal[][] resultArray = new BigDecimal[len][];
 
         for(int i=0; i<len; i++) {
 
 
             JsonArray innerJsonArray = jsonArray.getJsonArray(i);
             int innerLen = innerJsonArray.size();
-            double[] inner = new double[innerLen];
+            BigDecimal[] inner = new BigDecimal[innerLen];
 
             for(int j=0; j<innerLen; j++) {
 
                 // parse crappy
                 switch(innerJsonArray.get(j).getValueType()) {
                     case STRING:
-                        inner[j] = Double.parseDouble(innerJsonArray.getString(j));
+                        inner[j] = new BigDecimal(innerJsonArray.getString(j));
                         break;
 
                     case NUMBER:
-                        inner[j] = innerJsonArray.getJsonNumber(j).doubleValue();
+                        inner[j] = innerJsonArray.getJsonNumber(j).bigDecimalValue();
                         break;
                 }
             }

@@ -154,8 +154,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             JsonArray jsonSells = jsonDepth.getJsonArray("sellorders");
             for(int i=0; i<jsonSells.size(); i++) {
                 JsonObject obj = jsonSells.getJsonObject(i);
-                double price = Double.parseDouble(obj.getString("price"));
-                double volume = Double.parseDouble(obj.getString("quantity"));
+                BigDecimal price = new BigDecimal(obj.getString("price"));
+                BigDecimal volume = new BigDecimal(obj.getString("quantity"));
 
                 depth.addAsk(volume, price);
             }
@@ -164,8 +164,8 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             JsonArray jsonBuys = jsonDepth.getJsonArray("buyorders");
             for(int i=0; i<jsonBuys.size(); i++) {
                 JsonObject obj = jsonBuys.getJsonObject(i);
-                double price = Double.parseDouble(obj.getString("price"));
-                double volume = Double.parseDouble(obj.getString("quantity"));
+                BigDecimal price = new BigDecimal(obj.getString("price"));
+                BigDecimal volume = new BigDecimal(obj.getString("quantity"));
 
                 depth.addBid(volume, price);
             }

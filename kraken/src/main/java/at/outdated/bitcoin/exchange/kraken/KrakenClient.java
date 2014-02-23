@@ -167,20 +167,20 @@ public class KrakenClient extends RestExchangeClient {
         if(root.getJsonArray("error").isEmpty()) {
             JsonObject jsonDepth = root.getJsonObject("result").getJsonObject(fixSymbol(base) + fixSymbol(quote));
 
-            double asks[][] = parseNestedArray(jsonDepth.getJsonArray("asks"));
-            double bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
+            BigDecimal asks[][] = parseNestedArray(jsonDepth.getJsonArray("asks"));
+            BigDecimal bids[][] = parseNestedArray(jsonDepth.getJsonArray("bids"));
 
             depth = new MarketDepth(asset);
 
-            for(double ask[] : asks) {
-                double price = ask[0];
-                double volume = ask[1];
+            for(BigDecimal ask[] : asks) {
+                BigDecimal price = ask[0];
+                BigDecimal volume = ask[1];
                 depth.addAsk(volume, price);
             }
 
-            for(double bid[] : bids) {
-                double price = bid[0];
-                double volume = bid[1];
+            for(BigDecimal bid[] : bids) {
+                BigDecimal price = bid[0];
+                BigDecimal volume = bid[1];
                 depth.addBid(volume, price);
             }
         }

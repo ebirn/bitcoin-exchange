@@ -168,18 +168,18 @@ public class VircurexApiClient extends RestExchangeClient {
                 JsonObject jsonDepth = jsonFromString(rawDepth);
 
                 try {
-                    double[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
-                    for(double[] bid : bids) {
-                        double volume = bid[1];
-                        double price = bid[0];
+                    BigDecimal[][] bids = this.parseNestedArray(jsonDepth.getJsonArray("bids"));
+                    for(BigDecimal[] bid : bids) {
+                        BigDecimal volume = bid[1];
+                        BigDecimal price = bid[0];
 
                         depth.addBid(volume, price);
                     }
 
-                    double[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
-                    for(double[] ask : asks) {
-                        double volume = ask[1];
-                        double price = ask[0];
+                    BigDecimal[][] asks = this.parseNestedArray(jsonDepth.getJsonArray("asks"));
+                    for(BigDecimal[] ask : asks) {
+                        BigDecimal volume = ask[1];
+                        BigDecimal price = ask[0];
 
                         depth.addAsk(volume, price);
                     }

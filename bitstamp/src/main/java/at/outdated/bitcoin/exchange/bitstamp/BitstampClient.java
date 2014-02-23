@@ -182,15 +182,15 @@ public class BitstampClient extends RestExchangeClient {
 
         MarketDepth depth = new MarketDepth(asset);
 
-        double[][] asks = parseNestedArray(depthData.getJsonArray("asks"));
-        double[][] bids = parseNestedArray(depthData.getJsonArray("bids"));
+        BigDecimal[][] asks = parseNestedArray(depthData.getJsonArray("asks"));
+        BigDecimal[][] bids = parseNestedArray(depthData.getJsonArray("bids"));
 
 
-        for(double[] bid : bids) {
+        for(BigDecimal[] bid : bids) {
             depth.addBid(bid[1], bid[0]);
         }
 
-        for(double[] ask : asks) {
+        for(BigDecimal[] ask : asks) {
             depth.addAsk(ask[1], ask[0]);
         }
 

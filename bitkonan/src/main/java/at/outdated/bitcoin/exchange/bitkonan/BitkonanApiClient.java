@@ -18,6 +18,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,8 +80,8 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         JsonObject konanDepth = jsonFromString(obString);
 
-        double[][] asks = null;
-        double[][] bids = null;
+        BigDecimal[][] asks = null;
+        BigDecimal[][] bids = null;
 
         if(base == Currency.BTC) {
             asks = parseNestedArray(konanDepth.getJsonArray("asks"));
@@ -93,31 +94,31 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         MarketDepth depth = new MarketDepth(asset);
 
-        for(double[] bid : bids) {
-            double price = bid[0];
-            double volume = bid[1];
+        for(BigDecimal[] bid : bids) {
+            BigDecimal price = bid[0];
+            BigDecimal volume = bid[1];
             depth.addBid(volume, price);
         }
 
-        for(double[] ask : asks) {
-            double price = ask[0];
-            double volume = ask[1];
+        for(BigDecimal[] ask : asks) {
+            BigDecimal price = ask[0];
+            BigDecimal volume = ask[1];
             depth.addAsk(volume, price);
         }
 
         return depth;
     }
 
-    private double[][] parseOtherDepth(JsonArray jsonArray) {
+    private BigDecimal[][] parseOtherDepth(JsonArray jsonArray) {
 
         int size = jsonArray.size();
-        double[][] orders = new double[size][2];
+        BigDecimal[][] orders = new BigDecimal[size][2];
 
         for(int i=0; i<size; i++) {
             JsonObject entry = jsonArray.getJsonObject(i);
 
-            orders[i][0] = entry.getJsonNumber("usd").doubleValue();
-            orders[i][1] = entry.getJsonNumber("btc").doubleValue();
+            orders[i][0] = entry.getJsonNumber("usd").bigDecimalValue();
+            orders[i][1] = entry.getJsonNumber("btc").bigDecimalValue();
         }
         return orders;
     }

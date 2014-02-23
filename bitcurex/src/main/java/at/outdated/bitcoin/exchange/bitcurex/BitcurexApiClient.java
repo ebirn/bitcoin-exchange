@@ -20,6 +20,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,14 +112,14 @@ public class BitcurexApiClient extends RestExchangeClient {
         MarketDepth depth = new MarketDepth(asset);
 
 
-        double[][] bids = parseNestedArray(root.getJsonArray("bids"));
+        BigDecimal[][] bids = parseNestedArray(root.getJsonArray("bids"));
 
-        for(double[] bid : bids) {
+        for(BigDecimal[] bid : bids) {
             depth.addBid(bid[1], bid[0]);
         }
 
-        double[][] asks = parseNestedArray(root.getJsonArray("asks"));
-        for(double[] ask : asks) {
+        BigDecimal[][] asks = parseNestedArray(root.getJsonArray("asks"));
+        for(BigDecimal[] ask : asks) {
             depth.addAsk(ask[1], ask[0]);
         }
 
