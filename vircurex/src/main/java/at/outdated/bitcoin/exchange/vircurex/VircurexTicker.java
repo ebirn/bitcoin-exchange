@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
 
 /**
  * Created by ebirn on 11.10.13.
@@ -25,19 +26,19 @@ public class VircurexTicker {
     Currency alt;
 
     @XmlElement(name="lowest_ask")
-    double ask;
+    BigDecimal ask;
 
     @XmlElement(name="highest_bid")
-    double bid;
+    BigDecimal bid;
 
     @XmlElement(name="last_trade")
     double low;
 
     @XmlElement
-    double last;
+    BigDecimal last;
 
     @XmlElement
-    double volume;
+    BigDecimal volume;
 
     public TickerValue getValue() {
 

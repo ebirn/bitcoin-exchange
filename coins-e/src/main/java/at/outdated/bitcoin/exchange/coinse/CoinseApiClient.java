@@ -96,13 +96,13 @@ public class CoinseApiClient extends RestExchangeClient {
         TickerValue ticker = new TickerValue();
 
         ticker.setAsset(asset);
-        ticker.setLast(Double.parseDouble(marketStat.getString("ltp")));
-        ticker.setAsk(Double.parseDouble(marketStat.getString("ask")));
-        ticker.setBid(Double.parseDouble(marketStat.getString("bid")));
+        ticker.setLast(new BigDecimal(marketStat.getString("ltp")));
+        ticker.setAsk(new BigDecimal(marketStat.getString("ask")));
+        ticker.setBid(new BigDecimal(marketStat.getString("bid")));
 
-        ticker.setHigh(Double.parseDouble(stat24.getString("h")));
-        ticker.setLow(Double.parseDouble(stat24.getString("l")));
-        ticker.setVolume(Double.parseDouble(stat24.getString("volume")));
+        ticker.setHigh(new BigDecimal(stat24.getString("h")));
+        ticker.setLow(new BigDecimal(stat24.getString("l")));
+        ticker.setVolume(new BigDecimal(stat24.getString("volume")));
 
         return ticker;
     }
@@ -126,8 +126,8 @@ public class CoinseApiClient extends RestExchangeClient {
         // beginning lowest ask
         for(int i=0; i<jsonAsks.size(); i++) {
             JsonObject obj = jsonAsks.getJsonObject(i);
-            double price = Double.parseDouble(obj.getString("r"));
-            double volume = Double.parseDouble(obj.getString("q"));
+            BigDecimal price = new BigDecimal(obj.getString("r"));
+            BigDecimal volume = new BigDecimal(obj.getString("q"));
 
             if(obj.getInt("n") > 0) {
                 depth.addAsk(volume, price);
@@ -138,8 +138,8 @@ public class CoinseApiClient extends RestExchangeClient {
         // beginning with highest bid
         for(int i=0; i<jsonBids.size(); i++) {
             JsonObject obj = jsonBids.getJsonObject(i);
-            double price = Double.parseDouble(obj.getString("r"));
-            double volume = Double.parseDouble(obj.getString("q"));
+            BigDecimal price = new BigDecimal(obj.getString("r"));
+            BigDecimal volume = new BigDecimal(obj.getString("q"));
 
             if(obj.getInt("n") > 0) {
                 depth.addBid(volume, price);

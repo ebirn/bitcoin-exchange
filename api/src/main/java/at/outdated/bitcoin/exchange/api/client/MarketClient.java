@@ -6,6 +6,7 @@ import at.outdated.bitcoin.exchange.api.market.MarketDepth;
 import at.outdated.bitcoin.exchange.api.market.MarketOrder;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public interface MarketClient {
     TickerValue getTicker(AssetPair asset);
 
-    double getQuote(Currency base, Currency quote);
+    BigDecimal getQuote(Currency base, Currency quote);
 
     MarketDepth getMarketDepth(AssetPair asset);
 

@@ -51,14 +51,14 @@ public class BitstampTickerValue {
         TickerValue ticker = new TickerValue();
         ticker.setTimestamp(timeStamp);
 
-        ticker.setLast(last.doubleValue());
-        ticker.setHigh(high.doubleValue());
-        ticker.setLow(low.doubleValue());
+        ticker.setLast(last);
+        ticker.setHigh(high);
+        ticker.setLow(low);
 
-        ticker.setAsk((ask).doubleValue());
-        ticker.setBid((bid).doubleValue());
+        ticker.setAsk(ask);
+        ticker.setBid(bid);
 
-        ticker.setVolume((volume).doubleValue());
+        ticker.setVolume(volume);
 
         return ticker;
     }

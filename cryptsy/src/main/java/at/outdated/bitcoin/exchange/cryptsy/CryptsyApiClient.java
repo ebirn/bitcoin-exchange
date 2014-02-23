@@ -113,12 +113,12 @@ public class CryptsyApiClient extends RestExchangeClient implements MarketClient
             JsonArray jsonSells = jsonMarket.getJsonArray("sellorders");
 
             JsonArray jsonBuys = jsonMarket.getJsonArray("buyorders");
-            double bid = Double.parseDouble(jsonBuys.getJsonObject(0).getString("price"));
-            double ask = Double.parseDouble(jsonSells.getJsonObject(0).getString("price"));
+            BigDecimal bid = new BigDecimal(jsonBuys.getJsonObject(0).getString("price"));
+            BigDecimal ask = new BigDecimal(jsonSells.getJsonObject(0).getString("price"));
 
 
-            double last = Double.parseDouble(jsonMarket.getString("lasttradeprice"));
-            double volume = Double.parseDouble(jsonMarket.getString("volume"));
+            BigDecimal last = new BigDecimal(jsonMarket.getString("lasttradeprice"));
+            BigDecimal volume = new BigDecimal(jsonMarket.getString("volume"));
 
             ticker = new TickerValue(asset);
             ticker.setLast(last);

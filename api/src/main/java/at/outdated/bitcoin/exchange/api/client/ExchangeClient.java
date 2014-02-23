@@ -13,6 +13,7 @@ import at.outdated.bitcoin.exchange.api.track.NumberTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -32,9 +33,9 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
     }
 
     @Override
-    public double getQuote(Currency base, Currency quote) {
+    public BigDecimal getQuote(Currency base, Currency quote) {
 
-        double rate = Double.NaN;
+        BigDecimal rate = BigDecimal.ZERO;
 
         AssetPair asset = market.getAsset(base, quote);
 
@@ -45,7 +46,7 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
                 rate = ticker.getBid();
             }
             else {
-                rate = 1.0/ticker.getAsk();
+                rate = BigDecimal.ONE.divide(ticker.getAsk());
             }
         }
 

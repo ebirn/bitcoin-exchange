@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -30,28 +31,28 @@ public class BtcETickerValue  {
 
 
     @XmlElement
-    double last;
+    BigDecimal last;
 
     @XmlElement
-    double buy;
+    BigDecimal buy;
 
     @XmlElement
-    double sell;
+    BigDecimal sell;
 
     @XmlElement
     double avg;
 
     @XmlElement
-    double high;
+    BigDecimal high;
 
     @XmlElement
-    double low;
+    BigDecimal low;
 
     @XmlElement
     double vol;
 
     @XmlElement
-    double vol_cur;
+    BigDecimal vol_cur;
 
     @XmlElement(name="server_time")
     protected long timestamp;

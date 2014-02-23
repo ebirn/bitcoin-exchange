@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -24,10 +25,10 @@ public class BitcurexTickerValue  {
     // {"high":99.98,"low":99.85,"avg":99.91499999,"vwap":99.96944474,"vol":2.68977951,"last":99.98,"buy":97.15,"sell":100.98,"time":1369911319}
 
     @XmlElement
-    double high;
+    BigDecimal high;
 
     @XmlElement
-    double low;
+    BigDecimal low;
 
     @XmlElement
     double avg;
@@ -36,16 +37,16 @@ public class BitcurexTickerValue  {
     double vwap;
 
     @XmlElement
-    double vol;
+    BigDecimal vol;
 
     @XmlElement
-    double last;
+    BigDecimal last;
 
     @XmlElement
-    double sell;
+    BigDecimal sell;
 
     @XmlElement
-    double buy;
+    BigDecimal buy;
 
     @XmlElement(name="time")
     //@XmlJavaTypeAdapter(UnixTimeDateAdapter.class)

@@ -1,5 +1,6 @@
 package at.outdated.bitcoin.exchange.api.market;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Date;
  */
 public class TickerValue extends TimedValue<double[]> {
 
-    private double last, bid, ask, high, low, volume;
+    private BigDecimal last, bid, ask, high, low, volume;
 
     public static final int DIMENSIONS = 4;
 
@@ -27,7 +28,7 @@ public class TickerValue extends TimedValue<double[]> {
     }
 
     public static final TickerValue createNanInstance(AssetPair curr) {
-        TickerValue ticker = new TickerValue(null, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, curr);
+        TickerValue ticker = new TickerValue(null, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, curr);
         return ticker;
     }
 
@@ -47,7 +48,7 @@ public class TickerValue extends TimedValue<double[]> {
         this.asset = other.asset;
     }
 
-    public TickerValue(Date timestamp, double last, double bid, double ask, double volume, double high, double low, AssetPair asset) {
+    public TickerValue(Date timestamp, BigDecimal last, BigDecimal bid, BigDecimal ask, BigDecimal volume, BigDecimal high, BigDecimal low, AssetPair asset) {
         this.timestamp = timestamp;
         this.last = last;
         this.bid = bid;
@@ -61,7 +62,7 @@ public class TickerValue extends TimedValue<double[]> {
 
     @Override
     public double[] getValue() {
-        double[] value = {timestamp.getTime(), last, bid, ask, volume};
+        double[] value = {timestamp.getTime(), last.doubleValue(), bid.doubleValue(), ask.doubleValue(), volume.doubleValue()};
         return value;
     }
 
@@ -70,51 +71,51 @@ public class TickerValue extends TimedValue<double[]> {
         this.timestamp = timestamp;
     }
 
-    public double getLast() {
+    public BigDecimal getLast() {
         return last;
     }
 
-    public void setLast(double last) {
+    public void setLast(BigDecimal last) {
         this.last = last;
     }
 
-    public double getBid() {
+    public BigDecimal getBid() {
         return bid;
     }
 
-    public void setBid(double bid) {
+    public void setBid(BigDecimal bid) {
         this.bid = bid;
     }
 
-    public double getAsk() {
+    public BigDecimal getAsk() {
         return ask;
     }
 
-    public void setAsk(double ask) {
+    public void setAsk(BigDecimal ask) {
         this.ask = ask;
     }
 
-    public double getHigh() {
+    public BigDecimal getHigh() {
         return high;
     }
 
-    public void setHigh(double high) {
+    public void setHigh(BigDecimal high) {
         this.high = high;
     }
 
-    public double getLow() {
+    public BigDecimal getLow() {
         return low;
     }
 
-    public void setLow(double low) {
+    public void setLow(BigDecimal low) {
         this.low = low;
     }
 
-    public double getVolume() {
+    public BigDecimal getVolume() {
         return volume;
     }
 
-    public void setVolume(double volume) {
+    public void setVolume(BigDecimal volume) {
         this.volume = volume;
     }
 
@@ -126,12 +127,12 @@ public class TickerValue extends TimedValue<double[]> {
         return asset;
     }
 
-    public double getBidAskSpread() {
-        return bid - ask;
+    public BigDecimal getBidAskSpread() {
+        return bid.subtract(ask);
     }
 
-    public double getMiddle() {
-        return (bid + ask)/2.0;
+    public BigDecimal getMiddle() {
+        return bid.add(ask).divide(new BigDecimal(2.0));
     }
 
     @Override
@@ -142,6 +143,6 @@ public class TickerValue extends TimedValue<double[]> {
             quote = asset.getQuote().name();
         }
 
-        return "Ticker: " + (bid+ask)/2.0 + " " + quote;
+        return "Ticker: " + getMiddle() + " " + quote;
     }
 }

@@ -5,6 +5,7 @@ import at.outdated.bitcoin.exchange.api.market.TickerValue;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,22 +19,22 @@ public class BitkonanTickerValue {
 
 
     @XmlElement
-    double last;
+    BigDecimal last;
 
     @XmlElement
-    double bid;
+    BigDecimal bid;
 
     @XmlElement
-    double ask;
+    BigDecimal ask;
 
     @XmlElement
-    double high;
+    BigDecimal high;
 
     @XmlElement
-    double low;
+    BigDecimal low;
 
     @XmlElement
-    double volume;
+    BigDecimal volume;
 
     @XmlElement
     double open;

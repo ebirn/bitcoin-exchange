@@ -131,11 +131,11 @@ public class MarketTest extends BaseTest {
         notNull("invalid ticker timestamp", ticker.getTimestamp());
         notNull(ticker.getAsset());
 
-        Assert.assertNotEquals(ticker.getBid(), 0.0, Double.MIN_NORMAL);
-        Assert.assertNotEquals(ticker.getBid(), Double.NaN, 0.0);
+        Assert.assertNotEquals(ticker.getBid().doubleValue(), 0.0, Double.MIN_NORMAL);
+        Assert.assertNotEquals(ticker.getBid().doubleValue(), Double.NaN, 0.0);
 
-        Assert.assertNotEquals(ticker.getAsk(), 0.0, Double.MIN_NORMAL);
-        Assert.assertNotEquals(ticker.getAsk(), Double.NaN, 0.0);
+        Assert.assertNotEquals(ticker.getAsk().doubleValue(), 0.0, Double.MIN_NORMAL);
+        Assert.assertNotEquals(ticker.getAsk().doubleValue(), Double.NaN, 0.0);
     }
 
     protected void checkOrder(MarketOrder order) {

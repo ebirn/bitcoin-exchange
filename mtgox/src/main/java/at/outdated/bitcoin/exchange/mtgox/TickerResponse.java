@@ -147,15 +147,15 @@ public class TickerResponse {
 
         value.setTimestamp(getTimestamp());
 
-        value.setLast(getLast().doubleValue());
+        value.setLast(getLast().getValue());
 
-        value.setAsk(getSell().doubleValue());
-        value.setBid(getBuy().doubleValue());
+        value.setAsk(getSell().getValue());
+        value.setBid(getBuy().getValue());
 
-        value.setLow(getLow().doubleValue());
-        value.setHigh(getHigh().doubleValue());
+        value.setLow(getLow().getValue());
+        value.setHigh(getHigh().getValue());
 
-        value.setVolume(getVol().doubleValue());
+        value.setVolume(getVol().getValue());
 
         value.setAsset(new AssetPair(item, inCurrency));
 

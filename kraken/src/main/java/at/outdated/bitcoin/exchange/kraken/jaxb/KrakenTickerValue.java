@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -86,16 +87,15 @@ public class KrakenTickerValue {
     public TickerValue getValue() {
         TickerValue value = new TickerValue();
 
+        value.setLast(new BigDecimal(l[0]));
 
-        value.setLast(Double.parseDouble(l[0]));
+        value.setAsk(new BigDecimal(a[0]));
+        value.setBid(new BigDecimal(b[0]));
 
-        value.setAsk(Double.parseDouble(a[0]));
-        value.setBid(Double.parseDouble(b[0]));
+        value.setVolume(new BigDecimal(v[0]));
 
-        value.setVolume(Double.parseDouble(v[0]));
-
-        value.setHigh(Double.parseDouble(h[0]));
-        value.setLow(Double.parseDouble(l[0]));
+        value.setHigh(new BigDecimal(h[0]));
+        value.setLow(new BigDecimal(l[0]));
 
         return value;
     }
