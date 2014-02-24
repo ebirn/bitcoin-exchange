@@ -248,8 +248,8 @@ public class BtcEApiClient extends RestExchangeClient {
 
         BtcETickerValue btcETickerValue = response.getTicker();
 
-        TickerValue value = btcETickerValue.getTickerValue();
-        value.setAsset(asset);
+        TickerValue value = btcETickerValue.getTickerValue(asset);
+
 
         return value;
     }

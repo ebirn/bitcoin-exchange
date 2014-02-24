@@ -139,9 +139,7 @@ public class BitcurexApiClient extends RestExchangeClient {
 
         if(bTicker == null) return null;
 
-        TickerValue ticker = bTicker.getTickerValue();
-        ticker.setAsset(asset);
-        return ticker;  //To change body of implemented methods use File | Settings | File Templates.
+        return bTicker.getTickerValue(asset);
     }
 
 

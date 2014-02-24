@@ -205,8 +205,7 @@ public class BitstampClient extends RestExchangeClient {
 
         TickerValue ticker = null;
         if(bticker != null) {
-            ticker = bticker.getTickerValue();
-            ticker.setAsset(asset);
+            ticker = bticker.getTickerValue(asset);
         }
 
         return ticker;

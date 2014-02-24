@@ -93,16 +93,16 @@ public class CoinseApiClient extends RestExchangeClient {
         JsonObject marketStat = jsonMarket.getJsonObject("marketstat");
         JsonObject stat24 = marketStat.getJsonObject("24h");
 
-        TickerValue ticker = new TickerValue();
+        TickerValue ticker = new TickerValue(asset);
 
-        ticker.setAsset(asset);
-        ticker.setLast(new BigDecimal(marketStat.getString("ltp")));
-        ticker.setAsk(new BigDecimal(marketStat.getString("ask")));
-        ticker.setBid(new BigDecimal(marketStat.getString("bid")));
+        Currency quote = asset.getQuote();
+        ticker.setLast(new CurrencyValue(marketStat.getString("ltp"), quote));
+        ticker.setAsk(new CurrencyValue(marketStat.getString("ask"), quote));
+        ticker.setBid(new CurrencyValue(marketStat.getString("bid"), quote));
 
-        ticker.setHigh(new BigDecimal(stat24.getString("h")));
-        ticker.setLow(new BigDecimal(stat24.getString("l")));
-        ticker.setVolume(new BigDecimal(stat24.getString("volume")));
+        ticker.setHigh(new CurrencyValue(stat24.getString("h"), quote));
+        ticker.setLow(new CurrencyValue(stat24.getString("l"), quote));
+        ticker.setVolume(new CurrencyValue(stat24.getString("volume"), asset.getBase()));
 
         return ticker;
     }

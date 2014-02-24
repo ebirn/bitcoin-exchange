@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.api.market;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,23 +15,29 @@ import java.util.Date;
  */
 public class TickerValue extends TimedValue<double[]> {
 
-    private BigDecimal last, bid, ask, high, low, volume;
+    private CurrencyValue last, bid, ask, high, low, volume;
 
     public static final int DIMENSIONS = 4;
 
     private AssetPair asset = null;
 
-    public TickerValue() {
-        this.timestamp = new Date();
-    }
-
     public TickerValue(AssetPair asset) {
         this.timestamp = new Date();
         this.asset = asset;
+        last = new CurrencyValue(asset.getQuote());
+        bid = new CurrencyValue(asset.getQuote());
+        ask = new CurrencyValue(asset.getQuote());
+        high = new CurrencyValue(asset.getQuote());
+        low = new CurrencyValue(asset.getQuote());
+
+        volume = new CurrencyValue(asset.getBase());
     }
 
-    public static final TickerValue createNanInstance(AssetPair curr) {
-        TickerValue ticker = new TickerValue(null, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, curr);
+    public static final TickerValue createNanInstance(AssetPair asset) {
+
+        Currency quote = asset.getQuote();
+
+        TickerValue ticker = new TickerValue(null, new CurrencyValue(quote), new CurrencyValue(quote), new CurrencyValue(quote), new CurrencyValue(quote), new CurrencyValue(quote), new CurrencyValue(quote), asset);
         return ticker;
     }
 
@@ -48,7 +57,7 @@ public class TickerValue extends TimedValue<double[]> {
         this.asset = other.asset;
     }
 
-    public TickerValue(Date timestamp, BigDecimal last, BigDecimal bid, BigDecimal ask, BigDecimal volume, BigDecimal high, BigDecimal low, AssetPair asset) {
+    public TickerValue(Date timestamp, CurrencyValue last, CurrencyValue bid, CurrencyValue ask, CurrencyValue volume, CurrencyValue high, CurrencyValue low, AssetPair asset) {
         this.timestamp = timestamp;
         this.last = last;
         this.bid = bid;
@@ -71,51 +80,51 @@ public class TickerValue extends TimedValue<double[]> {
         this.timestamp = timestamp;
     }
 
-    public BigDecimal getLast() {
+    public CurrencyValue getLast() {
         return last;
     }
 
-    public void setLast(BigDecimal last) {
+    public void setLast(CurrencyValue last) {
         this.last = last;
     }
 
-    public BigDecimal getBid() {
+    public CurrencyValue getBid() {
         return bid;
     }
 
-    public void setBid(BigDecimal bid) {
+    public void setBid(CurrencyValue bid) {
         this.bid = bid;
     }
 
-    public BigDecimal getAsk() {
+    public CurrencyValue getAsk() {
         return ask;
     }
 
-    public void setAsk(BigDecimal ask) {
+    public void setAsk(CurrencyValue ask) {
         this.ask = ask;
     }
 
-    public BigDecimal getHigh() {
+    public CurrencyValue getHigh() {
         return high;
     }
 
-    public void setHigh(BigDecimal high) {
+    public void setHigh(CurrencyValue high) {
         this.high = high;
     }
 
-    public BigDecimal getLow() {
+    public CurrencyValue getLow() {
         return low;
     }
 
-    public void setLow(BigDecimal low) {
+    public void setLow(CurrencyValue low) {
         this.low = low;
     }
 
-    public BigDecimal getVolume() {
+    public CurrencyValue getVolume() {
         return volume;
     }
 
-    public void setVolume(BigDecimal volume) {
+    public void setVolume(CurrencyValue volume) {
         this.volume = volume;
     }
 
@@ -127,22 +136,18 @@ public class TickerValue extends TimedValue<double[]> {
         return asset;
     }
 
-    public BigDecimal getBidAskSpread() {
+    public CurrencyValue getBidAskSpread() {
         return bid.subtract(ask);
     }
 
-    public BigDecimal getMiddle() {
-        return bid.add(ask).divide(new BigDecimal(2.0));
+    public CurrencyValue getMiddle() {
+        CurrencyValue middle = new CurrencyValue(bid);
+
+        return middle.add(ask).divide(new BigDecimal(2.0));
     }
 
     @Override
     public String toString() {
-
-        String quote = "";
-        if(asset != null) {
-            quote = asset.getQuote().name();
-        }
-
-        return "Ticker: " + getMiddle() + " " + quote;
+        return "Ticker("+asset.getBase()+"): " + getMiddle();
     }
 }

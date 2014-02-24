@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.bter;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,14 +45,18 @@ public class BterTicker {
     @XmlElement(name="vol_btc")
     BigDecimal volume;
 
-    public TickerValue getValue() {
+    public TickerValue getValue(AssetPair asset) {
 
-        TickerValue val = new TickerValue();
+        Currency quote = asset.getQuote();
+        TickerValue val = new TickerValue(asset);
 
-        val.setAsk(ask);
-        val.setBid(bid);
-        val.setVolume(volume);
-        val.setLast(last);
+        val.setAsk(new CurrencyValue(ask, quote));
+        val.setBid(new CurrencyValue(bid, quote));
+
+        val.setLast(new CurrencyValue(last, quote));
+
+        val.setVolume(new CurrencyValue(volume, asset.getBase()));
+
         return val;
     }
 

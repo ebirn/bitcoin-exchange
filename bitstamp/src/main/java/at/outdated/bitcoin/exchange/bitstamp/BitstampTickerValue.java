@@ -1,6 +1,9 @@
 package at.outdated.bitcoin.exchange.bitstamp;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.jaxb.StringBigDecimalAdapter;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,19 +49,20 @@ public class BitstampTickerValue {
 
     Date timeStamp = new Date();
 
-    public TickerValue getTickerValue() {
+    public TickerValue getTickerValue(AssetPair asset) {
 
-        TickerValue ticker = new TickerValue();
+        Currency quote = asset.getQuote();
+        TickerValue ticker = new TickerValue(asset);
         ticker.setTimestamp(timeStamp);
 
-        ticker.setLast(last);
-        ticker.setHigh(high);
-        ticker.setLow(low);
+        ticker.setLast(new CurrencyValue(last, quote));
+        ticker.setHigh(new CurrencyValue(high, quote));
+        ticker.setLow(new CurrencyValue(low, quote));
 
-        ticker.setAsk(ask);
-        ticker.setBid(bid);
+        ticker.setAsk(new CurrencyValue(ask, quote));
+        ticker.setBid(new CurrencyValue(bid, quote));
 
-        ticker.setVolume(volume);
+        ticker.setVolume(new CurrencyValue(volume, asset.getBase()));
 
         return ticker;
     }

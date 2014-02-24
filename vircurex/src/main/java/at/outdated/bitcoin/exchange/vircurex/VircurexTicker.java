@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange.vircurex;
 
 import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
@@ -22,8 +23,8 @@ public class VircurexTicker {
     @XmlElement
     Currency base;
 
-    @XmlElement
-    Currency alt;
+    @XmlElement(name="alt")
+    Currency quote;
 
     @XmlElement(name="lowest_ask")
     BigDecimal ask;
@@ -32,9 +33,6 @@ public class VircurexTicker {
     BigDecimal bid;
 
     @XmlElement(name="last_trade")
-    double low;
-
-    @XmlElement
     BigDecimal last;
 
     @XmlElement
@@ -42,14 +40,17 @@ public class VircurexTicker {
 
     public TickerValue getValue() {
 
-        TickerValue val = new TickerValue();
+        AssetPair asset = new AssetPair(base, quote);
 
-        val.setAsk(ask);
-        val.setBid(bid);
-        val.setVolume(volume);
-        val.setLast(last);
+        TickerValue val = new TickerValue(asset);
 
-        val.setAsset(new AssetPair(base, alt));
+        val.setLast(new CurrencyValue(last, quote));
+
+        val.setAsk(new CurrencyValue(ask, quote));
+        val.setBid(new CurrencyValue(bid, quote));
+
+        val.setVolume(new CurrencyValue(volume, base));
+
         return val;
     }
 

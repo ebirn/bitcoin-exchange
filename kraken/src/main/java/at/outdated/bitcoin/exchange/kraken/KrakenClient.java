@@ -136,17 +136,19 @@ public class KrakenClient extends RestExchangeClient {
 
         JsonObject resultData = jsonTicker.getJsonObject("result").getJsonObject(pairString(asset));
 
-        TickerValue value = new TickerValue();
-        value.setAsset(asset);
-        value.setLast(new BigDecimal(resultData.getJsonArray("c").getString(0)));
+        TickerValue value = new TickerValue(asset);
 
-        value.setVolume(new BigDecimal(resultData.getJsonArray("v").getString(0)));
+        Currency quote = asset.getQuote();
 
-        value.setAsk(new BigDecimal(resultData.getJsonArray("a").getString(0)));
-        value.setBid(new BigDecimal(resultData.getJsonArray("b").getString(0)));
+        value.setLast(new CurrencyValue(resultData.getJsonArray("c").getString(0), quote));
 
-        value.setHigh(new BigDecimal(resultData.getJsonArray("h").getString(0)));
-        value.setLow(new BigDecimal(resultData.getJsonArray("l").getString(0)));
+        value.setVolume(new CurrencyValue(resultData.getJsonArray("v").getString(0), asset.getBase()));
+
+        value.setAsk(new CurrencyValue(resultData.getJsonArray("a").getString(0), quote));
+        value.setBid(new CurrencyValue(resultData.getJsonArray("b").getString(0), quote));
+
+        value.setHigh(new CurrencyValue(resultData.getJsonArray("h").getString(0), quote));
+        value.setLow(new CurrencyValue(resultData.getJsonArray("l").getString(0), quote));
         return value;
     }
 

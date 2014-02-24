@@ -43,10 +43,10 @@ public abstract class ExchangeClient implements MarketClient, TradeClient {
             TickerValue ticker = getTicker(asset);
 
             if(asset.getBase() == base) {
-                rate = ticker.getBid();
+                rate = ticker.getBid().getValue();
             }
             else {
-                rate = BigDecimal.ONE.divide(ticker.getAsk());
+                rate = BigDecimal.ONE.divide(ticker.getAsk().getValue());
             }
         }
 

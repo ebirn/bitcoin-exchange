@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.kraken.jaxb;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -84,18 +87,21 @@ public class KrakenTickerValue {
         this.o = o;
     }
 
-    public TickerValue getValue() {
-        TickerValue value = new TickerValue();
+    public TickerValue getValue(AssetPair asset) {
 
-        value.setLast(new BigDecimal(l[0]));
+        Currency quote = asset.getQuote();
 
-        value.setAsk(new BigDecimal(a[0]));
-        value.setBid(new BigDecimal(b[0]));
+        TickerValue value = new TickerValue(asset);
 
-        value.setVolume(new BigDecimal(v[0]));
+        value.setLast(new CurrencyValue(l[0], quote));
 
-        value.setHigh(new BigDecimal(h[0]));
-        value.setLow(new BigDecimal(l[0]));
+        value.setAsk(new CurrencyValue(a[0], quote));
+        value.setBid(new CurrencyValue(b[0], quote));
+
+        value.setVolume(new CurrencyValue(v[0], asset.getBase()));
+
+        value.setHigh(new CurrencyValue(h[0], quote));
+        value.setLow(new CurrencyValue(l[0], quote));
 
         return value;
     }

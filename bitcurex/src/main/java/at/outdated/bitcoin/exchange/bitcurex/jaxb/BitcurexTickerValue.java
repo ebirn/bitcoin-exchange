@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.bitcurex.jaxb;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -54,19 +57,22 @@ public class BitcurexTickerValue  {
     long unixTime;
 
 
-    public TickerValue getTickerValue() {
-        TickerValue ticker = new TickerValue();
+    public TickerValue getTickerValue(AssetPair asset) {
+
+        Currency quote = asset.getQuote();
+
+        TickerValue ticker = new TickerValue(asset);
 
         ticker.setTimestamp(new Date(unixTime * 1000L));
-        ticker.setLast(last);
+        ticker.setLast(new CurrencyValue(last, quote));
 
-        ticker.setHigh(high);
-        ticker.setLow(low);
+        ticker.setHigh(new CurrencyValue(high, quote));
+        ticker.setLow(new CurrencyValue(low, quote));
 
-        ticker.setAsk(sell);
-        ticker.setBid(buy);
+        ticker.setAsk(new CurrencyValue(sell, quote));
+        ticker.setBid(new CurrencyValue(buy, quote));
 
-        ticker.setVolume(vol);
+        ticker.setVolume(new CurrencyValue(vol, asset.getBase()));
 
         return ticker;
     }

@@ -18,7 +18,17 @@ import java.util.Locale;
  */
 public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
 
-    public static final MathContext CURRENCY_MATH_CONTEXT = new MathContext(7, RoundingMode.HALF_UP);
+    public static final MathContext CURRENCY_MATH_CONTEXT = new MathContext(8, RoundingMode.HALF_UP);
+
+    public static final CurrencyValue EMPTY = new CurrencyValue((Currency) null);
+
+    public static BigDecimal createZero() {
+        return new BigDecimal(0L, CURRENCY_MATH_CONTEXT);
+    }
+
+    private void scaleValue(BigDecimal value) {
+        value.setScale(CURRENCY_MATH_CONTEXT.getPrecision(), CURRENCY_MATH_CONTEXT.getRoundingMode());
+    }
 
     private BigDecimal value;
     private Currency currency;
@@ -40,7 +50,7 @@ public class CurrencyValue implements Cloneable, Comparable<CurrencyValue> {
 
 
     public CurrencyValue(BigDecimal value, Currency curr) {
-        value.setScale(CURRENCY_MATH_CONTEXT.getPrecision(), CURRENCY_MATH_CONTEXT.getRoundingMode());
+        scaleValue(value);
         this.value = value;
         this.currency = curr;
     }

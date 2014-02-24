@@ -1,6 +1,7 @@
 package at.outdated.bitcoin.exchange;
 
 import at.outdated.bitcoin.exchange.api.client.ExchangeClient;
+import at.outdated.bitcoin.exchange.api.currency.Currency;
 import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
 import at.outdated.bitcoin.exchange.api.market.*;
 import org.junit.Assert;
@@ -130,6 +131,19 @@ public class MarketTest extends BaseTest {
 
         notNull("invalid ticker timestamp", ticker.getTimestamp());
         notNull(ticker.getAsset());
+
+        AssetPair asset = ticker.getAsset();
+        Currency base = asset.getBase();
+        Currency quote = asset.getQuote();
+
+        Assert.assertEquals("last currency mismatch", quote, ticker.getLast().getCurrency());
+
+        Assert.assertEquals("ask currency mismatch", quote, ticker.getAsk().getCurrency());
+        Assert.assertEquals("bid currency mismatch", quote, ticker.getBid().getCurrency());
+        Assert.assertEquals("high currency mismatch", quote, ticker.getHigh().getCurrency());
+        Assert.assertEquals("low currency mismatch", quote, ticker.getLow().getCurrency());
+
+        Assert.assertEquals("volume currency mismatch", base, ticker.getVolume().getCurrency());
 
         Assert.assertNotEquals(ticker.getBid().doubleValue(), 0.0, Double.MIN_NORMAL);
         Assert.assertNotEquals(ticker.getBid().doubleValue(), Double.NaN, 0.0);

@@ -95,11 +95,7 @@ public class BterApiClient extends RestExchangeClient {
 
         BterTicker ticker = simpleGetRequest(tickerTgt, BterTicker.class);
 
-        TickerValue tickerValue = ticker.getValue();
-
-        tickerValue.setAsset(asset);
-
-        return tickerValue;
+        return ticker.getValue(asset);
     }
 
     @Override

@@ -133,8 +133,7 @@ public class BitkonanApiClient extends RestExchangeClient {
 
         TickerValue value = null;
         if(response != null) {
-            value = response.getTickerValue();
-            value.setAsset(asset);
+            value = response.getTickerValue(asset);
         }
 
         return value;

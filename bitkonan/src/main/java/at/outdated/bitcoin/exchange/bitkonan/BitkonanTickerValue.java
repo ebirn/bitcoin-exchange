@@ -1,5 +1,8 @@
 package at.outdated.bitcoin.exchange.bitkonan;
 
+import at.outdated.bitcoin.exchange.api.currency.Currency;
+import at.outdated.bitcoin.exchange.api.currency.CurrencyValue;
+import at.outdated.bitcoin.exchange.api.market.AssetPair;
 import at.outdated.bitcoin.exchange.api.market.TickerValue;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,16 +43,19 @@ public class BitkonanTickerValue {
     double open;
 
 
-    public TickerValue getTickerValue() {
+    public TickerValue getTickerValue(AssetPair asset) {
 
-        TickerValue ticker = new TickerValue();
+        Currency quote = asset.getQuote();
+        TickerValue ticker = new TickerValue(asset);
 
-        ticker.setLast(last);
-        ticker.setVolume(volume);
-        ticker.setBid(bid);
-        ticker.setAsk(ask);
-        ticker.setHigh(high);
-        ticker.setLow(low);
+        ticker.setLast(new CurrencyValue(last, quote));
+        ticker.setBid(new CurrencyValue(bid, quote));
+        ticker.setAsk(new CurrencyValue(ask, quote));
+        ticker.setHigh(new CurrencyValue(high, quote));
+        ticker.setLow(new CurrencyValue(low, quote));
+
+        ticker.setVolume(new CurrencyValue(volume, asset.getBase()));
+
 
         return ticker;
     }
