@@ -20,7 +20,7 @@ public class VircurexTicker {
 
     // {"base":"BTC","alt":"LTC","lowest_ask":"62.30141425","highest_bid":"61.12503063","last_trade":"62.30529595","volume":"82.92624028"}%
 
-    @XmlElement
+    @XmlElement(name="base")
     Currency base;
 
     @XmlElement(name="alt")
@@ -35,7 +35,7 @@ public class VircurexTicker {
     @XmlElement(name="last_trade")
     BigDecimal last;
 
-    @XmlElement
+    @XmlElement(name="volume")
     BigDecimal volume;
 
     public TickerValue getValue() {

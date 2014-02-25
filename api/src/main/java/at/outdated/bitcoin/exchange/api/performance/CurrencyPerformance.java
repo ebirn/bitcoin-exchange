@@ -51,8 +51,9 @@ public class CurrencyPerformance extends Performance {
                 started = true;
             }
 
-            endBalance = balance;
-
+            if(balance != null) {
+                endBalance = balance;
+            }
             return true;
         }
 
@@ -61,6 +62,15 @@ public class CurrencyPerformance extends Performance {
 
     @Override
     public BigDecimal getPercent() {
+
+        // special case if we started at 0.0
+        if(startBalance.getValue().signum() == 0 && endBalance.getValue().signum() == 0) {
+            return BigDecimal.ZERO;
+        }
+        else if(startBalance.getValue().signum() == 0 && endBalance.getValue().signum() == 1) {
+            return BigDecimal.ONE;
+        }
+
         return new CurrencyValue(getTotalDifference()).divide(startBalance).getValue();
     }
 
