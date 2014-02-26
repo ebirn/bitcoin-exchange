@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Created by ebirn on 20.10.13.
  */
-public class AssetPair {
+public class AssetPair implements Comparable<AssetPair> {
 
     Currency base;
 
@@ -81,5 +81,16 @@ public class AssetPair {
         builder.append(quote);
 
         return builder.toHashCode();
+    }
+
+    @Override
+    public int compareTo(AssetPair other) {
+
+        int comp =  this.getBase().compareTo(other.getBase());
+        if(comp == 0) {
+            comp = this.getQuote().compareTo(other.getQuote());
+        }
+
+        return comp;
     }
 }

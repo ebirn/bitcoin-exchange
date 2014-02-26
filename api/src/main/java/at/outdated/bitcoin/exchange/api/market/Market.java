@@ -14,7 +14,7 @@ import java.util.*;
  * Time: 22:53
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Market {
+public abstract class Market implements Comparable<Market> {
     /*
     MTGOX("http://www.mtgox.com/", "Mt.Gox", Currency.EUR, "mtgox"),
     BTCE("http://btc-e.com", "BTC-E Bitcoin Exchange", Currency.EUR, "btce"),
@@ -138,5 +138,10 @@ public abstract class Market {
         builder.append(this.assets, other.assets);
 
         return builder.build();
+    }
+
+    @Override
+    public int compareTo(Market o) {
+        return this.getDescription().compareTo(o.getDescription());
     }
 }
