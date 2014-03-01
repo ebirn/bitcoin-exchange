@@ -45,7 +45,11 @@ public class SimplePercentageFee extends Fee {
 
     @Override
     public String toString() {
-        String percentStr = NumberFormat.getPercentInstance().format(percentage.doubleValue());
+        NumberFormat format = NumberFormat.getPercentInstance();
+
+        format.setMinimumFractionDigits(2);
+
+        String percentStr = format.format(percentage.doubleValue());
 
         return super.toString() + percentStr;
     }
