@@ -28,22 +28,22 @@ Features
 Usage
 =====
 
-  // lookup a market
-  Market bitstampMarket = Markets.getMarket("bitstamp");
+    // lookup a market
+    Market bitstampMarket = Markets.getMarket("bitstamp");
   
-  // the Market object provides static information like 
-  // traded assets, withdrawal and deposit methods. It is
-  // also a factory for the trading client
-  ExchangeClient client = bitstampMarket.createClient();
+    // the Market object provides static information like 
+    // traded assets, withdrawal and deposit methods. It is
+    // also a factory for the trading client
+    ExchangeClient client = bitstampMarket.createClient();
   
-  // the trading client implements 2 interfaces 
-  // public ticker:
-  TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.USD));
+    // the trading client implements 2 interfaces 
+    // public ticker:
+    TickerValue ticker = client.getTicker(new AssetPair(Currency.BTC, Currency.USD));
 
 
-  // call trading api, needs auth info
-  // for this to work, configuration must be setup properly, see below
-  Balance myCoins =  client.getBalance();
+    // call trading api, needs auth info
+    // for this to work, configuration must be setup properly, see below
+    Balance myCoins =  client.getBalance();
 
 
 Configuration
